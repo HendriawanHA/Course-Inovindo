@@ -13,8 +13,37 @@
 
             <!-- Filter Tabs -->
             <div class="flex items-center gap-2 mb-8">
-                <flux:button variant="filled">Upcoming</flux:button>
-                <flux:button variant="subtle">Past Events</flux:button>
+
+                {{-- All --}}
+                <a href="{{ route('events.index', ['filter' => 'all']) }}">
+                    <flux:button
+                        variant="{{ $filter === 'all' ? 'filled' : 'subtle' }}">
+
+                        All Events
+
+                    </flux:button>
+                </a>
+
+                {{-- Upcoming --}}
+                <a href="{{ route('events.index', ['filter' => 'upcoming']) }}">
+                    <flux:button
+                        variant="{{ $filter === 'upcoming' ? 'filled' : 'subtle' }}">
+
+                        Upcoming
+
+                    </flux:button>
+                </a>
+
+                {{-- Past --}}
+                <a href="{{ route('events.index', ['filter' => 'past']) }}">
+                    <flux:button
+                        variant="{{ $filter === 'past' ? 'filled' : 'subtle' }}">
+
+                        Past Events
+
+                    </flux:button>
+                </a>
+
             </div>
 
             <!-- Featured Event -->

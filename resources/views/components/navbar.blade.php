@@ -59,7 +59,7 @@
         <!-- Profile Dropdown -->
         <flux:dropdown position="top" align="end">
             <flux:profile
-                circle
+                circle :chevron="false"
                 avatar="{{ auth()->user()->avatar
         ? asset('storage/' . auth()->user()->avatar)
         : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
