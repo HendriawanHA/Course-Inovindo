@@ -44,9 +44,23 @@ new #[Layout('layouts.guest')] class extends Component
     <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/10 blur-3xl rounded-full"></div>
 
     <form wire:submit="register" class="relative z-10 w-full max-w-5xl">
+        <div class="absolute -bottom-2 -right-2
+        w-full h-full
+        rounded-3xl
+        bg-blue-700
+        opacity-90
+        -z-20">
+        </div>
 
+        <!-- BACK LAYER 2 -->
+        <div class="absolute -bottom-2 -right-2
+        w-full h-full
+        rounded-3xl
+        bg-blue-600/40
+        -z-10">
+        </div>
         <flux:card class="overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800
-            bg-white/80 dark:bg-zinc-900/80
+            bg-white dark:bg-zinc-900
             backdrop-blur-2xl
             shadow-2xl">
 
@@ -140,26 +154,26 @@ new #[Layout('layouts.guest')] class extends Component
                         </flux:field>
 
                         <!-- BUTTONS -->
-                        <div class="space-y-3 pt-3">
+                        <div class="space-y-5 pt-3">
 
                             <flux:button
                                 type="submit"
                                 variant="ghost"
-                                class="w-full h-11">
+                                class="w-full h-11 !text-white !bg-blue-700 hover:!bg-blue-600 font-mediumshadow-lg shadow-indigo-500/20 rounded-xl transition-all duration-200">
 
                                 Create Account
 
                             </flux:button>
 
-                            <flux:button
+                            <flux:link
                                 href="{{ route('login') }}"
                                 wire:navigate
-                                variant="ghost"
-                                class="w-full">
+                                variant="subtle"
+                                class="flex items-center justify-center text-sm">
 
                                 Already have an account?
 
-                            </flux:button>
+                            </flux:link>
 
                         </div>
 

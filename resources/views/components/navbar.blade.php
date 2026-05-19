@@ -42,7 +42,7 @@
                     variant="filled"
                     placeholder="Search courses..."
                     icon="magnifying-glass"
-                    class="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white w-56" />
+                    class="bg-zinc-100 !rounded-full dark:bg-zinc-900 text-zinc-900 dark:text-white w-56" />
             </form>
         </div>
 

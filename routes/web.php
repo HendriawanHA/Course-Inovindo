@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+Route::view('/login', 'welcome');
 
 Route::view('home', 'livewire.pages.courses.home')
     ->middleware(['auth', 'verified'])
@@ -43,7 +43,7 @@ Route::post('/logout', function (Request $request) {
 
     $request->session()->regenerateToken();
 
-    return redirect('/');
+    return redirect('/login');
 })->name('logout');
 
 require __DIR__ . '/auth.php';
