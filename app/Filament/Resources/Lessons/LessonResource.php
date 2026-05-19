@@ -18,9 +18,7 @@ class LessonResource extends Resource
 {
     protected static ?string $model = Lesson::class;
     protected static string|\UnitEnum|null $navigationGroup = 'Learning Management';
-    protected static ?int $navigationSort = 3;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Square3Stack3d;
+    protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $recordTitleAttribute = 'title';
 

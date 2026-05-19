@@ -40,7 +40,8 @@ class Course extends Model
 
     public function modules()
     {
-        return $this->hasMany(\App\Models\Module::class);
+        return $this->hasMany(Module::class)
+            ->orderBy('order');
     }
 
     public function firstLesson()

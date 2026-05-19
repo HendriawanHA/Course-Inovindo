@@ -16,11 +16,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
+
 class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
     protected static string|\UnitEnum|null $navigationGroup = 'Learning Management';
-    protected static ?int $navigationSort = 1;
+   
+
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

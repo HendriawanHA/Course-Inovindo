@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Module extends Model
 {
     protected $fillable = [
-        'course_id',     // 🔥 WAJIB
+        'course_id',
         'title',
         'order',
         'description',
@@ -15,11 +15,12 @@ class Module extends Model
     ];
     public function course()
     {
-        return $this->belongsTo(\App\Models\Course::class);
+        return $this->belongsTo(Course::class);
     }
 
     public function lessons()
-{
-    return $this->hasMany(Lesson::class);
-}
+    {
+        return $this->hasMany(Lesson::class)
+            ->orderBy('order');
+    }
 }

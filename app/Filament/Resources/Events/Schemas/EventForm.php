@@ -3,12 +3,12 @@
 namespace App\Filament\Resources\Events\Schemas;
 
 use Filament\Schemas\Schema;
-
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Toggle;
 
 class EventForm
@@ -23,13 +23,26 @@ class EventForm
             TextInput::make('slug')
                 ->required(),
 
-            Textarea::make('description')
-                ->columnSpanFull(),
+            RichEditor::make('description')
+                ->toolbarButtons([
+                    'bold',
+                    'italic',
+                    'bulletList',
+                    'orderedList',
+                    'h2',
+                    'h3',
+                    'link',
+                ])
+                ->columnSpanFull()
+                ->required(),
 
             FileUpload::make('thumbnail')
                 ->image()
                 ->disk('public')
-                ->directory('events'),
+                ->directory('events')
+                ->openable()
+                ->downloadable(),
+
 
             Select::make('event_type')
                 ->options([
@@ -43,7 +56,7 @@ class EventForm
 
             Select::make('delivery_type')
                 ->options([
-                    'Online' => 'Online',
+                    'Online' => 'Live Stream',
                     'Offline' => 'Offline',
                     'Hybrid' => 'Hybrid',
                 ])
@@ -67,7 +80,7 @@ class EventForm
                 ->relationship(
                     'instructor',
                     'name',
-                    fn ($query) => $query->where('role', 'instructor')
+                    fn($query) => $query->where('role', 'instructor')
                 )
                 ->searchable()
                 ->preload(),

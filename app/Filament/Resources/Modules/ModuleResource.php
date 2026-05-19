@@ -11,15 +11,13 @@ use App\Models\Module;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class ModuleResource extends Resource
 {
     protected static ?string $model = Module::class;
     protected static string|\UnitEnum|null $navigationGroup = 'Learning Management';
-    protected static ?int $navigationSort = 2;
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::BookOpen;
+    protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $recordTitleAttribute = 'Module';
 

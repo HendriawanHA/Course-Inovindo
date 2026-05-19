@@ -7,8 +7,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory, Notifiable;
 
@@ -62,4 +64,10 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsToMany(Course::class, 'enrollments');
     }
+    public function getFilamentAvatarUrl(): ?string
+{
+    return $this->avatar
+        ? Storage::url($this->avatar)
+        : null;
+}
 }
