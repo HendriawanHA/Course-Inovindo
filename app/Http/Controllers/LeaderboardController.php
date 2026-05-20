@@ -10,7 +10,7 @@ class LeaderboardController extends Controller
     {
         $leaders = User::where('role', 'student')
             ->orderByDesc('points')
-            ->take(10)
+            ->take(6)
             ->get();
 
         return view(
