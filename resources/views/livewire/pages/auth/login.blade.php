@@ -152,7 +152,7 @@ new #[Layout('layouts.guest')] class extends Component
 
                         <flux:field>
 
-                            <flux:label class="mb-3 flex items-center gap-2">
+                            <flux:label class="mb-3 gap-2">
                                 <flux:icon.envelope variant="outline" class="size-6 text-blue-700" />
                                 Email
                             </flux:label>
@@ -170,7 +170,7 @@ new #[Layout('layouts.guest')] class extends Component
 
                             <div class="mb-3 flex justify-between items-center">
 
-                                <flux:label class="flex items-center gap-2">
+                                <flux:label class="gap-2">
                                     <flux:icon.lock-closed variant="outline" class="size-6 text-blue-700" />
                                     Password
                                 </flux:label>

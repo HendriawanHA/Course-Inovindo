@@ -101,7 +101,10 @@ new #[Layout('layouts.guest')] class extends Component
                         <!-- Name -->
                         <flux:field>
 
-                            <flux:label class="mb-3">Name</flux:label>
+                            <flux:label class="gap-2 mb-3">
+                                <flux:icon.user variant="outline" class="size-6 text-blue-700" />
+                                Name
+                            </flux:label>
 
                             <flux:input
                                 wire:model="name"
@@ -115,7 +118,10 @@ new #[Layout('layouts.guest')] class extends Component
                         <!-- Email -->
                         <flux:field>
 
-                            <flux:label class="mb-3">Email</flux:label>
+                            <flux:label class="gap-2 mb-3">
+                                <flux:icon.envelope variant="outline" class="size-6 text-blue-700" />
+                                Email
+                            </flux:label>
 
                             <flux:input
                                 wire:model="email"
@@ -129,7 +135,10 @@ new #[Layout('layouts.guest')] class extends Component
                         <!-- Password -->
                         <flux:field>
 
-                            <flux:label class="mb-3">Password</flux:label>
+                            <flux:label class="gap-2 mb-3">
+                                <flux:icon.lock-closed variant="outline" class="size-6 text-blue-700" />
+                                Password
+                            </flux:label>
 
                             <flux:input
                                 wire:model="password"
@@ -143,7 +152,10 @@ new #[Layout('layouts.guest')] class extends Component
                         <!-- Confirm Password -->
                         <flux:field>
 
-                            <flux:label class="mb-3">Confirm Password</flux:label>
+                            <flux:label class="gap-2 mb-3">
+                                <flux:icon.lock-closed variant="outline" class="size-6 text-blue-700" />
+                                Confirm Password
+                            </flux:label>
 
                             <flux:input
                                 wire:model="password_confirmation"

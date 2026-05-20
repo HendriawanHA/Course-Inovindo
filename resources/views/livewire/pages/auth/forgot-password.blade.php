@@ -127,7 +127,8 @@ new #[Layout('layouts.guest')] class extends Component
 
                     <flux:field>
 
-                        <flux:label class="mb-3">
+                        <flux:label class="gap-2 mb-3">
+                            <flux:icon.envelope variant="outline" class="size-6 text-blue-700" />
                             Email Address
                         </flux:label>
 
