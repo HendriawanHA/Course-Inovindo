@@ -31,7 +31,7 @@ Route::get('/events', [EventController::class, 'index'])
 Route::get('/events/{slug}', [EventController::class, 'show'])
     ->name('events.show');
 
-route::get('/leaderboard', [LeaderboardController::class, 'index'])
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])
     ->name('leaderboard.index');
 
 Route::post('/logout', function (Request $request) {

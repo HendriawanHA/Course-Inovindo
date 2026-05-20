@@ -36,7 +36,7 @@ class HomeController extends Controller
 
         // Top Students (sementara dummy pakai latest)
         $topStudents = User::where('role', 'student')
-            ->latest()
+            ->orderByDesc('points')
             ->take(5)
             ->get();
 
