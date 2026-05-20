@@ -3,7 +3,8 @@
 
         <!-- Page Header -->
         <div class="mb-8">
-            <flux:heading size="xl" class="text-zinc-900 dark:text-white">
+            <flux:heading size="xl" class="flex items-center gap-2 text-zinc-900 dark:text-white">
+                <flux:icon.trophy variant="solid" class=" size-6" />
                 Leaderboard
             </flux:heading>
         </div>

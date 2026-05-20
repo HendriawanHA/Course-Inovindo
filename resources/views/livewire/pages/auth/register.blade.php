@@ -42,21 +42,22 @@ new #[Layout('layouts.guest')] class extends Component
     <!-- BACKGROUND GLOW -->
     <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-indigo-500/10 blur-3xl rounded-full"></div>
     <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/10 blur-3xl rounded-full"></div>
+    <div class="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+
 
     <form wire:submit="register" class="relative z-10 w-full max-w-5xl">
         <div class="absolute -bottom-2 -right-2
         w-full h-full
         rounded-3xl
-        bg-blue-700
+        bg-gradient-to-tr from-blue-700 to-emerald-500
         opacity-90
         -z-20">
         </div>
 
-        <!-- BACK LAYER 2 -->
         <div class="absolute -bottom-2 -right-2
         w-full h-full
         rounded-3xl
-        bg-blue-600/40
+        bg-gradient-to-tr from-blue-600/40 to-emerald-400/30
         -z-10">
         </div>
         <flux:card class="overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800
@@ -186,80 +187,32 @@ new #[Layout('layouts.guest')] class extends Component
                     border-l border-zinc-200 dark:border-zinc-800">
 
                     <div>
+                        <h1 class="flex items-center text-xl font-bold text-green-500 dark:text-greenn-500 tracking-tight">
+                            <flux:icon name="book-open" class="inline w-6 h-6 mr-2 text-blue-700" />
+                            <div class="flex gap-1">
+                                <span class="text-blue-700">Inovindo</span>
+                                Course
+                            </div>
+                        </h1>
 
-                        <flux:badge color="indigo" class="mb-6 px-4 py-1">
-                            Join Inovindo LMS
-                        </flux:badge>
-
-                        <flux:heading size="2xl" class="text-zinc-900 dark:text-white leading-tight">
+                        <flux:heading size="2xl" class="text-zinc-900 dark:text-white leading-tight mt-3 pl-8">
                             Start Your Journey.
                         </flux:heading>
-
-                        <flux:text class="mt-5 text-zinc-600 dark:text-zinc-400 leading-relaxed text-base">
-                            Unlock access to courses,
-                            live events, gamified learning,
-                            and collaborative experiences.
-                        </flux:text>
-
                     </div>
 
-                    <!-- FEATURE LIST -->
-                    <div class="space-y-5 mt-10">
+                    <div class="flex justify-center">
+                        <img
+                            src="{{ asset('storage/images/illust-auth-course.svg') }}"
+                            alt="Illustration"
+                            class="w-full max-w-[380px] h-auto object-contain" />
+                    </div>
 
-                        <div class="flex items-start gap-4">
-
-                            <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 flex items-center justify-center">
-                                <flux:icon.academic-cap variant="mini" class="text-indigo-500" />
-                            </div>
-
-                            <div>
-                                <p class="font-semibold text-zinc-900 dark:text-white">
-                                    Interactive Learning
-                                </p>
-
-                                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                                    Learn through modules and lessons.
-                                </p>
-                            </div>
-
-                        </div>
-
-                        <div class="flex items-start gap-4">
-
-                            <div class="w-11 h-11 rounded-2xl bg-pink-500/10 flex items-center justify-center">
-                                <flux:icon.users variant="mini" class="text-pink-500" />
-                            </div>
-
-                            <div>
-                                <p class="font-semibold text-zinc-900 dark:text-white">
-                                    Community & Events
-                                </p>
-
-                                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                                    Participate in discussions and events.
-                                </p>
-                            </div>
-
-                        </div>
-
-                        <div class="flex items-start gap-4">
-
-                            <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-                                <flux:icon.trophy variant="mini" class="text-emerald-500" />
-                            </div>
-
-                            <div>
-                                <p class="font-semibold text-zinc-900 dark:text-white">
-                                    Gamified Progress
-                                </p>
-
-                                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                                    Earn points and climb the leaderboard.
-                                </p>
-                            </div>
-
-                        </div>
-
+                    <!-- Logo Section -->
+                    <div class="w-full flex items-center justify-center">
+                        <img
+                            src="{{ asset('storage/images/logo-transparan.webp') }}"
+                            alt="Inovindo LMS"
+                            class="w-full max-w-[180px] h-auto object-contain mt-3" />
                     </div>
 
                 </div>

@@ -1,11 +1,9 @@
 <flux:header class="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-6 py-3 z-20">
     <div class="flex items-center gap-4">
         <div class="flex items-center gap-2 cursor-pointer group">
-            <flux:brand
-                href="{{ route('home') }}"
-                logo="https://fluxui.dev/img/demo/logo.png"
-                name="Inovindo Course"
-                class="text-zinc-900 dark:text-white" />
+            <img
+                src="{{ asset('storage/images/logo-transparan.webp') }}"
+                class="w-32 h-12 object-contain" />
 
             <button
                 type="button"
@@ -23,10 +21,10 @@
 
     <!-- Main Navigation -->
     <flux:navbar class="-mb-px">
-        <flux:navbar.item href="{{ route('home') }}" wire:navigate>Home</flux:navbar.item>
-        <flux:navbar.item href="{{ route('courses.index') }}" wire:navigate>Courses</flux:navbar.item>
-        <flux:navbar.item href="{{ route('events.index') }}" wire:navigate>Events</flux:navbar.item>
-        <flux:navbar.item href="{{ route('leaderboard.index') }}" wire:navigate>Leaderboard</flux:navbar.item>
+        <flux:navbar.item href="{{ route('home') }}" icon="home" wire:navigate>Home</flux:navbar.item>
+        <flux:navbar.item href="{{ route('courses.index') }}" icon="book-open" wire:navigate>Courses</flux:navbar.item>
+        <flux:navbar.item href="{{ route('events.index') }}" icon="calendar-days" wire:navigate>Events</flux:navbar.item>
+        <flux:navbar.item href="{{ route('leaderboard.index') }}" icon="trophy" wire:navigate>Leaderboard</flux:navbar.item>
     </flux:navbar>
 
     <flux:spacer />
@@ -42,7 +40,7 @@
                     variant="filled"
                     placeholder="Search courses..."
                     icon="magnifying-glass"
-                    class="bg-zinc-100 !rounded-full dark:bg-zinc-900 text-zinc-900 dark:text-white w-56" />
+                    class="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white w-56" />
             </form>
         </div>
 
@@ -62,8 +60,7 @@
                 circle :chevron="false"
                 avatar="{{ auth()->user()->avatar
         ? asset('storage/' . auth()->user()->avatar)
-        : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
-                class="ml-2" />
+        : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" />
 
             <flux:menu>
                 <div class="flex justify-between items-center">

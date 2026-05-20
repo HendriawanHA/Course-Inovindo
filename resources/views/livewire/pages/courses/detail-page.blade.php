@@ -17,7 +17,7 @@
             @php $firstLesson = $course->firstLesson(); @endphp
 
             @if ($firstLesson)
-            <flux:button href="{{ route('courses.video', ['course' => $course->id, 'lesson' => $firstLesson->id]) }}" wire:navigate variant="primary" class="!rounded-full dark:!border-2 dark:border-indigo-700 dark:hover:bg-indigo-700/80">
+            <flux:button href="{{ route('courses.video', ['course' => $course->id, 'lesson' => $firstLesson->id]) }}" wire:navigate variant="primary" class="!rounded-full hover:!text-white !border-2 border-blue-700/60 hover:bg-blue-700">
                 Start
             </flux:button>
             @endif

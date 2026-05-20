@@ -2,8 +2,11 @@
     <flux:main class="flex-1 p-8 bg-zinc-50 dark:bg-zinc-950 min-h-screen">
 
         <!-- Page Header -->
-        <div class="flex items-center justify-between mb-6">
-            <flux:heading size="xl" class="text-zinc-900 dark:text-white">Events</flux:heading>
+        <div class="mb-6">
+            <flux:heading size="xl" class="flex items-center gap-2 text-zinc-900 dark:text-white">
+                <flux:icon.calendar-days variant="solid" class=" size-6" />
+                Events
+            </flux:heading>
         </div>
 
         <flux:separator class="mb-8" />

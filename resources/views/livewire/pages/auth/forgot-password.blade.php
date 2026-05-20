@@ -49,48 +49,87 @@ new #[Layout('layouts.guest')] class extends Component
     <!-- CONTENT -->
     <div class="relative z-10 w-full max-w-md">
 
-        <!-- HEADER -->
-        <div class="text-center mb-8">
-
-            <flux:badge color="indigo" class="mb-5 px-4 py-1">
-                Account Recovery
-            </flux:badge>
-
-            <flux:heading size="xl" class="text-white font-bold">
-                Forgot Password
-            </flux:heading>
-
-            <flux:text class="mt-3 text-zinc-400 leading-relaxed">
-                Enter your email address and we’ll send
-                you a password reset link.
-            </flux:text>
-
+        <!-- BACK LAYER 1 -->
+        <div class="absolute -bottom-2 -right-2
+        w-full h-full
+        rounded-3xl
+        bg-gradient-to-tr from-blue-700 to-emerald-500
+        -z-20">
         </div>
 
-        <!-- GLASS CARD -->
-        <flux:card class="border border-zinc-200 dark:border-zinc-800
-            bg-white/80 dark:bg-zinc-900/80
-            backdrop-blur-2xl
-            shadow-2xl
-            rounded-3xl
-            p-8
-            space-y-6">
+        <!-- BACK LAYER 2 -->
+        <div class="absolute -bottom-2 -right-2
+        w-full h-full
+        rounded-3xl
+        bg-gradient-to-tr from-blue-600/40 to-emerald-400/30
+        -z-10">
+        </div>
+
+        <!-- MAIN CARD -->
+        <flux:card class="relative overflow-hidden
+        border border-zinc-200 dark:border-zinc-800
+        bg-white dark:bg-zinc-900
+        backdrop-blur-2xl
+        shadow-2xl
+        rounded-3xl
+        p-8">
 
             <!-- INNER GLOW -->
-            <div class="absolute inset-0 bg-gradient-to-br from-white/[0.07] to-transparent pointer-events-none"></div>
+            <div class="absolute inset-0
+            bg-gradient-to-br
+            from-white/[0.08]
+            to-transparent
+            pointer-events-none">
+            </div>
 
             <div class="relative z-10">
 
+                <!-- HEADER -->
+                <div class="text-center mb-8">
+
+                    <!-- ICON -->
+                    <div class="mx-auto mb-5
+                    w-14 h-14
+                    rounded-2xl
+                    bg-blue-600/10
+                    flex items-center justify-center">
+
+                        <flux:icon.lock-closed
+                            variant="mini"
+                            class="text-blue-700 size-6" />
+
+                    </div>
+
+                    <flux:heading
+                        size="xl"
+                        class="text-zinc-900 dark:text-white font-bold">
+
+                        Forgot Password
+
+                    </flux:heading>
+
+                    <flux:text class="mt-3 text-zinc-600 dark:text-zinc-400 leading-relaxed">
+
+                        Enter your email address and we'll send
+                        you a password reset link.
+
+                    </flux:text>
+
+                </div>
+
+                <!-- STATUS -->
                 <x-auth-session-status
-                    class="mb-4"
+                    class="mb-5"
                     :status="session('status')" />
 
+                <!-- FORM -->
                 <form wire:submit="sendPasswordResetLink" class="space-y-6">
 
-                    <!-- Email -->
                     <flux:field>
 
-                        <flux:label class="mb-3">Email Address</flux:label>
+                        <flux:label class="mb-3">
+                            Email Address
+                        </flux:label>
 
                         <flux:input
                             wire:model="email"
@@ -102,26 +141,31 @@ new #[Layout('layouts.guest')] class extends Component
                     </flux:field>
 
                     <!-- BUTTONS -->
-                    <div class="space-y-3">
+                    <div class="space-y-3 pt-2">
 
                         <flux:button
                             type="submit"
-                            variant="ghost"
-                            class="w-full h-11 text-sm font-semibold">
+                            class="w-full h-11
+                        !bg-blue-700
+                        hover:!bg-blue-600
+                        !text-white
+                        rounded-xl
+                        font-medium
+                        shadow-lg shadow-blue-600/20">
 
                             Send Reset Link
 
                         </flux:button>
 
-                        <flux:button
+                        <flux:link
                             href="{{ route('login') }}"
                             wire:navigate
-                            variant="ghost"
-                            class="w-full">
+                            variant="subtle"
+                            class="flex items-center justify-center text-sm">
 
                             Back to login
 
-                        </flux:button>
+                        </flux:link>
 
                     </div>
 

@@ -2,8 +2,9 @@
     <flux:main class="flex-1 p-8 bg-zinc-50 dark:bg-zinc-950 min-h-screen">
 
         <!-- Page Header -->
-        <div class="flex items-center justify-between mb-6">
-            <flux:heading size="xl" class="text-zinc-900 dark:text-white">
+        <div class="mb-6">
+            <flux:heading size="xl" class="flex items-center gap-2 text-zinc-900 dark:text-white">
+                <flux:icon.book-open variant="solid" class=" size-6" />
                 Courses
             </flux:heading>
         </div>

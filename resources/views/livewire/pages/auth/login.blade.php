@@ -30,6 +30,8 @@ new #[Layout('layouts.guest')] class extends Component
     <!-- BACKGROUND GLOW -->
     <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-indigo-500/10 blur-3xl rounded-full"></div>
     <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/10 blur-3xl rounded-full"></div>
+    <div class="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+
 
     <form wire:submit="login" class="relative z-10 w-full max-w-5xl">
 
@@ -37,7 +39,7 @@ new #[Layout('layouts.guest')] class extends Component
         <div class="absolute -bottom-2 -right-2
         w-full h-full
         rounded-3xl
-        bg-blue-700
+        bg-gradient-to-tr from-blue-700 to-emerald-500
         opacity-90
         -z-20">
         </div>
@@ -46,7 +48,7 @@ new #[Layout('layouts.guest')] class extends Component
         <div class="absolute -bottom-2 -right-2
         w-full h-full
         rounded-3xl
-        bg-blue-700/40
+        bg-gradient-to-tr from-blue-600/40 to-emerald-400/30
         -z-10">
         </div>
 
@@ -66,9 +68,12 @@ new #[Layout('layouts.guest')] class extends Component
                         <!-- Brand Text -->
                         <div>
 
-                            <h1 class="flex items-center text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                            <h1 class="flex items-center text-xl font-bold text-green-500 dark:text-greenn-500 tracking-tight">
                                 <flux:icon name="book-open" class="inline w-6 h-6 mr-2 text-blue-700" />
-                                Inovindo Course
+                                <div class="flex gap-1">
+                                    <span class="text-blue-700">Inovindo</span>
+                                    Course
+                                </div>
                             </h1>
 
                             <p class="mt-4 text-sm text-zinc-600 text-justify dark:text-zinc-400 leading-relaxed max-w-sm">
