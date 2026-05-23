@@ -45,6 +45,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return in_array($this->role, ['admin', 'instructor']);
     }
 
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
 
     public function isAdmin()
     {
@@ -65,9 +70,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->belongsToMany(Course::class, 'enrollments');
     }
     public function getFilamentAvatarUrl(): ?string
-{
-    return $this->avatar
-        ? Storage::url($this->avatar)
-        : null;
-}
+    {
+        return $this->avatar
+            ? Storage::url($this->avatar)
+            : null;
+    }
 }
