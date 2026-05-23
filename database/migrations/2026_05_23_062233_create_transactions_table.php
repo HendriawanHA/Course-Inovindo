@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('enrollments', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('user_id')
@@ -22,16 +22,18 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->string('invoice_number')->unique();
+
+            $table->decimal('amount', 12, 2);
+
             $table->enum('status', [
-                'active',
-                'completed',
-            ])->default('active');
+                'pending',
+                'paid',
+                'failed',
+                'cancelled',
+            ])->default('pending');
 
-            $table->integer('progress')
-                ->default(0);
-
-            $table->timestamp('enrolled_at')
-                ->nullable();
+            $table->timestamp('paid_at')->nullable();
 
             $table->timestamps();
         });
@@ -42,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('enrollments');
+        Schema::dropIfExists('transactions');
     }
 };
