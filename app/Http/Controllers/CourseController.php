@@ -32,6 +32,15 @@ class CourseController extends Controller
         return view('livewire.pages.courses.detail-page', compact('course', 'id'));
     }
 
+    public function myCourses()
+    {
+        $course = collect();
+
+        return view('livewire.pages.courses.my-course', [
+            'courses' => $course,
+        ]);
+    }
+
     public function video($courseId, $lessonId)
     {
         $course = Course::with('modules.lessons')

@@ -19,6 +19,10 @@ Route::view('profile', 'profile')
 Route::get('/courses', [CourseController::class, 'index'])
     ->name('courses.index');
 
+Route::get('/my-courses', [CourseController::class, 'myCourses'])
+    ->middleware(['auth'])
+    ->name('courses.my');
+
 Route::get('/courses/{id}', [CourseController::class, 'show'])
     ->name('courses.show');
 

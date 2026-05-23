@@ -85,7 +85,7 @@ new #[Layout('layouts.guest')] class extends Component
                         <!-- Ilustrasi -->
                         <div class="flex justify-center">
                             <img
-                                src="{{ asset('storage/images/illust-course.svg') }}"
+                                src="{{ asset('images/illust-course.svg') }}"
                                 alt="Illustration"
                                 class="w-full max-w-[380px] h-auto object-contain" />
 
@@ -94,7 +94,7 @@ new #[Layout('layouts.guest')] class extends Component
                         <!-- Logo Section -->
                         <div class="w-full flex items-center justify-center">
                             <img
-                                src="{{ asset('storage/images/logo-transparan.webp') }}"
+                                src="{{ asset('images/logo-transparan.webp') }}"
                                 alt="Inovindo LMS"
                                 class="w-full max-w-[180px] h-auto object-contain mt-3" />
                         </div>
