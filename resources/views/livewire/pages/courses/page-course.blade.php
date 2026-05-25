@@ -31,67 +31,142 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
             @foreach ($courses as $course)
-            <a href="{{ route('courses.show', $course->id) }}" class="group">
-                <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 
-                            rounded-2xl overflow-hidden hover:border-zinc-300 dark:hover:border-zinc-700 
-                            hover:shadow-lg transition-all duration-200">
 
-                    <!-- Thumbnail -->
-                    <div class="aspect-video bg-zinc-900 relative overflow-hidden">
-                        <img
-                            src="{{ asset('storage/' . $course->thumbnail) }}"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            alt="{{ $course->title }}" />
-                    </div>
+            <div class="group relative">
 
-                    <!-- Content -->
-                    <div class="p-5">
-                        <flux:heading size="sm" class="text-zinc-900 dark:text-white font-semibold leading-tight line-clamp-2">
-                            {{ $course->title }}
-                        </flux:heading>
+                <form
+                    method="POST"
+                    action="{{ route('courses.bookmark', $course->id) }}"
+                    class="absolute top-3 right-3 z-10">
 
-                        <flux:text class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mt-3">
-                            {{ $course->category ?? 'Course' }}
-                        </flux:text>
+                    @csrf
 
-                        <!-- Progress -->
-                        <div class="mt-6">
-                            <div class="flex justify-between text-xs mb-1.5">
-                                @php
+                    @php
+                    $isBookmarked = auth()->user()
+                    ->bookmarkedCourses
+                    ->contains($course->id);
+                    @endphp
 
-                                $enrollment = $course->enrollments->first();
+                    <button
+                        type="submit"
+                        class="flex items-center justify-center
+        hover:scale-105
+        transition-all duration-200">
 
-                                $progress = $enrollment?->progress ?? 0;
+                        <flux:icon.bookmark
+                            variant="solid"
+                            class="w-5 h-5 transition-all duration-200
 
-                                @endphp
+            {{ $isBookmarked
+                ? 'text-blue-700 dark:text-blue-400'
+                : 'text-zinc-400 dark:text-zinc-500'
+            }}
 
-                                <span class="text-zinc-500 dark:text-zinc-400">
-                                    {{ $progress }}% Complete
-                                </span>
+            hover:text-blue-500" />
+
+                    </button>
+
+                </form>
+
+                <!-- CARD -->
+                <a
+                    href="{{ route('courses.show', $course->id) }}"
+                    wire:navigate>
+
+                    <div class="bg-white dark:bg-zinc-900
+            border border-zinc-200 dark:border-zinc-800
+            rounded-2xl overflow-hidden
+            hover:border-zinc-300 dark:hover:border-zinc-700
+            hover:shadow-lg transition-all duration-200">
+
+                        <!-- Thumbnail -->
+                        <div class="aspect-video bg-zinc-900 relative overflow-hidden">
+
+                            <img
+                                src="{{ asset('storage/' . $course->thumbnail) }}"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                alt="{{ $course->title }}" />
+                            <div class="absolute inset-0
+                    bg-gradient-to-t
+                    from-black/20 via-black/10 to-transparent">
                             </div>
-                            <div class="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-                                <div
-                                    class="bg-blue-700 dark:bg-blue-600 h-full transition-all duration-500"
-                                    style="width: {{ $progress }}%">
+
+                        </div>
+
+
+                        <!-- Content -->
+                        <div class="p-5">
+
+                            <flux:heading
+                                size="sm"
+                                class="text-zinc-900 dark:text-white font-semibold leading-tight line-clamp-2">
+
+                                {{ $course->title }}
+
+                            </flux:heading>
+
+                            <flux:text
+                                class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mt-3">
+
+                                {{ $course->category ?? 'Course' }}
+
+                            </flux:text>
+
+                            <!-- Progress -->
+                            <div class="mt-6">
+
+                                <div class="flex justify-between text-xs mb-1.5">
+
+                                    @php
+
+                                    $enrollment = $course->enrollments
+                                    ->where('user_id', auth()->id())
+                                    ->first();
+
+                                    $progress = $enrollment?->progress ?? 0;
+
+                                    @endphp
+
+                                    <span class="text-zinc-500 dark:text-zinc-400">
+                                        {{ $progress }}% Complete
+                                    </span>
+
                                 </div>
+
+                                <div class="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+
+                                    <div
+                                        class="bg-blue-700 dark:bg-blue-600 h-full transition-all duration-500"
+                                        style="width: {{ $progress }}%">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- Status -->
+                            <div class="mt-4 flex items-center gap-2">
+                                @if (!$course->is_published)
+                                <flux:icon.lock-closed
+                                    variant="micro"
+                                    class="text-amber-500" />
+                                <span class="text-xs font-medium text-amber-500">
+                                    Private Course
+                                </span>
+                                @else
+                                <flux:icon.eye
+                                    variant="micro"
+                                    class="text-emerald-500" />
+                                <span class="text-xs font-medium text-emerald-500">
+                                    Published
+                                </span>
+                                @endif
                             </div>
                         </div>
-
-                        <!-- Status -->
-                        <div class="mt-4 flex items-center gap-2">
-                            @if (!$course->is_published)
-                            <flux:icon.lock-closed variant="micro" class="text-amber-500" />
-                            <span class="text-xs font-medium text-amber-500">Private Course</span>
-                            @else
-                            <flux:icon.eye variant="micro" class="text-emerald-500" />
-                            <span class="text-xs font-medium text-emerald-500">Published</span>
-                            @endif
-                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
             @endforeach
-
         </div>
 
     </flux:main>

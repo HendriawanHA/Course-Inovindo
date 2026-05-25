@@ -13,8 +13,11 @@
                 <!-- LEFT -->
                 <div class="flex items-center gap-3">
 
-                    <flux:navbar.item href="{{ route('courses.show', $course->id) }}">
+                    <flux:navbar.item
+                        href="{{ request('back', route('courses.show', $course->id)) }}">
+
                         <flux:icon.arrow-left variant="micro" />
+
                     </flux:navbar.item>
 
                     <flux:heading size="xl" class="dark:text-white text-zinc-900">

@@ -19,9 +19,15 @@ Route::view('profile', 'profile')
 Route::get('/courses', [CourseController::class, 'index'])
     ->name('courses.index');
 
-Route::get('/my-courses', [CourseController::class, 'myCourses'])
+Route::get('/saved-courses', [CourseController::class, 'savedCourses'])
     ->middleware(['auth'])
-    ->name('courses.my');
+    ->name('courses.saved');
+
+Route::post(
+    '/courses/{course}/bookmark',
+    [CourseController::class, 'toggleBookmark']
+)->middleware('auth')
+    ->name('courses.bookmark');
 
 Route::get('/courses/{id}', [CourseController::class, 'show'])
     ->name('courses.show');
@@ -31,7 +37,8 @@ Route::get('/courses/{course}/lessons/{lesson}', [CourseController::class, 'vide
 
 Route::post(
     '/courses/{course}/lessons/{lesson}/complete',
-    [CourseController::class, 'completeLesson'])
+    [CourseController::class, 'completeLesson']
+)
     ->middleware('auth')
     ->name('lessons.complete');
 

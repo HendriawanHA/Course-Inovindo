@@ -235,7 +235,7 @@
                 <flux:icon.chat-bubble-left-right class="w-5 h-5" />
 
                 <!-- Notification Dot -->
-                <div class="absolute top-1 right-1 w-2 h-2 rounded-full bg-indigo-500"></div>
+                <div class="absolute top-1 right-2.5 w-2 h-2 rounded-full bg-indigo-500"></div>
 
             </flux:navbar.item>
 
@@ -361,7 +361,7 @@
                 class="cursor-pointer" />
 
             <!-- ONLINE DOT -->
-            <span class="absolute top-1 right-3.5
+            <span class="absolute top-1 right-2
         block h-2 w-2 rounded-full
         bg-emerald-500
         ring-2 ring-white dark:ring-zinc-950">
@@ -603,7 +603,7 @@
 
         <flux:navbar.item
             icon="bookmark"
-            href="{{ route('courses.my') }}"
+            href="{{ route('courses.saved') }}"
             wire:navigate />
         <!-- Profile Dropdown -->
         <flux:dropdown position="top" align="end">
