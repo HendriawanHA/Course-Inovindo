@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bookmark;
+use App\Models\Discussion;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
@@ -301,6 +302,17 @@ class CourseController extends Controller
 
         $totalLessons = $allLessons->count();
 
+        $discussions = \App\Models\Discussion::with('user')
+            ->where('course_id', $course->id)
+            ->where('lesson_id', $lesson->id)
+            ->latest()
+            ->get();
+        $discussions = Discussion::with(['user', 'replies.user'])
+            ->where('course_id', $course->id)
+            ->where('lesson_id', $lesson->id)
+            ->latest()
+            ->get();
+
         return view(
             'livewire.pages.courses.video-course',
             compact(
@@ -309,7 +321,8 @@ class CourseController extends Controller
                 'currentLessonIndex',
                 'totalLessons',
                 'previousLesson',
-                'nextLesson'
+                'nextLesson',
+                'discussions'
             )
         );
     }
