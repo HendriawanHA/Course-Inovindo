@@ -1,0 +1,120 @@
+<div class="space-y-8">
+
+    {{-- HEADER --}}
+    <div class="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900">
+
+        <div class="relative h-72 overflow-hidden bg-zinc-800">
+            @if ($course->thumbnail)
+                <img src="{{ asset('storage/' . $course->thumbnail) }}" class="h-full w-full object-cover">
+            @endif
+
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+
+            <div class="absolute bottom-0 left-0 p-8">
+                <div class="mb-4 flex items-center gap-3">
+                    <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300">
+                        Instructor Preview
+                    </span>
+
+                    @if ($course->is_published)
+                        <span class="rounded-full bg-green-500/20 px-3 py-1 text-xs font-semibold text-green-300">
+                            Published
+                        </span>
+                    @else
+                        <span class="rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-semibold text-yellow-300">
+                            Draft
+                        </span>
+                    @endif
+                </div>
+
+                <h1 class="max-w-3xl text-4xl font-bold text-white">
+                    {{ $course->title }}
+                </h1>
+
+                <p class="mt-4 max-w-2xl text-zinc-300">
+                    {{ $course->description }}
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    {{-- CURRICULUM --}}
+    <section class="rounded-3xl border border-zinc-800 bg-zinc-900">
+        <div class="border-b border-zinc-800 px-6 py-5">
+            <h2 class="text-xl font-bold text-white">
+                Curriculum
+            </h2>
+
+            <p class="mt-1 text-sm text-zinc-400">
+                {{ $course->modules->count() }} modules
+            </p>
+        </div>
+
+        <div class="space-y-4 p-6">
+            @forelse ($course->modules as $module)
+                <div class="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/40">
+
+                    <div class="border-b border-zinc-800 px-5 py-4">
+                        <h3 class="font-semibold text-white">
+                            {{ $module->title }}
+                        </h3>
+
+                        <p class="mt-1 text-sm text-zinc-500">
+                            {{ $module->lessons->count() }} lessons
+                        </p>
+                    </div>
+
+                    <div class="divide-y divide-zinc-800">
+                        @forelse ($module->lessons as $lesson)
+                            <div class="flex items-center gap-4 px-5 py-4">
+
+                                @if ($lesson->youtube_thumbnail_url)
+                                    <img src="{{ $lesson->youtube_thumbnail_url }}" alt="{{ $lesson->title }}"
+                                        class="h-20 w-32 rounded-xl object-cover">
+                                @else
+                                    <div
+                                        class="flex h-20 w-32 items-center justify-center rounded-xl bg-zinc-800 text-xs text-zinc-500">
+                                        No Video
+                                    </div>
+                                @endif
+
+                                <div class="flex-1">
+                                    <p class="font-medium text-white">
+                                        {{ $lesson->title }}
+                                    </p>
+
+                                    @if ($lesson->video_url)
+                                        <p class="mt-1 text-xs text-zinc-500 line-clamp-1">
+                                            {{ $lesson->video_url }}
+                                        </p>
+                                    @endif
+                                </div>
+
+                                @if ($lesson->youtube_embed_url)
+                                    <a href="{{ $lesson->youtube_embed_url }}" target="_blank"
+                                        class="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-200 hover:bg-zinc-800">
+                                        Preview
+                                    </a>
+                                @endif
+
+                            </div>
+                        @empty
+                            <div class="px-5 py-6 text-sm text-zinc-500">
+                                No lessons yet.
+                            </div>
+                        @endforelse
+                    </div>
+
+                </div>
+            @empty
+                <div class="rounded-2xl border border-dashed border-zinc-700 p-10 text-center">
+                    <p class="text-zinc-500">
+                        No modules yet.
+                    </p>
+                </div>
+            @endforelse
+        </div>
+    </section>
+
+</div>
