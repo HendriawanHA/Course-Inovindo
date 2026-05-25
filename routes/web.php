@@ -43,6 +43,14 @@ Route::middleware(['auth', 'verified', 'student'])->group(function () {
     Route::get('/courses/{course}/lessons/{lesson}', [CourseController::class, 'video'])
         ->name('courses.video');
 
+Route::post(
+    '/courses/{course}/lessons/{lesson}/complete',
+    [CourseController::class, 'completeLesson'])
+    ->middleware('auth')
+    ->name('lessons.complete');
+
+Route::get('/events', [EventController::class, 'index'])
+    ->name('events.index');
     Route::get('/events', [EventController::class, 'index'])
         ->name('events.index');
 

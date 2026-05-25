@@ -7,14 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 class Lesson extends Model
 {
     protected $fillable = [
-    'module_id',
-    'title',
-    'description',
-    'video_url',
-    'duration',
-    'is_preview',
-    'order',
-];
+        'module_id',
+        'title',
+        'description',
+        'video_url',
+        'duration',
+        'is_preview',
+        'order',
+    ];
+    public function module()
+    {
+        return $this->belongsTo(Module::class);
+    }
+
+    public function completions()
+    {
+        return $this->hasMany(LessonCompletion::class);
+    }
 
     public function getYoutubeEmbedUrlAttribute()
     {

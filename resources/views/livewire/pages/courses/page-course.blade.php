@@ -57,10 +57,23 @@
                         <!-- Progress -->
                         <div class="mt-6">
                             <div class="flex justify-between text-xs mb-1.5">
-                                <span class="text-zinc-500 dark:text-zinc-400">0% Complete</span>
+                                @php
+
+                                $enrollment = $course->enrollments->first();
+
+                                $progress = $enrollment?->progress ?? 0;
+
+                                @endphp
+
+                                <span class="text-zinc-500 dark:text-zinc-400">
+                                    {{ $progress }}% Complete
+                                </span>
                             </div>
                             <div class="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-                                <div class="bg-indigo-600 dark:bg-indigo-500 h-full w-0 transition-all"></div>
+                                <div
+                                    class="bg-blue-700 dark:bg-blue-600 h-full transition-all duration-500"
+                                    style="width: {{ $progress }}%">
+                                </div>
                             </div>
                         </div>
 
