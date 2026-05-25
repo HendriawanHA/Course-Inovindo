@@ -7,6 +7,8 @@ use App\Http\Controllers\LeaderboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DiscussionController;
+
 
 Route::get('/', [HomeController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -43,6 +45,13 @@ Route::get('/events/{slug}', [EventController::class, 'show'])
 
 Route::get('/leaderboard', [LeaderboardController::class, 'index'])
     ->name('leaderboard.index');
+
+Route::post('/discussions', [DiscussionController::class, 'store'])
+    ->middleware('auth')
+    ->name('discussions.store');
+Route::post('/discussions/{discussion}/reply', [DiscussionController::class, 'reply'])
+    ->middleware('auth')
+    ->name('discussions.reply');
 
 Route::post('/logout', function (Request $request) {
 
