@@ -75,21 +75,13 @@
                     </p>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-sm font-semibold">
-                            {{ auth()->user()->name }}
-                        </p>
-                        <p class="text-xs text-zinc-500 dark:text-zinc-400">
-                            Instructor
-                        </p>
-                    </div>
+                
 
-                    <img src="{{ auth()->user()?->avatar
-                        ? asset('storage/' . auth()->user()->avatar)
-                        : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
-                        class="h-10 w-10 rounded-full object-cover">
-                </div>
+
+                    <!-- Dropdown -->
+                    <livewire:instructor.profile-dropdown />
+
+
             </header>
 
             <!-- Page Content -->

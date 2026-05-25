@@ -589,14 +589,6 @@
                     </flux:button>
                 </div>
 
-                @if (auth()->user()?->role === 'instructor')
-                    <a href="{{ route('instructor.dashboard') }}">
-                        <flux:menu.item icon="academic-cap">
-                            Instructor Dashboard
-                        </flux:menu.item>
-                    </a>
-                @endif
-
                 <flux:menu.separator />
 
                 <form method="POST" action="{{ route('logout') }}">
