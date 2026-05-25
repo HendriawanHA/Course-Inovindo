@@ -26,7 +26,10 @@ class Course extends Model
 
     public function lessons()
     {
-        return $this->hasMany(Lesson::class);
+        return $this->hasManyThrough(
+            Lesson::class,
+            Module::class
+        );
     }
 
     public function instructor()
@@ -43,14 +46,27 @@ class Course extends Model
         return $this->hasMany(Module::class)
             ->orderBy('order');
     }
+
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class);
     }
+
     public function firstLesson()
     {
         return Lesson::whereHas('module', function ($q) {
             $q->where('course_id', $this->id);
         })->first();
+    }
+
+    public function getNextLessonForUser($user)
+    {
+        $completedLessonIds = $user->completedLessons
+            ->pluck('id');
+
+        return $this->lessons()
+            ->whereNotIn('lessons.id', $completedLessonIds)
+            ->orderBy('order')
+            ->first();
     }
 }

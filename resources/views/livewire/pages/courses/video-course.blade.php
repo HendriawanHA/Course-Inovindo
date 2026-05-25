@@ -37,7 +37,7 @@
                             <flux:icon.chat-bubble-bottom-center-text class="w-5 h-5" />
 
                             <!-- Notification Dot -->
-                            <div class="absolute top-1 right-1 w-2 h-2 rounded-full bg-indigo-500"></div>
+                            <div class="absolute top-1 right-1 w-2 h-2 rounded-full bg-blue-600"></div>
 
                         </flux:navbar.item>
 
@@ -104,11 +104,11 @@
                                     text-center px-8 py-14">
 
                                     <div class="w-16 h-16 rounded-2xl
-                                        bg-indigo-500/10
+                                        bg-blue-600/10
                                         flex items-center justify-center mb-5">
 
                                         <flux:icon.chat-bubble-left-right
-                                            class="w-8 h-8 text-indigo-500" />
+                                            class="w-8 h-8 text-blue-600" />
 
                                     </div>
 
@@ -139,7 +139,7 @@
 
                                         <flux:button
                                             variant="primary"
-                                            color="indigo">
+                                            color="blue">
 
                                             Send
 
@@ -163,7 +163,7 @@
                         <flux:icon.list-bullet
                             class="transition-all duration-200"
                             x-bind:class="sidebarOpen
-        ? 'text-indigo-500'
+        ? 'text-blue-600'
         : 'text-zinc-500 dark:text-zinc-400'" />
 
                     </flux:navbar.item>
@@ -178,7 +178,7 @@
                             <flux:icon.bookmark
                                 class="transition-all duration-200"
                                 x-bind:class="bookmarked
-        ? 'text-blue-500 fill-blue-500 scale-110'
+        ? 'text-blue-600 fill-blue-600 scale-110'
         : 'text-zinc-500 dark:text-zinc-400'" />
 
                         </flux:navbar.item>
@@ -288,14 +288,49 @@
             <!-- Complete Button -->
             <div class="flex justify-center mb-8">
 
+                @php
+
+                $completed = auth()->user()
+                ->completedLessons
+                ->contains($lesson->id);
+
+                @endphp
+
+                @if($completed)
+
                 <flux:button
+                    color="emerald"
                     variant="filled"
-                    icon-trailing="arrow-right"
                     class="px-10 py-6 text-base">
 
-                    Complete Lesson
+                    Completed
 
                 </flux:button>
+
+                @else
+
+                <form
+                    method="POST"
+                    action="{{ route('lessons.complete', [
+        'course' => $course->id,
+        'lesson' => $lesson->id
+    ]) }}">
+
+                    @csrf
+
+                    <flux:button
+                        type="submit"
+                        variant="filled"
+                        icon-trailing="arrow-right"
+                        class="px-10 py-6 text-base">
+
+                        Complete Lesson
+
+                    </flux:button>
+
+                </form>
+
+                @endif
 
             </div>
 
@@ -373,11 +408,17 @@
                             transition-colors
                             {{ request()->route('lesson') == $lesson->id ? 'bg-zinc-100 dark:bg-zinc-800' : '' }}">
 
+                            @php
+                            $isCompleted = auth()->user()
+                            ->completedLessons
+                            ->contains($lesson->id);
+                            @endphp
+
                             <input
                                 type="checkbox"
-                                name="lesson"
-                                class="accent-indigo-600 dark:accent-indigo-500"
-                                {{ request()->route('lesson') == $lesson->id ? 'checked' : '' }}>
+                                disabled
+                                class="accent-blue-700 dark:accent-blue-600"
+                                {{ $isCompleted ? 'checked' : '' }}>
 
                             <span class="text-sm text-zinc-700 dark:text-zinc-200">
                                 {{ $lesson->title }}

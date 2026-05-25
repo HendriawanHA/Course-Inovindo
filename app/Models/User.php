@@ -50,6 +50,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasMany(Enrollment::class);
     }
 
+    public function completedLessons()
+    {
+        return $this->belongsToMany(
+            Lesson::class,
+            'lesson_completions'
+        )->withTimestamps();
+    }
 
     public function isAdmin()
     {
