@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Discussion;
 use App\Models\Course;
+use App\Models\Enrollment;
+use App\Models\Lesson;
+use App\Models\LessonCompletion;
 
 class CourseController extends Controller
 {
@@ -13,9 +16,19 @@ class CourseController extends Controller
 
         $courses = Course::query()
 
+            ->with([
+                'enrollments' => function ($query) {
+                    $query->where('user_id', auth()->id());
+                }
+            ])
+
             ->when($search, function ($query) use ($search) {
 
-                $query->where('title', 'like', '%' . $search . '%');
+                $query->where(
+                    'title',
+                    'like',
+                    '%' . $search . '%'
+                );
             })
 
             ->latest()
@@ -29,17 +42,197 @@ class CourseController extends Controller
 
     public function show($id)
     {
-        $course = Course::with('modules.lessons')->findOrFail($id);
-        return view('livewire.pages.courses.detail-page', compact('course', 'id'));
+        $course = Course::with('modules.lessons')
+            ->findOrFail($id);
+
+        $enrollment = auth()->user()
+            ->enrollments()
+            ->where('course_id', $course->id)
+            ->first();
+
+        return view(
+            'livewire.pages.courses.detail-page',
+            compact('course', 'enrollment')
+        );
     }
 
     public function myCourses()
     {
-        $course = collect();
+        $courses = auth()->user()
+            ->courses()
+            ->with('modules.lessons')
+            ->latest()
+            ->get();
 
-        return view('livewire.pages.courses.my-course', [
-            'courses' => $course,
+        return view(
+            'livewire.pages.courses.my-course',
+            compact('courses')
+        );
+    }
+
+    public function completeLesson($courseId, $lessonId)
+    {
+        $user = auth()->user();
+
+        $course = Course::with('modules.lessons')
+            ->findOrFail($courseId);
+
+        $lesson = Lesson::findOrFail($lessonId);
+
+        /*
+    |--------------------------------------------------------------------------
+    | CEK apakah lesson sudah selesai sebelumnya
+    |--------------------------------------------------------------------------
+    */
+
+        $alreadyCompleted = LessonCompletion::where(
+            'user_id',
+            $user->id
+        )
+            ->where(
+                'lesson_id',
+                $lesson->id
+            )
+            ->exists();
+
+        if (!$alreadyCompleted) {
+
+            /*
+        |--------------------------------------------------------------------------
+        | Simpan lesson completion
+        |--------------------------------------------------------------------------
+        */
+
+            LessonCompletion::create([
+                'user_id' => $user->id,
+                'lesson_id' => $lesson->id,
+                'completed_at' => now(),
+            ]);
+
+            /*
+        |--------------------------------------------------------------------------
+        | LESSON REWARD
+        |--------------------------------------------------------------------------
+        */
+
+            $user->increment('points', 10);
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | MODULE COMPLETE CHECK
+    |--------------------------------------------------------------------------
+    */
+
+        $module = $lesson->module;
+
+        $moduleLessonIds = $module->lessons->pluck('id');
+
+        $completedInModule = LessonCompletion::where(
+            'user_id',
+            $user->id
+        )
+            ->whereIn('lesson_id', $moduleLessonIds)
+            ->count();
+
+        $moduleAlreadyCompleted =
+            session()->has(
+                'module_reward_' . $module->id . '_' . $user->id
+            );
+
+        if (
+            $completedInModule === $module->lessons->count()
+            && !$moduleAlreadyCompleted
+        ) {
+
+            $user->increment('points', 50);
+
+            session()->put(
+                'module_reward_' . $module->id . '_' . $user->id,
+                true
+            );
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | COURSE COMPLETE CHECK
+    |--------------------------------------------------------------------------
+    */
+
+        $totalLessons = $course->lessons()->count();
+
+        $completedLessons = LessonCompletion::where(
+            'user_id',
+            $user->id
+        )
+            ->whereIn(
+                'lesson_id',
+                $course->lessons->pluck('id')
+            )
+            ->count();
+
+        $progress = round(
+            ($completedLessons / $totalLessons) * 100
+        );
+
+        /*
+    |--------------------------------------------------------------------------
+    | Enrollment
+    |--------------------------------------------------------------------------
+    */
+
+        $enrollment = Enrollment::firstOrCreate([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+        ], [
+            'status' => 'active',
+            'progress' => 0,
+            'enrolled_at' => now(),
         ]);
+
+        $courseCompletedNow = false;
+
+        if (
+            $progress >= 100
+            && $enrollment->status !== 'completed'
+        ) {
+
+            $courseCompletedNow = true;
+
+            $enrollment->update([
+                'status' => 'completed',
+                'progress' => 100,
+                'completed_at' => now(),
+            ]);
+        } else {
+
+            $enrollment->update([
+                'progress' => $progress,
+            ]);
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | COURSE REWARD
+    |--------------------------------------------------------------------------
+    */
+
+        if ($courseCompletedNow) {
+
+            $user->increment('points', 200);
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | LEVEL SYSTEM
+    |--------------------------------------------------------------------------
+    */
+
+        $user->level = floor($user->points / 100) + 1;
+
+        $user->save();
+
+        return back();
     }
 
     public function video($courseId, $lessonId)
@@ -47,24 +240,40 @@ class CourseController extends Controller
         $course = Course::with('modules.lessons')
             ->findOrFail($courseId);
 
-        $lesson = \App\Models\Lesson::with('module.lessons')
+        $lesson = Lesson::with('module.lessons')
             ->findOrFail($lessonId);
 
-        $currentModule = $lesson->module;
+        /*
+    |--------------------------------------------------------------------------
+    | Auto Enrollment
+    |--------------------------------------------------------------------------
+    */
 
-        $moduleLessons = $currentModule->lessons;
+        Enrollment::firstOrCreate([
+            'user_id' => auth()->id(),
+            'course_id' => $course->id,
+        ], [
+            'status' => 'active',
+            'progress' => 0,
+            'enrolled_at' => now(),
+        ]);
 
-        $currentIndex = $moduleLessons
+        /*
+    |--------------------------------------------------------------------------
+    | Navigation Lesson
+    |--------------------------------------------------------------------------
+    */
+
+        $allLessons = $course->lessons()->get();
+
+        $currentLessonIndex = $allLessons
             ->search(fn($item) => $item->id === $lesson->id);
 
-        $previousLesson = $moduleLessons[$currentIndex - 1] ?? null;
+        $previousLesson = $allLessons[$currentLessonIndex - 1] ?? null;
 
-        $nextLesson = $moduleLessons[$currentIndex + 1] ?? null;
+        $nextLesson = $allLessons[$currentLessonIndex + 1] ?? null;
 
-        $currentLessonIndex = $moduleLessons
-            ->search(fn($item) => $item->id === $lesson->id);
-
-        $totalLessons = $moduleLessons->count();
+        $totalLessons = $allLessons->count();
 
         $discussions = \App\Models\Discussion::with('user')
             ->where('course_id', $course->id)

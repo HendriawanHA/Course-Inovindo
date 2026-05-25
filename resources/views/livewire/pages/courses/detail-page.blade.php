@@ -14,12 +14,80 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
             <flux:heading size="xl" class="text-3xl md:text-4xl">Welcome, {{ auth()->user()->name }}.</flux:heading>
 
-            @php $firstLesson = $course->firstLesson(); @endphp
+            @php
 
-            @if ($firstLesson)
-            <flux:button href="{{ route('courses.video', ['course' => $course->id, 'lesson' => $firstLesson->id]) }}" wire:navigate variant="primary" class="!rounded-full hover:!text-white !border-2 border-blue-700/60 hover:bg-blue-700">
+            $firstLesson = $course->firstLesson();
+
+            $totalLessons = $course->lessons()->count();
+
+            $completedLessons = auth()->user()
+            ->completedLessons()
+            ->whereIn(
+            'lesson_id',
+            $course->lessons->pluck('id')
+            )
+            ->count();
+
+            $hasStarted = $completedLessons > 0;
+
+            $isCompleted = $completedLessons >= $totalLessons
+            && $totalLessons > 0;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cari lesson berikutnya yang belum selesai
+            |--------------------------------------------------------------------------
+            */
+
+            $nextLesson = $course->getNextLessonForUser(
+            auth()->user()
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | Tentukan target lesson
+            |--------------------------------------------------------------------------
+            |
+            | Kalau masih ada lesson belum selesai:
+            | → lanjut ke lesson tersebut
+            |
+            | Kalau semua selesai:
+            | → balik ke lesson pertama (review)
+            |
+            */
+
+            $targetLesson = $nextLesson ?? $firstLesson;
+
+            @endphp
+
+            @if ($targetLesson)
+
+            <flux:button
+                href="{{ route('courses.video', [
+        'course' => $course->id,
+        'lesson' => $targetLesson->id
+    ]) }}"
+                wire:navigate
+                variant="primary"
+                class="!rounded-full hover:!text-white
+    !border-2 border-blue-700/60 hover:bg-blue-700">
+
+                @if($isCompleted)
+
+                Review
+
+                @elseif($hasStarted)
+
+                Continue
+
+                @else
+
                 Start
+
+                @endif
+
             </flux:button>
+
             @endif
         </div>
 
@@ -27,11 +95,54 @@
 
         <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl mb-10 shadow-sm dark:shadow-none">
             <div class="flex justify-between items-end mb-4">
-                <flux:text class="text-sm">Completed 0 of 174 lessons</flux:text>
-                <span class="font-bold text-zinc-900 dark:text-white">0%</span>
+                @php
+
+                $totalLessons = $course->lessons()->count();
+
+                $completedLessons = auth()->user()
+                ->completedLessons()
+                ->whereIn(
+                'lesson_id',
+                $course->lessons->pluck('id')
+                )
+                ->count();
+
+                $progress = $totalLessons > 0
+                ? round(($completedLessons / $totalLessons) * 100)
+                : 0;
+
+                @endphp
+
+                <flux:text class="text-sm">
+                    Completed
+                    {{ $completedLessons }}
+                    of
+                    {{ $totalLessons }}
+                    lessons
+                </flux:text>
+
+                <span class="font-bold text-zinc-900 dark:text-white">
+                    {{ $progress }}%
+                </span>
             </div>
             <div class="w-full bg-zinc-100 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-                <div class="bg-indigo-500 h-full w-[2%] shadow-[0_0_10px_rgba(99,102,241,0.3)]"></div>
+                @php
+
+                $enrollment = auth()->user()
+                ->enrollments
+                ->where('course_id', $course->id)
+                ->first();
+
+                @endphp
+
+                <div class="w-full bg-zinc-200 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden">
+
+                    <div
+                        class="bg-blue-700 dark:bg-blue-600 h-full transition-all duration-500"
+                        style="width: {{ $progress }}%">
+                    </div>
+
+                </div>
             </div>
         </div>
 
@@ -55,6 +166,14 @@
             </div>
 
             <!-- Accordion Container -->
+            @php
+
+            $completedLessonIds = auth()->user()
+            ->completedLessons
+            ->pluck('id')
+            ->toArray();
+
+            @endphp
             <div class="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-zinc-50/50 dark:bg-zinc-900/20">
                 @foreach ($course->modules as $module)
                 <div x-data="{ open: false }" @collapse-all.window="open = false"
@@ -80,13 +199,56 @@
                     <!-- Lessons List -->
                     <div x-show="open" x-collapse class="bg-zinc-50/30 dark:bg-zinc-900/50">
                         @foreach ($module->lessons as $lesson)
-                        <div class="p-4 flex items-center gap-4 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/40 cursor-pointer group transition">
-                            <!-- Indicator Dot -->
-                            <div class="w-2 h-2 rounded-full border border-zinc-300 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 group-hover:border-indigo-500 transition-colors"></div>
+                        @php
 
-                            <flux:text size="sm" class="group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
+                        $isCompleted = in_array(
+                        $lesson->id,
+                        $completedLessonIds
+                        );
+
+                        @endphp
+
+                        <div
+                            class="p-4 flex items-center gap-4
+    hover:bg-zinc-100/50 dark:hover:bg-zinc-800/40
+    cursor-pointer group transition">
+
+                            <!-- STATUS ICON -->
+                            <div class="
+        w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300
+
+        {{ $isCompleted
+            ? 'bg-blue-600 border-blue-600'
+            : 'border-zinc-300 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800'
+        }}
+    ">
+
+                                @if($isCompleted)
+
+                                <flux:icon.check
+                                    variant="mini"
+                                    class="w-3 h-3 text-white" />
+
+                                @endif
+
+                            </div>
+
+                            <!-- LESSON TITLE -->
+                            <flux:text
+                                size="sm"
+                                class="
+            transition-colors
+
+            {{ $isCompleted
+                ? 'text-blue-700 dark:text-blue-500 font-medium'
+                : 'group-hover:text-zinc-900 dark:group-hover:text-white'
+            }}
+        ">
+
                                 {{ $lesson->title }}
+
                             </flux:text>
+
                         </div>
                         @endforeach
                     </div>
