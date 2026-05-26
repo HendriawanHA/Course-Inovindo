@@ -73,4 +73,12 @@ class Course extends Model
             ->orderBy('order')
             ->first();
     }
+
+    public function bookmarkedBy()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'bookmarks'
+        );
+    }
 }

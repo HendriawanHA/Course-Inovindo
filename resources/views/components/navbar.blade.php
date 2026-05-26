@@ -215,7 +215,7 @@
                 <flux:icon.chat-bubble-left-right class="w-5 h-5" />
 
                 <!-- Notification Dot -->
-                <div class="absolute top-1 right-1 w-2 h-2 rounded-full bg-indigo-500"></div>
+                <div class="absolute top-1 right-2.5 w-2 h-2 rounded-full bg-indigo-500"></div>
 
             </flux:navbar.item>
 
@@ -560,7 +560,10 @@
 
         </div>
 
-        <flux:navbar.item icon="bookmark" href="{{ route('courses.my') }}" wire:navigate />
+        <flux:navbar.item
+            icon="bookmark"
+            href="{{ route('courses.saved') }}"
+            wire:navigate />
         <!-- Profile Dropdown -->
         <flux:dropdown position="top" align="end">
             @auth

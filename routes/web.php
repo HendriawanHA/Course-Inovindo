@@ -115,6 +115,15 @@ Route::middleware(['auth', 'instructor'])
 | REDIRECT AFTER LOGIN
 |--------------------------------------------------------------------------
 */
+Route::get('/saved-courses', [CourseController::class, 'savedCourses'])
+    ->middleware(['auth'])
+    ->name('courses.saved');
+
+Route::post(
+    '/courses/{course}/bookmark',
+    [CourseController::class, 'toggleBookmark']
+)->middleware('auth')
+    ->name('courses.bookmark');
 
 Route::get('/redirect-after-login', function () {
 
@@ -123,6 +132,12 @@ Route::get('/redirect-after-login', function () {
     if (! $user) {
         return redirect()->route('login');
     }
+Route::post(
+    '/courses/{course}/lessons/{lesson}/complete',
+    [CourseController::class, 'completeLesson']
+)
+    ->middleware('auth')
+    ->name('lessons.complete');
 
     if ($user->role === 'admin') {
         return redirect('/admin');

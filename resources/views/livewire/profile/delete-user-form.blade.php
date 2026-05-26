@@ -30,7 +30,7 @@ new class extends Component
 
     <flux:modal.trigger name="delete-account">
 
-        <flux:button variant="danger">
+        <flux:button variant="danger" class="mt-4">
             Delete Account
         </flux:button>
 

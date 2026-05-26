@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bookmark;
 use App\Models\Discussion;
 use App\Models\Course;
 use App\Models\Enrollment;
@@ -56,18 +57,44 @@ class CourseController extends Controller
         );
     }
 
-    public function myCourses()
+    public function savedCourses()
     {
         $courses = auth()->user()
-            ->courses()
-            ->with('modules.lessons')
+            ->bookmarkedCourses()
+            ->with([
+                'modules.lessons',
+                'enrollments' => function ($query) {
+                    $query->where('user_id', auth()->id());
+                }
+            ])
             ->latest()
             ->get();
 
         return view(
-            'livewire.pages.courses.my-course',
+            'livewire.pages.courses.saved-course',
             compact('courses')
         );
+    }
+
+    public function toggleBookmark(Course $course)
+    {
+        $user = auth()->user();
+
+        if (
+            $user->bookmarkedCourses()
+            ->where('course_id', $course->id)
+            ->exists()
+        ) {
+
+            $user->bookmarkedCourses()
+                ->detach($course->id);
+        } else {
+
+            $user->bookmarkedCourses()
+                ->attach($course->id);
+        }
+
+        return back();
     }
 
     public function completeLesson($courseId, $lessonId)

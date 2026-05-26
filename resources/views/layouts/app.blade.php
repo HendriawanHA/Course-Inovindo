@@ -15,12 +15,12 @@
     @fluxAppearance
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
+<body class="min-h-screen bg-zinc-100 dark:bg-zinc-800 antialiased">
     <div x-data="{ sidebarOpen: false }" x-cloak class=" flex flex-col h-screen bg-white/50 text-zinc-900 dark:bg-zinc-900/50 dark:text-white">
         <x-navbar />
         <div class="flex flex-1 overflow-hidden">
             <x-sidebar />
-            <flux:main class="flex-1 !p-0 bg-white dark:bg-[#121214] scroll-smooth overflow-y-auto scroll-hide">
+            <flux:main class="flex-1 !p-0 bg-zinc-100 dark:bg-zinc-900 scroll-smooth overflow-y-auto scroll-hide">
                 {{ $slot }}
             </flux:main>
         </div>

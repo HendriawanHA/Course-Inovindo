@@ -1,7 +1,11 @@
 <x-app-layout>
     <flux:navbar class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 px-6">
-        <flux:navbar.item href="{{ route('courses.index') }}" wire:navigate>
+        <flux:navbar.item
+            href="{{ request('back', route('courses.index')) }}"
+            wire:navigate>
+
             <flux:icon.arrow-uturn-left variant="micro" />
+
         </flux:navbar.item>
         <flux:heading size="lg">
             {{ $course->title }}
@@ -64,9 +68,10 @@
 
             <flux:button
                 href="{{ route('courses.video', [
-        'course' => $course->id,
-        'lesson' => $targetLesson->id
-    ]) }}"
+    'course' => $course->id,
+    'lesson' => $targetLesson->id,
+    'back' => request()->fullUrl()
+]) }}"
                 wire:navigate
                 variant="primary"
                 class="!rounded-full hover:!text-white

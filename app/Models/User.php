@@ -58,6 +58,19 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         )->withTimestamps();
     }
 
+    public function bookmarkedCourses()
+    {
+        return $this->belongsToMany(
+            Course::class,
+            'bookmarks'
+        );
+    }
+
+    public function bookmarkItems()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
     public function isAdmin()
     {
         return $this->role === 'admin';
