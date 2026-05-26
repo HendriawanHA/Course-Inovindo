@@ -581,11 +581,8 @@
                         <flux:menu.item icon="user-circle">My Profile</flux:menu.item>
                     </a>
 
-                    <!-- Theme Switcher -->
                     <flux:button x-data x-on:click="$flux.dark = ! $flux.dark" variant="subtle"
                         aria-label="Toggle dark mode" class="hover:bg-zinc-100 dark:hover:bg-zinc-800">
-
-                        <!-- Icon Dinamis -->
                         <span x-show="$flux.dark" class="transition-transform">
                             <flux:icon.sun variant="micro" />
                         </span>
