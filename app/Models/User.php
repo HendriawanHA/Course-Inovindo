@@ -71,6 +71,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasMany(Bookmark::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
     public function isAdmin()
     {
         return $this->role === 'admin';
@@ -94,5 +99,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->avatar
             ? Storage::url($this->avatar)
             : null;
+    }
+
+    public function hasPurchasedCourse($courseId): bool
+    {
+        return $this->transactions()
+            ->where('course_id', $courseId)
+            ->where('status', 'paid')
+            ->exists();
     }
 }

@@ -28,8 +28,8 @@
         <div class="flex flex-col items-center justify-center text-center py-24">
 
             <div class="w-20 h-20 rounded-3xl
-                bg-indigo-500/10
-                flex items-center justify-center mb-6">
+                    bg-indigo-500/10
+                    flex items-center justify-center mb-6">
 
                 <flux:icon.bookmark
                     class="w-10 h-10 text-indigo-500" />
@@ -92,24 +92,32 @@
 
             $totalLessons = $course->lessons->count();
 
-            $isCompleted =
-            $progress >= 100;
+            $isCompleted = $progress >= 100;
 
-            $nextLesson =
-            $course->getNextLessonForUser(auth()->user());
+            $nextLesson = $course->getNextLessonForUser(auth()->user());
 
-            $firstLesson =
-            $course->firstLesson();
+            $firstLesson = $course->firstLesson();
+
+            $isBookmarked = auth()->user()
+            ->bookmarkedCourses
+            ->contains($course->id);
+
+            $hasPurchased = auth()->check()
+            ? $course->isPurchasedBy(auth()->user())
+            : false;
+
+            $canAccess = $course->isFree() || $hasPurchased;
 
             @endphp
 
             <div
+                x-data="{ openBuyModal: false }"
                 class="group relative bg-white dark:bg-zinc-900
-        border border-zinc-200 dark:border-zinc-800
-        rounded-2xl overflow-hidden
-        hover:border-zinc-300 dark:hover:border-zinc-700
-        hover:shadow-lg
-        transition-all duration-200">
+                        border border-zinc-200 dark:border-zinc-800
+                        rounded-2xl overflow-hidden
+                        hover:border-zinc-300 dark:hover:border-zinc-700
+                        hover:shadow-lg
+                        transition-all duration-200">
 
                 <!-- BOOKMARK -->
                 <form
@@ -119,204 +127,367 @@
 
                     @csrf
 
-                    @php
-
-                    $isBookmarked = auth()->user()
-                    ->bookmarkedCourses
-                    ->contains($course->id);
-
-                    @endphp
-
                     <button
                         type="submit"
                         class="flex items-center justify-center
-        hover:scale-105
-        transition-all duration-200">
+                                hover:scale-105
+                                transition-all duration-200">
 
                         <flux:icon.bookmark
                             variant="solid"
                             class="w-5 h-5 transition-all duration-200
 
-                    {{ $isBookmarked
-                        ? 'text-blue-700 dark:text-blue-600'
-                        : 'text-zinc-400 dark:text-zinc-500'
-                    }}
+                                    {{ $isBookmarked
+                                        ? 'text-blue-700 dark:text-blue-600'
+                                        : 'text-zinc-400 dark:text-zinc-500'
+                                    }}
 
-                    hover:text-blue-500" />
+                                    hover:text-blue-500" />
 
                     </button>
 
                 </form>
 
                 <!-- CARD LINK -->
+                @if ($canAccess)
+
                 <a
                     href="{{ route('courses.show', [
-    'id' => $course->id,
-    'back' => route('courses.saved')
-]) }}"
+                                    'id' => $course->id,
+                                    'back' => route('courses.saved')
+                                ]) }}"
                     wire:navigate>
 
-                    <!-- Thumbnail -->
-                    <div class="aspect-video bg-zinc-900 overflow-hidden relative">
+                    @else
 
-                        <img
-                            src="{{ asset('storage/' . $course->thumbnail) }}"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            alt="{{ $course->title }}" />
+                    <div
+                        @click="openBuyModal = true"
+                        class="cursor-pointer">
 
-                        <div class="absolute inset-0
-                    bg-gradient-to-t
-                    from-black/20 via-black/10 to-transparent">
+                        @endif
+
+                        <!-- Thumbnail -->
+                        <div class="aspect-video bg-zinc-900 overflow-hidden relative">
+
+                            <img
+                                src="{{ asset('storage/' . $course->thumbnail) }}"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                alt="{{ $course->title }}" />
+
+                            <div class="absolute inset-0
+                                    bg-gradient-to-t
+                                    from-black/20 via-black/10 to-transparent">
+                            </div>
+
+                            <!-- Status Badge -->
+                            <div class="absolute bottom-3 left-3">
+
+                                @if($isCompleted)
+
+                                <div class="px-3 py-1 rounded-full
+    bg-emerald-500/90
+    text-white text-xs font-semibold
+    backdrop-blur-xl">
+
+                                    Completed
+
+                                </div>
+
+                                @elseif($progress > 0)
+
+                                <div class="px-3 py-1 rounded-full
+        bg-blue-600/90
+        text-white text-xs font-semibold
+        backdrop-blur-xl">
+
+                                    In Progress
+
+                                </div>
+
+                                @else
+
+                                <div class="px-3 py-1 rounded-full
+        bg-zinc-900/80
+        text-white text-xs font-semibold
+        backdrop-blur-xl">
+
+                                    Saved
+
+                                </div>
+
+                                @endif
+
+                            </div>
+
                         </div>
 
-                        <!-- Status Badge -->
-                        <div class="absolute bottom-3 left-3">
+                        <!-- Content -->
+                        <div class="p-5">
 
-                            @if($isCompleted)
+                            <!-- Title -->
+                            <flux:heading
+                                size="sm"
+                                class="text-zinc-900 dark:text-white font-semibold leading-tight line-clamp-2">
 
-                            <div class="px-3 py-1 rounded-full
-                        bg-emerald-500/90
-                        text-white text-xs font-semibold
-                        backdrop-blur-xl">
+                                {{ $course->title }}
 
-                                Completed
+                            </flux:heading>
 
-                            </div>
+                            <!-- Category -->
+                            <flux:text
+                                class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mt-3">
 
-                            @elseif($progress > 0)
+                                {{ $course->category ?? 'Course' }}
 
-                            <div class="px-3 py-1 rounded-full
-                        bg-blue-600/90
-                        text-white text-xs font-semibold
-                        backdrop-blur-xl">
+                            </flux:text>
 
-                                In Progress
+                            <!-- Progress -->
+                            <div class="mt-6">
 
-                            </div>
+                                <div class="flex justify-between text-xs mb-1.5">
 
-                            @else
+                                    <span class="text-zinc-500 dark:text-zinc-400">
+                                        {{ $progress }}% Complete
+                                    </span>
 
-                            <div class="px-3 py-1 rounded-full
-                        bg-zinc-900/80
-                        text-white text-xs font-semibold
-                        backdrop-blur-xl">
+                                </div>
 
-                                Saved
+                                <div class="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
 
-                            </div>
+                                    <div
+                                        class="bg-blue-700 dark:bg-blue-600 h-full transition-all duration-500"
+                                        style="width: {{ $progress }}%">
+                                    </div>
 
-                            @endif
-
-                        </div>
-
-                    </div>
-
-                    <!-- Content -->
-                    <div class="p-5">
-
-                        <flux:heading
-                            size="sm"
-                            class="text-zinc-900 dark:text-white font-semibold leading-tight line-clamp-2">
-
-                            {{ $course->title }}
-
-                        </flux:heading>
-
-                        <flux:text
-                            class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mt-3">
-
-                            {{ $course->category ?? 'Course' }}
-
-                        </flux:text>
-
-                        <!-- Progress -->
-                        <div class="mt-6">
-
-                            <div class="flex justify-between text-xs mb-1.5">
-
-                                @php
-
-                                $enrollment = $course->enrollments
-                                ->where('user_id', auth()->id())
-                                ->first();
-
-                                $progress = $enrollment?->progress ?? 0;
-
-                                @endphp
-
-                                <span class="text-zinc-500 dark:text-zinc-400">
-                                    {{ $progress }}% Complete
-                                </span>
-
-                            </div>
-
-                            <div class="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-
-                                <div
-                                    class="bg-blue-700 dark:bg-blue-600 h-full transition-all duration-500"
-                                    style="width: {{ $progress }}%">
                                 </div>
 
                             </div>
 
+                            <!-- STATUS -->
+                            <div class="mt-4 flex items-center justify-between">
+
+                                @if ($course->price > 0)
+
+                                @if ($hasPurchased)
+
+                                <div class="flex items-center gap-2">
+
+                                    <flux:icon.check-circle
+                                        variant="micro"
+                                        class="text-emerald-500" />
+
+                                    <span class="text-xs font-medium text-emerald-500">
+                                        Purchased
+                                    </span>
+
+                                </div>
+
+                                @else
+
+                                <div class="flex items-center gap-2">
+
+                                    <flux:icon.lock-closed
+                                        variant="micro"
+                                        class="text-amber-500" />
+
+                                    <span class="text-xs font-medium text-amber-500">
+                                        Paid Course
+                                    </span>
+
+                                </div>
+
+                                <span class="text-sm font-bold text-zinc-900 dark:text-white">
+                                    Rp{{ number_format($course->price, 0, ',', '.') }}
+                                </span>
+
+                                @endif
+
+                                @else
+
+                                <div class="flex items-center gap-2">
+
+                                    <flux:icon.eye
+                                        variant="micro"
+                                        class="text-emerald-500" />
+
+                                    <span class="text-xs font-medium text-emerald-500">
+                                        Free Course
+                                    </span>
+
+                                </div>
+
+                                @endif
+
+                            </div>
+
+                            <!-- CTA -->
+                            <div class="mt-6">
+
+                                @if($canAccess)
+
+                                @if($isCompleted)
+
+                                <flux:button
+                                    variant="ghost"
+                                    class="w-full rounded-xl">
+
+                                    Review Course
+
+                                </flux:button>
+
+                                @elseif($progress > 0 && $nextLesson)
+
+                                <flux:button
+                                    href="{{ route('courses.video', [
+                                                    'course' => $course->id,
+                                                    'lesson' => $nextLesson->id,
+                                                    'back' => route('courses.saved')
+                                                ]) }}"
+                                    wire:navigate
+                                    variant="primary"
+                                    class="w-full rounded-xl !text-white !bg-blue-700 hover:!bg-blue-600 font-medium shadow-lg shadow-blue-500/20 transition-all duration-200">
+
+                                    Continue Learning
+
+                                </flux:button>
+
+                                @elseif($firstLesson)
+
+                                <flux:button
+                                    href="{{ route('courses.video', [
+                                                    'course' => $course->id,
+                                                    'lesson' => $firstLesson->id,
+                                                    'back' => route('courses.saved')
+                                                ]) }}"
+                                    wire:navigate
+                                    variant="primary"
+                                    class="w-full rounded-xl !text-white !bg-emerald-500 hover:!bg-emerald-400 font-medium shadow-lg shadow-emerald-500/20 transition-all duration-200">
+
+                                    Start Course
+
+                                </flux:button>
+
+                                @endif
+
+                                @else
+
+                                <button
+                                    @click="openBuyModal = true"
+                                    class="w-full rounded-xl bg-amber-500 hover:bg-amber-400 text-white py-2.5 text-sm font-medium transition-all duration-200">
+
+                                    Unlock Course
+
+                                </button>
+
+                                @endif
+
+                            </div>
+
                         </div>
 
-                        <!-- CTA -->
-                        <div class="mt-6">
-
-                            @if($isCompleted)
-
-                            <flux:button
-                                variant="ghost"
-                                class="w-full rounded-xl">
-
-                                Review Course
-
-                            </flux:button>
-
-                            @elseif($progress > 0 && $nextLesson)
-
-                            <flux:button
-                                href="{{ route('courses.video', [
-    'course' => $course->id,
-    'lesson' => $nextLesson->id,
-    'back' => route('courses.saved')
-]) }}"
-                                wire:navigate
-                                variant="primary"
-                                class="w-full rounded-xl !text-white !bg-blue-700 hover:!bg-blue-600 font-medium shadow-lg shadow-blue-500/20 transition-all duration-200">
-
-                                Continue Learning
-
-                            </flux:button>
-
-                            @elseif($firstLesson)
-
-                            <flux:button
-                                href="{{ route('courses.video', [
-    'course' => $course->id,
-    'lesson' => $nextLesson->id,
-    'back' => route('courses.saved')
-]) }}"
-                                wire:navigate
-                                variant="primary"
-                                class="w-full rounded-xl !text-white !bg-emerald-500 hover:!bg-emerald-400 font-medium shadow-lg shadow-blue-500/20 transition-all duration-200">
-
-                                Start Course
-
-                            </flux:button>
-
-                            @endif
-
-                        </div>
-
-                    </div>
+                        @if ($canAccess)
 
                 </a>
 
+                @else
+
             </div>
 
-            @endforeach
+            @endif
+
+            <!-- BUY MODAL -->
+            <div
+                x-show="openBuyModal"
+                x-transition
+                class="fixed inset-0 z-50 flex items-center justify-center p-4">
+
+                <!-- Overlay -->
+                <div
+                    @click="openBuyModal = false"
+                    class="absolute inset-0 bg-black/60 backdrop-blur-sm">
+                </div>
+
+                <!-- Modal -->
+                <div
+                    @click.stop
+                    class="relative w-full max-w-md rounded-3xl
+                                bg-white dark:bg-zinc-900
+                                border border-zinc-200 dark:border-zinc-800
+                                p-6 shadow-2xl">
+
+                    <!-- Header -->
+                    <div class="flex items-start justify-between">
+
+                        <div>
+
+                            <h2 class="text-xl font-bold text-zinc-900 dark:text-white">
+                                Purchase Course
+                            </h2>
+
+                            <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                                Unlock all lessons and premium content.
+                            </p>
+
+                        </div>
+
+                        <button
+                            @click="openBuyModal = false"
+                            class="text-zinc-400 hover:text-zinc-600">
+
+                            ✕
+
+                        </button>
+
+                    </div>
+
+                    <!-- Course -->
+                    <div class="mt-6">
+
+                        <img
+                            src="{{ asset('storage/' . $course->thumbnail) }}"
+                            class="rounded-2xl w-full aspect-video object-cover">
+
+                        <h3 class="mt-4 font-semibold text-zinc-900 dark:text-white">
+                            {{ $course->title }}
+                        </h3>
+
+                        <p class="mt-2 text-2xl font-bold text-indigo-600">
+                            Rp{{ number_format($course->price, 0, ',', '.') }}
+                        </p>
+
+                    </div>
+
+                    <!-- Button -->
+                    <form
+                        method="POST"
+                        action="{{ route('courses.buy', $course->id) }}"
+                        class="mt-6">
+
+                        @csrf
+
+                        <button
+                            type="submit"
+                            class="w-full rounded-2xl
+                                        bg-indigo-600
+                                        hover:bg-indigo-500
+                                        text-white
+                                        py-3
+                                        font-semibold
+                                        transition-all">
+
+                            Confirm Purchase
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        @endforeach
 
         </div>
 

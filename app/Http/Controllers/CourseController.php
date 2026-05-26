@@ -20,7 +20,11 @@ class CourseController extends Controller
             ->with([
                 'enrollments' => function ($query) {
                     $query->where('user_id', auth()->id());
-                }
+                },
+
+                'modules',
+                'lessons',
+                'instructor',
             ])
 
             ->when($search, function ($query) use ($search) {

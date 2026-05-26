@@ -81,4 +81,26 @@ class Course extends Model
             'bookmarks'
         );
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function isFree()
+    {
+        return $this->price <= 0;
+    }
+
+    public function isPurchasedBy($user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        return $this->transactions()
+            ->where('user_id', $user->id)
+            ->where('status', 'paid')
+            ->exists();
+    }
 }
