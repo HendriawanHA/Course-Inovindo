@@ -2,63 +2,150 @@
 <html>
 
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
     <meta charset="utf-8">
-    <title>Certificate</title>
 
     <style>
+        @page {
+            margin: 0;
+            size: A4 landscape;
+        }
+
         body {
-            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: "Source Serif 4", serif;
+        }
+
+        .certificate {
+            position: relative;
+
+            width: 100%;
+            height: 100vh;
+        }
+
+        .bg {
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            display: block;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CERTIFICATE ID
+        |--------------------------------------------------------------------------
+        */
+
+        .certificate-id {
+            position: absolute;
+            top: 9.6%;
+            left: 17.5%;
+
+            font-size: 18px;
+            color: #111;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | STUDENT NAME
+        |--------------------------------------------------------------------------
+        */
+
+        .student-name {
+            position: absolute;
+
+            top: 360px;
+            left: 0;
+            right: 0;
+
             text-align: center;
-            padding: 60px;
+
+            font-size: 42px;
+            font-weight: 700;
+
+            color: #222;
         }
 
-        .title {
-            font-size: 48px;
+        /*
+        |--------------------------------------------------------------------------
+        | COURSE TITLE
+        |--------------------------------------------------------------------------
+        */
+
+        .course-title {
+            position: absolute;
+
+            top: 500px;
+            left: 0;
+            right: 0;
+
+            text-align: center;
+
+            font-size: 28px;
             font-weight: bold;
-            margin-top: 40px;
+
+            color: #222;
         }
 
-        .name {
-            font-size: 36px;
-            color: #4f46e5;
-            margin: 30px 0;
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | DATE
+        |--------------------------------------------------------------------------
+        */
 
-        .footer {
-            margin-top: 80px;
+        .completion-date {
+            position: absolute;
+
+            top: 590px;
+
+            left: 0;
+            right: 0;
+
+            text-align: center;
+
+            font-size: 18px;
+
+            color: #222;
         }
     </style>
 </head>
 
 <body>
 
-    <h4>CERTIFICATE OF COMPLETION</h4>
+    <div class="certificate">
 
-    <div class="title">
-        {{ $course->title }}
-    </div>
+        <!-- BACKGROUND -->
+        <img
+            src="{{ public_path('images/rev.png') }}"
+            class="bg">
 
-    <p>This certificate is proudly presented to</p>
+        <!-- CERTIFICATE ID -->
+        <div class="certificate-id">
+            CERT-{{ $user->id }}-{{ $course->id }}
+        </div>
 
-    <div class="name">
-        {{ $user->name }}
-    </div>
+        <!-- USER NAME -->
+        <div class="student-name">
+            {{ strtoupper($user->name) }}
+        </div>
 
-    <p>
-        For successfully completing the course.
-    </p>
+        <!-- COURSE -->
+        <div class="course-title">
+            {{ $course->title }}
+        </div>
 
-    <div class="footer">
-
-        <p>
-            Completion Date:
-            {{ $enrollment->completed_at?->format('d M Y') }}
-        </p>
-
-        <p>
-            Instructor:
-            {{ $course->instructor->name ?? 'Instructor' }}
-        </p>
+        <!-- DATE -->
+        <div class="completion-date">
+            {{ $enrollment->completed_at?->format('d F Y') }}
+        </div>
 
     </div>
 

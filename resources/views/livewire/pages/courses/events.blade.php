@@ -1,5 +1,5 @@
 <x-app-layout>
-    <flux:main class="flex-1 p-8 bg-zinc-50 dark:bg-zinc-900 min-h-screen">
+    <flux:main class="flex-1 p-8 bg-zinc-100 dark:bg-zinc-900">
 
         <!-- Page Header -->
         <div class="mb-6">

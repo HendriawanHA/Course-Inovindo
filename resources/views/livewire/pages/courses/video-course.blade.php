@@ -3,7 +3,7 @@
     <div x-data="{ sidebarOpen: window.innerWidth >= 1024 }" class="flex flex-1">
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col pt-5 bg-zinc-50 dark:bg-zinc-950 min-h-screen">
+        <div class="flex-1 flex flex-col pt-5 bg-zinc-50 dark:bg-zinc-900 min-h-screen">
 
             <!-- Header -->
             <div class="flex justify-between items-center gap-2 text-zinc-500 dark:text-zinc-400 px-6 mb-6">

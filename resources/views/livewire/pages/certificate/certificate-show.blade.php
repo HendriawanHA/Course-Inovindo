@@ -1,216 +1,155 @@
 <x-app-layout>
 
-    <flux:main class="min-h-screen bg-zinc-100 dark:bg-zinc-950 p-8">
+    <head>
 
-        <div class="max-w-5xl mx-auto">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
 
-            <!-- PAGE HEADER -->
-            <div class="mb-8">
+        <link rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossorigin>
 
-                <flux:heading
-                    size="xl"
-                    class="flex items-center gap-3 text-zinc-900 dark:text-white">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto+Mono:wght@100..700&family=Source+Serif+4:wght@200..900&display=swap"
+            rel="stylesheet">
 
-                    <flux:icon.academic-cap
-                        variant="solid"
-                        class="size-7 text-indigo-500" />
+    </head>
+    <flux:main class="bg-zinc-100 dark:bg-zinc-900 p-8">
 
-                    Certificate
+        <!-- WRAPPER -->
+        <div class="max-w-3xl mx-auto">
 
-                </flux:heading>
+            <!-- HEADER -->
+            <div class="flex items-center justify-between mb-6">
 
-                <flux:text class="mt-2 text-zinc-500 dark:text-zinc-400">
-                    Your course completion certificate.
-                </flux:text>
+                <div>
+
+                    <flux:heading
+                        size="xl"
+                        class="flex items-center gap-3 text-zinc-900 dark:text-white">
+
+                        <flux:icon.academic-cap
+                            variant="solid"
+                            class="size-7 text-blue-700" />
+
+                        Certificate Preview
+
+                    </flux:heading>
+
+                    <flux:text class="mt-2 text-zinc-500 dark:text-zinc-400">
+                        Preview before downloading your certificate.
+                    </flux:text>
+
+                </div>
+
+                <div class="flex gap-3">
+
+                    <a
+                        href="{{ route('courses.show', $course->id) }}"
+                        wire:navigate>
+
+                        <flux:button
+                            variant="primary"
+                            class="rounded-2xl !border-2 border-emerald-500/60 hover:bg-emerald-500 hover:!text-white">
+
+                            Back
+
+                        </flux:button>
+
+                    </a>
+
+                    <a
+                        href="{{ route('certificates.download', $course->id) }}">
+
+                        <flux:button
+                            icon="arrow-down-tray"
+                            class="!text-white !bg-blue-700 hover:!bg-blue-600 font-medium shadow-lg shadow-blue-600/20 rounded-xl transition-all duration-200">
+
+                            Download PDF
+
+                        </flux:button>
+
+                    </a>
+
+                </div>
 
             </div>
 
             <!-- CERTIFICATE -->
-            <div class="relative overflow-hidden
-                rounded-[2rem]
-                border border-zinc-200 dark:border-zinc-800
-                bg-white dark:bg-zinc-900
-                shadow-2xl">
+            <div
+                class="bg-white rounded-[2rem]
+                       shadow-2xl overflow-hidden"
+                style="font-family: 'Source Serif 4', serif;">
 
-                <!-- Background Glow -->
-                <div class="absolute -top-32 -left-32
-                    w-96 h-96 rounded-full
-                    bg-indigo-500/10 blur-3xl">
-                </div>
+                <div class="relative aspect-[1123/794]">
 
-                <div class="absolute -bottom-32 -right-32
-                    w-96 h-96 rounded-full
-                    bg-blue-500/10 blur-3xl">
-                </div>
+                    <!-- TEMPLATE -->
+                    <img
+                        src="{{ asset('images/rev.png') }}"
+                        class="w-full h-full object-contain">
 
-                <!-- Content -->
-                <div class="relative p-16">
+                    <!-- CERTIFICATE ID -->
+                    <div
+                        class="absolute top-[9.5%] left-[17.5%]">
 
-                    <!-- Top -->
-                    <div class="flex items-center justify-between">
+                        <p
+                            class="text-[clamp(8px,1vw,12px)]
+                                   text-zinc-800 font-medium">
 
-                        <div>
+                            CERT-{{ $user->id }}-{{ $course->id }}
 
-                            <div class="flex items-center gap-3">
-
-                                <div class="w-14 h-14 rounded-2xl
-                                    bg-indigo-500/10
-                                    flex items-center justify-center">
-
-                                    <flux:icon.trophy
-                                        variant="solid"
-                                        class="size-7 text-indigo-500" />
-
-                                </div>
-
-                                <div>
-
-                                    <p class="text-xs uppercase tracking-[0.3em]
-                                        text-zinc-500 dark:text-zinc-400">
-
-                                        Certificate of Completion
-
-                                    </p>
-
-                                    <h1 class="mt-1 text-2xl font-bold
-                                        text-zinc-900 dark:text-white">
-
-                                        Inovindo Course
-
-                                    </h1>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div>
-
-                            <flux:badge
-                                color="emerald"
-                                size="sm">
-
-                                Completed
-
-                            </flux:badge>
-
-                        </div>
+                        </p>
 
                     </div>
 
-                    <!-- Middle -->
-                    <div class="mt-20 text-center">
+                    <!-- USER NAME -->
+                    <div
+                        class="absolute top-[45%]
+                               left-1/2 -translate-x-1/2">
 
-                        <p class="text-zinc-500 dark:text-zinc-400 text-lg">
-                            This certificate is proudly presented to
-                        </p>
+                        <h1
+                            class="text-[clamp(18px,4vw,28px)]
+                                   font-bold
+                                   text-zinc-900
+                                   whitespace-nowrap">
 
-                        <h2 class="mt-6 text-6xl font-black
-                            tracking-tight
-                            text-indigo-600">
+                            {{ strtoupper($user->name) }}
 
-                            {{ $user->name }}
+                        </h1>
+
+                    </div>
+
+                    <!-- COURSE TITLE -->
+                    <div
+                        class="absolute top-[63%]
+                               left-1/2 -translate-x-1/2">
+
+                        <h2
+                            class="text-[clamp(12px,2vw,18px)]
+                                   font-semibold
+                                   text-zinc-800
+                                   whitespace-nowrap">
+
+                            {{ $course->title }}
 
                         </h2>
 
-                        <div class="w-32 h-1 rounded-full
-                            bg-indigo-500 mx-auto mt-8">
-                        </div>
+                    </div>
 
-                        <p class="mt-10 text-lg leading-relaxed
-                            text-zinc-600 dark:text-zinc-300
-                            max-w-2xl mx-auto">
+                    <!-- DATE -->
+                    <div
+                        class="absolute top-[74%]
+                               left-1/2 -translate-x-1/2">
 
-                            For successfully completing the course
+                        <p
+                            class="text-[clamp(10px,1.4vw,12px)]
+                                   text-zinc-800">
 
-                            <span class="font-bold text-zinc-900 dark:text-white">
-                                "{{ $course->title }}"
-                            </span>
-
-                            and fulfilling all learning requirements.
+                            {{ $enrollment->completed_at?->format('d F Y') }}
 
                         </p>
 
                     </div>
 
-                    <!-- Bottom -->
-                    <div class="mt-24 grid grid-cols-2 gap-10">
-
-                        <!-- Completion -->
-                        <div class="rounded-3xl
-                            border border-zinc-200 dark:border-zinc-800
-                            bg-zinc-50 dark:bg-zinc-950/50
-                            p-6">
-
-                            <p class="text-sm text-zinc-500 dark:text-zinc-400">
-                                Completion Date
-                            </p>
-
-                            <h3 class="mt-2 text-xl font-bold
-                                text-zinc-900 dark:text-white">
-
-                                {{ $enrollment->completed_at?->format('d M Y') }}
-
-                            </h3>
-
-                        </div>
-
-                        <!-- Instructor -->
-                        <div class="rounded-3xl
-                            border border-zinc-200 dark:border-zinc-800
-                            bg-zinc-50 dark:bg-zinc-950/50
-                            p-6">
-
-                            <p class="text-sm text-zinc-500 dark:text-zinc-400">
-                                Instructor
-                            </p>
-
-                            <h3 class="mt-2 text-xl font-bold
-                                text-zinc-900 dark:text-white">
-
-                                {{ $course->instructor->name ?? 'Instructor' }}
-
-                            </h3>
-
-                        </div>
-
-                    </div>
-
                 </div>
-
-            </div>
-
-            <!-- ACTION -->
-            <div class="mt-8 flex justify-center gap-4">
-
-                <a
-                    href="{{ route('courses.show', $course->id) }}"
-                    wire:navigate>
-
-                    <flux:button
-                        variant="ghost"
-                        class="rounded-2xl">
-
-                        Back to Course
-
-                    </flux:button>
-
-                </a>
-
-                <a
-                    href="{{ route('certificates.download', $course->id) }}">
-
-                    <flux:button
-                        variant="primary"
-                        icon="arrow-down-tray"
-                        class="rounded-2xl">
-
-                        Download PDF
-
-                    </flux:button>
-
-                </a>
 
             </div>
 

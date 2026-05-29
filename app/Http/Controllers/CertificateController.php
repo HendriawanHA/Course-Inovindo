@@ -44,7 +44,8 @@ class CertificateController extends Controller
             'course' => $course,
             'user' => $user,
             'enrollment' => $enrollment,
-        ]);
+        ])
+            ->setPaper('a4', 'landscape');
 
         return $pdf->download(
             'certificate-' . $course->id . '.pdf'

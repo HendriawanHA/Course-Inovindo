@@ -211,7 +211,7 @@ new #[Layout('layouts.guest')] class extends Component
 
                             <flux:button
                                 type="submit"
-                                class="w-full h-11 !text-white !bg-blue-700 hover:!bg-blue-600 font-mediumshadow-lg shadow-indigo-500/20 rounded-xl transition-all duration-200">
+                                class="w-full h-11 !text-white !bg-blue-700 hover:!bg-blue-600 font-medium shadow-lg shadow-blue-600/20 rounded-xl transition-all duration-200">
 
                                 Log In
 

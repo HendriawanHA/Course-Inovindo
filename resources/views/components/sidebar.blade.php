@@ -1,6 +1,6 @@
 <!-- Sidebar -->
 <div x-show="sidebarOpen"
-    class="w-64 bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 flex flex-col flex-shrink-0 overflow-hidden transition-all duration-300 shadow-xl"
+    class="w-64 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col flex-shrink-0 overflow-hidden transition-all duration-300 shadow-xl"
     x-transition:enter="transition ease-out duration-200"
     x-transition:enter-start="-ml-64"
     x-transition:enter-end="ml-0"
@@ -8,7 +8,7 @@
     x-transition:leave-start="ml-0"
     x-transition:leave-end="-ml-64">
 
-    <flux:sidebar sticky class="w-full h-full bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border-none overflow-y-auto scroll-hide">
+    <flux:sidebar sticky class="w-full h-full bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white border-none overflow-y-auto scroll-hide">
 
         <flux:sidebar.nav class="px-3 py-6">
             <flux:sidebar.item icon="pencil-square" href="#">Feed</flux:sidebar.item>

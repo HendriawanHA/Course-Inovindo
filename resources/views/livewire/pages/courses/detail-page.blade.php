@@ -332,19 +332,7 @@
 
                         </flux:button>
 
-                        <!-- Download -->
-                        <flux:button
-                            href="{{ route('certificates.download', $course->id) }}"
-                            icon="arrow-down-tray"
-                            class="rounded-2xl
-                    !bg-emerald-500
-                    hover:!bg-emerald-400
-                    !text-white">
-
-                            Download PDF
-
-                        </flux:button>
-
+                
                     </div>
 
                 </div>

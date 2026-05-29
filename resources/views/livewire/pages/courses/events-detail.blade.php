@@ -45,26 +45,146 @@
                 </div>
                 <flux:separator class="my-8" />
 
-                <flux:heading size="lg" class="mb-4 text-zinc-900 dark:text-white !font-bold">
-                    Recording
+                @php
+
+                $status = $event->live_status;
+
+                $videoTitle = match($status) {
+
+                'draft' => 'Event Not Published',
+
+                'upcoming' => 'Upcoming Session',
+
+                'live' => 'Live Meeting',
+
+                'ended' => 'Recording',
+
+                default => 'Event Video',
+                };
+
+                $videoUrl = match($status) {
+
+                'live' => $event->meeting_url,
+
+                'ended' => $event->recording_url,
+
+                default => null,
+                };
+
+                /*
+                |--------------------------------------------------------------------------
+                | YOUTUBE EXTRACT
+                |--------------------------------------------------------------------------
+                */
+
+                $youtubeId = null;
+
+                if ($videoUrl) {
+
+                preg_match(
+                '/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/',
+                $videoUrl,
+                $matches
+                );
+
+                $youtubeId = $matches[1] ?? null;
+                }
+
+                @endphp
+
+                <flux:heading
+                    size="lg"
+                    class="mb-4 text-zinc-900 dark:text-white !font-bold">
+
+                    {{ $videoTitle }}
+
                 </flux:heading>
 
-                <div class="aspect-video bg-black rounded-2xl overflow-hidden">
-                    @php
-                        preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/', $event->recording_url, $matches);
+                <div class="aspect-video bg-black rounded-2xl overflow-hidden relative">
 
-                        $youtubeId = $matches[1] ?? null;
-                    @endphp
+                    {{-- DRAFT --}}
+                    @if($status === 'draft')
+                    <div class="flex flex-col items-center justify-center
+            h-full text-center p-8 bg-zinc-900 text-white">
 
-                    @if ($youtubeId)
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ $youtubeId }}"
-                            title="Recording" frameborder="0" allowfullscreen>
-                        </iframe>
-                    @else
-                        <div class="flex items-center justify-center h-full text-zinc-500">
-                            Recording not available
+                        <flux:icon.eye-slash
+                            class="size-12 text-zinc-500 mb-4" />
+
+                        <h3 class="text-xl font-semibold">
+                            Event Not Published
+                        </h3>
+
+                        <p class="mt-2 text-zinc-400 max-w-md">
+                            This event is still in draft mode
+                            and not publicly available yet.
+                        </p>
+
+                    </div>
+
+                    {{-- UPCOMING --}}
+                    @elseif($status === 'upcoming')
+                    <div class="flex flex-col items-center justify-center
+            h-full text-center p-8 bg-zinc-900 text-white">
+
+                        <flux:icon.clock
+                            class="size-12 text-indigo-400 mb-4" />
+
+                        <h3 class="text-xl font-semibold">
+                            Event Has Not Started Yet
+                        </h3>
+
+                        <p class="mt-2 text-zinc-400 max-w-md">
+                            The live session will be available
+                            once the event starts.
+                        </p>
+
+                        <div class="mt-6 px-4 py-2 rounded-full
+                bg-indigo-500/20
+                text-indigo-300 text-sm">
+
+                            Upcoming Event
+
                         </div>
+
+                    </div>
+
+                    {{-- LIVE / ENDED --}}
+                    @elseif($youtubeId)
+
+                    {{-- LIVE BADGE --}}
+                    @if($status === 'live')
+                    <div class="absolute top-4 left-4 z-10
+                px-4 py-2 rounded-full
+                bg-red-600 text-white
+                text-xs font-bold
+                animate-pulse shadow-lg">
+
+                        🔴 LIVE NOW
+
+                    </div>
+
                     @endif
+
+                    <iframe
+                        class="w-full h-full"
+                        src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                        title="{{ $videoTitle }}"
+                        frameborder="0"
+                        allowfullscreen>
+                    </iframe>
+
+                    {{-- FALLBACK --}}
+                    @else
+
+                    <div class="flex items-center justify-center
+            h-full text-zinc-500 bg-zinc-900">
+
+                        Video not available
+
+                    </div>
+
+                    @endif
+
                 </div>
 
                 <flux:text variant="strong" class="mt-4 block text-zinc-900 dark:text-white">
@@ -106,49 +226,50 @@
                         </div>
                         <div>
                             <flux:heading class="text-base font-medium text-zinc-900 dark:text-white">
-                                {{ $event->delivery_type }}</flux:heading>
+                                {{ $event->delivery_type }}
+                            </flux:heading>
                         </div>
                     </div>
 
                     <div class="flex items-start gap-4">
                         <div>
                             @php
-                                $title = strtolower($event->title);
+                            $title = strtolower($event->title);
 
-                                $repeatText = null;
-                                $repeatSubText = null;
+                            $repeatText = null;
+                            $repeatSubText = null;
 
-                                if (str_contains($title, 'daily')) {
-                                    $repeatText = 'Repeats every weekday';
-                                    $repeatSubText = '(Monday to Friday)';
-                                } elseif (str_contains($title, 'weekly')) {
-                                    $repeatText = 'Repeats every week';
-                                    $repeatSubText = '(Every week)';
-                                } elseif (str_contains($title, 'monthly')) {
-                                    $repeatText = 'Repeats every month';
-                                    $repeatSubText = '(Once every month)';
-                                }
+                            if (str_contains($title, 'daily')) {
+                            $repeatText = 'Repeats every weekday';
+                            $repeatSubText = '(Monday to Friday)';
+                            } elseif (str_contains($title, 'weekly')) {
+                            $repeatText = 'Repeats every week';
+                            $repeatSubText = '(Every week)';
+                            } elseif (str_contains($title, 'monthly')) {
+                            $repeatText = 'Repeats every month';
+                            $repeatSubText = '(Once every month)';
+                            }
                             @endphp
                             @if ($repeatText)
-                                <div class="flex items-start gap-4">
-                                    <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-2xl">
-                                        <flux:icon.calendar-date-range
-                                            class="size-5 text-zinc-500 dark:text-zinc-400" />
-                                    </div>
-                                    <div>
-                                        <flux:heading class="text-base font-medium text-zinc-900 dark:text-white">
-                                            {{ $repeatText }}
-                                        </flux:heading>
-                                        <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">
-                                            {{ $repeatSubText }}
-                                        </flux:text>
-                                        <flux:link href="#"
-                                            class="text-blue-600 dark:text-blue-500 text-sm mt-2 inline-block">
-                                            Show all events
-                                        </flux:link>
-                                    </div>
-
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-2xl">
+                                    <flux:icon.calendar-date-range
+                                        class="size-5 text-zinc-500 dark:text-zinc-400" />
                                 </div>
+                                <div>
+                                    <flux:heading class="text-base font-medium text-zinc-900 dark:text-white">
+                                        {{ $repeatText }}
+                                    </flux:heading>
+                                    <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">
+                                        {{ $repeatSubText }}
+                                    </flux:text>
+                                    <flux:link href="#"
+                                        class="text-blue-600 dark:text-blue-500 text-sm mt-2 inline-block">
+                                        Show all events
+                                    </flux:link>
+                                </div>
+
+                            </div>
                             @endif
 
                         </div>
@@ -162,7 +283,7 @@
                             @if (now()->lt($event->start_time))
                             Starts {{ $event->start_time->diffForHumans() }}
                             @elseif (now()->between($event->start_time, $event->end_time))
-                                🔴 Event is Live Now
+                            🔴 Event is Live Now
                             @else
                             Ended {{ $event->end_time->diffForHumans() }}
                             @endif

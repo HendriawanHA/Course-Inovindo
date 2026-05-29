@@ -41,4 +41,22 @@ class Event extends Model
     {
         return $this->belongsTo(User::class, 'instructor_id');
     }
+
+    public function getLiveStatusAttribute()
+    {
+        if (now()->lt($this->start_time)) {
+            return 'upcoming';
+        }
+
+        if (
+            now()->between(
+                $this->start_time,
+                $this->end_time
+            )
+        ) {
+            return 'live';
+        }
+
+        return 'ended';
+    }
 }

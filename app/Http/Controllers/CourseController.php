@@ -111,6 +111,20 @@ class CourseController extends Controller
         $lesson = Lesson::findOrFail($lessonId);
 
         /*
+|--------------------------------------------------------------------------
+| POINT REWARD CONFIG
+|--------------------------------------------------------------------------
+*/
+
+        $isPaidCourse = $course->price > 0;
+
+        $lessonReward = $isPaidCourse ? 3 : 1;
+
+        $moduleReward = $isPaidCourse ? 15 : 5;
+
+        $courseReward = $isPaidCourse ? 50 : 20;
+
+        /*
     |--------------------------------------------------------------------------
     | CEK apakah lesson sudah selesai sebelumnya
     |--------------------------------------------------------------------------
@@ -146,7 +160,7 @@ class CourseController extends Controller
         |--------------------------------------------------------------------------
         */
 
-            $user->increment('points', 10);
+            $user->increment('points', $lessonReward);
         }
 
         /*
@@ -176,7 +190,7 @@ class CourseController extends Controller
             && !$moduleAlreadyCompleted
         ) {
 
-            $user->increment('points', 50);
+            $user->increment('points', $moduleReward);
 
             session()->put(
                 'module_reward_' . $module->id . '_' . $user->id,
@@ -250,7 +264,7 @@ class CourseController extends Controller
 
         if ($courseCompletedNow) {
 
-            $user->increment('points', 200);
+            $user->increment('points', $courseReward);
         }
 
         /*

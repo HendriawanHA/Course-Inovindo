@@ -5,36 +5,97 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Event;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Enrollment;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // Recent Members
+
+        $members = User::where('role', 'student')->latest()->take(3)->get();
+        $totalStudents = User::where('role', 'student')->count();
+        $user = auth()->user();
+
+        /*
+        |--------------------------------------------------------------------------
+        | USER RANK SYSTEM
+        |--------------------------------------------------------------------------
+        */
+
+        $ranks = [
+            ['name' => 'Newbie', 'points' => 0],
+            ['name' => 'Explorer', 'points' => 50],
+            ['name' => 'Contributor', 'points' => 150],
+            ['name' => 'Player', 'points' => 300],
+            ['name' => 'Builder', 'points' => 600],
+            ['name' => 'Catalyst', 'points' => 1000],
+            ['name' => 'Operator', 'points' => 1500],
+            ['name' => 'Pro', 'points' => 2500],
+            ['name' => 'Legend', 'points' => 4000],
+        ];
+
+        $currentRank = collect($ranks)
+            ->filter(function ($rank) use ($user) {
+                return $user->points >= $rank['points'];
+            })
+            ->last();
+
+        /*
+        |--------------------------------------------------------------------------
+        | USER COURSES
+        |--------------------------------------------------------------------------
+        */
+
+        $myCourses = Enrollment::where('user_id', $user->id)
+            ->count();
+
+        /*
+        |--------------------------------------------------------------------------
+        | COMPLETED COURSES
+        |--------------------------------------------------------------------------
+        */
+
+        $completedCourses = Enrollment::where('user_id', $user->id)
+            ->where('status', 'completed')
+            ->count();
+
+        /*
+        |--------------------------------------------------------------------------
+        | RECENT MEMBERS
+        |--------------------------------------------------------------------------
+        */
+
         $members = User::where('role', 'student')
             ->latest()
             ->take(3)
             ->get();
 
-        // Total Students
-        $totalStudents = User::where('role', 'student')
-            ->count();
+        /*
+        |--------------------------------------------------------------------------
+        | FEATURED COURSES
+        |--------------------------------------------------------------------------
+        */
 
-        // Total Courses
-        $totalCourses = Course::count();
-
-        // Featured Courses
         $featuredCourses = Course::latest()
             ->take(4)
             ->get();
 
-        // Latest Events
+        /*
+        |--------------------------------------------------------------------------
+        | EVENTS
+        |--------------------------------------------------------------------------
+        */
+
         $latestEvents = Event::latest()
             ->take(3)
             ->get();
 
-        // Top Students (sementara dummy pakai latest)
+        /*
+        |--------------------------------------------------------------------------
+        | TOP STUDENTS
+        |--------------------------------------------------------------------------
+        */
+
         $topStudents = User::where('role', 'student')
             ->orderByDesc('points')
             ->take(5)
@@ -42,11 +103,15 @@ class HomeController extends Controller
 
         return view('livewire.pages.courses.home', compact(
             'members',
-            'totalStudents',
-            'totalCourses',
             'featuredCourses',
             'latestEvents',
-            'topStudents'
+            'topStudents',
+            'totalStudents',
+
+            // USER STATS
+            'currentRank',
+            'myCourses',
+            'completedCourses'
         ));
     }
 }
