@@ -300,9 +300,9 @@
                         <!-- Instructor -->
                         <div class="mt-3 flex items-center gap-2">
 
-                            <div class="w-8 h-8 rounded-full bg-indigo-100
+                            <div class="w-8 h-8 rounded-full bg-blue-100
                     flex items-center justify-center
-                    text-indigo-600 font-semibold text-sm">
+                    text-blue-700 font-semibold text-sm">
 
                                 {{ strtoupper(substr($course->instructor->name ?? 'U', 0, 1)) }}
                             </div>
@@ -364,7 +364,7 @@
 
                                 </p>
 
-                                <p class="mt-1 text-3xl font-bold text-indigo-600">
+                                <p class="mt-1 text-3xl font-bold text-blue-700">
                                     Rp{{ number_format($course->price, 0, ',', '.') }}
                                 </p>
 
@@ -394,8 +394,8 @@
                         <button
                             type="submit"
                             class="w-full rounded-2xl
-                                    bg-indigo-600
-                                    hover:bg-indigo-500
+                                    bg-blue-700
+                                    hover:bg-blue-600
                                     text-white
                                     py-3
                                     font-semibold

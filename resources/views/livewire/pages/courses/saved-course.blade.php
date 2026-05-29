@@ -32,7 +32,7 @@
                     flex items-center justify-center mb-6">
 
                 <flux:icon.bookmark
-                    class="w-10 h-10 text-indigo-500" />
+                    class="w-10 h-10 text-blue-600" />
 
             </div>
 
@@ -57,7 +57,7 @@
                 wire:navigate
                 class="mt-8">
 
-                <flux:button variant="primary" color="indigo">
+                <flux:button variant="primary" color="blue">
 
                     Explore Courses
 
@@ -411,9 +411,9 @@
                 <div
                     @click.stop
                     class="relative w-full max-w-md rounded-3xl
-                                bg-white dark:bg-zinc-900
-                                border border-zinc-200 dark:border-zinc-800
-                                p-6 shadow-2xl">
+                            bg-white dark:bg-zinc-900
+                            border border-zinc-200 dark:border-zinc-800
+                            p-6 shadow-2xl">
 
                     <!-- Header -->
                     <div class="flex items-start justify-between">
@@ -443,17 +443,109 @@
                     <!-- Course -->
                     <div class="mt-6">
 
-                        <img
-                            src="{{ asset('storage/' . $course->thumbnail) }}"
-                            class="rounded-2xl w-full aspect-video object-cover">
+                        <!-- Thumbnail -->
+                        <div class="aspect-video bg-zinc-900 relative overflow-hidden">
 
-                        <h3 class="mt-4 font-semibold text-zinc-900 dark:text-white">
+                            <img
+                                src="{{ asset('storage/' . $course->thumbnail) }}"
+                                class="w-full h-full  object-cover"
+                                alt="{{ $course->title }}" />
+
+                            <div class="absolute rounded border-2 border-zinc-500/40 inset-0
+                                    bg-gradient-to-t
+                                    from-black/20 via-black/10 to-transparent">
+                            </div>
+
+                        </div>
+
+                        <!-- Title -->
+                        <h3 class="mt-4 font-semibold text-zinc-900 dark:text-white text-lg">
                             {{ $course->title }}
                         </h3>
 
-                        <p class="mt-2 text-2xl font-bold text-indigo-600">
-                            Rp{{ number_format($course->price, 0, ',', '.') }}
-                        </p>
+                        <!-- Instructor -->
+                        <div class="mt-3 flex items-center gap-2">
+
+                            <div class="w-8 h-8 rounded-full bg-blue-100
+                    flex items-center justify-center
+                    text-blue-700 font-semibold text-sm">
+
+                                {{ strtoupper(substr($course->instructor->name ?? 'U', 0, 1)) }}
+                            </div>
+
+                            <div>
+
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                                    Instructor
+                                </p>
+
+                                <p class="text-sm font-medium text-zinc-900 dark:text-white">
+                                    {{ $course->instructor->name ?? 'Unknown Instructor' }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="mt-5 grid grid-cols-2 gap-3">
+
+                            <!-- Modules -->
+                            <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4">
+
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                                    Modules
+                                </p>
+
+                                <p class="mt-1 text-lg font-bold text-zinc-900 dark:text-white">
+                                    {{ $course->modules->count() }}
+                                </p>
+
+                            </div>
+
+                            <!-- Lessons -->
+                            <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4">
+
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                                    Lessons
+                                </p>
+
+                                <p class="mt-1 text-lg font-bold text-zinc-900 dark:text-white">
+                                    {{ $course->lessons->count() }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Price -->
+                        <div class="mt-6 flex items-center justify-between">
+
+                            <div>
+
+                                <p class="text-xs uppercase tracking-widest
+                    text-zinc-500 dark:text-zinc-400">
+
+                                    Price
+
+                                </p>
+
+                                <p class="mt-1 text-3xl font-bold text-blue-700">
+                                    Rp{{ number_format($course->price, 0, ',', '.') }}
+                                </p>
+
+                            </div>
+
+                            <div class="px-4 py-2 rounded-full
+                    bg-amber-500/10
+                    text-amber-500
+                    text-sm font-semibold">
+
+                                Premium
+
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -468,12 +560,12 @@
                         <button
                             type="submit"
                             class="w-full rounded-2xl
-                                        bg-indigo-600
-                                        hover:bg-indigo-500
-                                        text-white
-                                        py-3
-                                        font-semibold
-                                        transition-all">
+                                    bg-blue-700
+                                    hover:bg-blue-600
+                                    text-white
+                                    py-3
+                                    font-semibold
+                                    transition-all">
 
                             Confirm Purchase
 
