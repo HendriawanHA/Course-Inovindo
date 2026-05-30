@@ -17,7 +17,7 @@ class Lesson extends Model
     ];
     public function module()
     {
-        return $this->belongsTo(Module::class);
+        return $this->belongsTo(\App\Models\Module::class);
     }
 
     public function completions()
