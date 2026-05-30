@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "*",
+        "dompdf/dompdf": "^3.1",
         "filament/filament": "^4.11",
         "filament/spatie-laravel-settings-plugin": "*",
         "jeffgreco13/filament-breezy": "^3.2",

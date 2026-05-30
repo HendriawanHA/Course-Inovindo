@@ -8,6 +8,7 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Masmerise\Toaster\Toaster;
+use Illuminate\Support\Facades\Auth;
 
 #[Layout('components.layouts.instructor')]
 class Create extends Component
@@ -38,7 +39,7 @@ class Create extends Component
             $validated['thumbnail'] = $this->thumbnail->store('courses', 'public');
         }
 
-        $validated['user_id'] = auth()->id();
+        $validated['user_id'] = Auth::id();
         $validated['is_published'] = $this->is_published;
 
         $course = Course::create($validated);

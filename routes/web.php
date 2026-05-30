@@ -109,7 +109,7 @@ Route::middleware(['auth', 'instructor'])->prefix('instructor')->name('instructo
 |--------------------------------------------------------------------------
 */
 Route::get('/redirect-after-login', function () {
-    $user = auth()->user();
+    $user = Auth::user();
 
     if (!$user) {
         return redirect()->route('login');
