@@ -80,6 +80,53 @@ class CourseController extends Controller
         );
     }
 
+    public function myCourses()
+    {
+        $search = request('search');
+
+        $courses = Course::query()
+
+            ->whereHas('enrollments', function ($query) {
+
+                $query->where(
+                    'user_id',
+                    auth()->id()
+                );
+            })
+
+            ->when($search, function ($query) use ($search) {
+
+                $query->where(
+                    'title',
+                    'like',
+                    '%' . $search . '%'
+                );
+            })
+
+            ->with([
+                'enrollments' => function ($query) {
+
+                    $query->where(
+                        'user_id',
+                        auth()->id()
+                    );
+                },
+
+                'modules',
+                'lessons',
+                'instructor',
+            ])
+
+            ->latest()
+
+            ->get();
+
+        return view(
+            'livewire.pages.courses.page-course',
+            compact('courses', 'search')
+        );
+    }
+
     public function toggleBookmark(Course $course)
     {
         $user = auth()->user();

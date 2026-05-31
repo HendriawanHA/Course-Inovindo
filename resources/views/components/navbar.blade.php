@@ -27,14 +27,79 @@
 
     <!-- Right Side Items -->
     <flux:navbar class="gap-2">
+
+        @php
+
+        $showSearch = false;
+        $searchRoute = '';
+        $searchPlaceholder = '';
+
+        if (request()->routeIs('courses.index')) {
+
+        $showSearch = true;
+        $searchRoute = route('courses.index');
+        $searchPlaceholder = 'Search courses...';
+
+        } elseif (request()->routeIs('courses.saved')) {
+
+        $showSearch = true;
+        $searchRoute = route('courses.saved');
+        $searchPlaceholder = 'Search saved courses...';
+
+        } elseif (request()->routeIs('courses.my')) {
+
+        $showSearch = true;
+        $searchRoute = route('courses.my');
+        $searchPlaceholder = 'Search my courses...';
+
+        } elseif (request()->routeIs('events.index')) {
+
+        $showSearch = true;
+        $searchRoute = route('events.index');
+        $searchPlaceholder = 'Search events...';
+
+        }
+
+        @endphp
         <!-- Search -->
+        @if($showSearch)
+
         <div class="relative max-lg:hidden">
-            <form action="{{ route('courses.index') }}" method="GET">
-                <flux:input name="search" value="{{ request('search') }}" variant="filled"
-                    placeholder="Search courses..." icon="magnifying-glass"
+
+            <form action="{{ $searchRoute }}" method="GET">
+
+                @if(request()->routeIs('events.index'))
+                <input
+                    type="hidden"
+                    name="filter"
+                    value="{{ request('filter', 'all') }}">
+                @endif
+
+                <flux:input
+                    name="search"
+                    value="{{ request('search') }}"
+                    variant="filled"
+                    placeholder="{{ $searchPlaceholder }}"
+                    icon="magnifying-glass"
                     class="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white w-56" />
+
             </form>
+
         </div>
+
+        @endif
+
+
+        @php
+
+        $notifications = auth()
+        ->user()
+        ->unreadNotifications()
+        ->latest()
+        ->take(10)
+        ->get();
+
+        @endphp
 
         <!-- Notification -->
         <div x-data="{ open: false }" class="relative">
@@ -45,12 +110,26 @@
                 <flux:navbar.item icon="bell" @click="open = !open" class="cursor-pointer" />
 
                 <!-- NOTIFICATION DOT -->
+                @php
+                $unreadCount = auth()->user()->unreadNotifications()->count();
+                @endphp
+
+                @if($unreadCount)
+
                 <span
-                    class="absolute top-1 right-3.5
-            block h-2 w-2 rounded-full
-            bg-red-500
-            ring-2 ring-white dark:ring-zinc-950">
+                    class="absolute -top-1 right-1
+    min-w-[18px] h-[18px]
+    px-1
+    flex items-center justify-center
+    rounded-full
+    bg-red-500 text-white
+    text-[10px] font-bold">
+
+                    {{ $unreadCount }}
+
                 </span>
+
+                @endif
 
             </div>
 
@@ -107,18 +186,17 @@
                     <!-- CONTENT -->
                     <div class="max-h-[400px] overflow-y-auto">
 
+                        @if($notifications->isEmpty())
+
                         <!-- EMPTY STATE -->
-                        {{--
-                tampilkan ini jika notifikasi kosong
-                --}}
                         <div
                             class="flex flex-col items-center justify-center
-                    text-center px-8 py-14">
+            text-center px-8 py-14">
 
                             <div
                                 class="w-16 h-16 rounded-2xl
-                        bg-indigo-500/10
-                        flex items-center justify-center mb-5">
+                bg-indigo-500/10
+                flex items-center justify-center mb-5">
 
                                 <flux:icon.bell class="w-8 h-8 text-indigo-500" />
 
@@ -130,7 +208,7 @@
 
                             <p
                                 class="mt-2 text-sm leading-relaxed
-                        text-zinc-500 dark:text-zinc-400 max-w-xs">
+                text-zinc-500 dark:text-zinc-400 max-w-xs">
 
                                 You don’t have any notifications yet.
 
@@ -138,55 +216,103 @@
 
                         </div>
 
-                        <!-- NOTIFICATION ITEM -->
-                        {{--
-                contoh item notifikasi
-                nanti tinggal loop database
-                --}}
-                        {{--
-                <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800
+                        @else
+
+                        @foreach($notifications as $notification)
+
+                        <a
+                            href="{{ route('notifications.read', $notification->id) }}"
+                            class="block">
+
+                            <div
+                                class="px-6 py-5 border-b
+                    border-zinc-200 dark:border-zinc-800
                     hover:bg-zinc-50 dark:hover:bg-zinc-800/50
                     transition-colors cursor-pointer">
 
-                    <div class="flex items-start gap-4">
+                                <div class="flex items-start gap-4">
 
-                        <div class="w-10 h-10 rounded-2xl
-                            bg-indigo-500/10
-                            flex items-center justify-center shrink-0">
+                                    <div class="shrink-0">
 
-                            <flux:icon.academic-cap
-                                class="w-5 h-5 text-indigo-500" />
+                                        @if(!empty($notification->data['thumbnail']))
 
-                        </div>
+                                        <img
+                                            src="{{ asset('storage/' . $notification->data['thumbnail']) }}"
+                                            class="w-12 h-12 rounded-xl object-cover">
 
-                        <div class="flex-1">
+                                        @else
 
-                            <div class="flex items-center justify-between gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-2xl
+            bg-indigo-500/10
+            flex items-center justify-center">
 
-                                <h4 class="font-medium text-sm text-zinc-900 dark:text-white">
-                                    New lesson available
-                                </h4>
+                                            @if(($notification->data['type'] ?? '') === 'course')
 
-                                <span class="text-xs text-zinc-400">
-                                    2m ago
-                                </span>
+                                            <flux:icon.academic-cap
+                                                class="w-5 h-5 text-indigo-500" />
 
-                            </div>
+                                            @elseif(($notification->data['type'] ?? '') === 'event')
 
-                            <p class="mt-1 text-sm leading-relaxed
+                                            <flux:icon.calendar-days
+                                                class="w-5 h-5 text-emerald-500" />
+
+                                            @elseif(($notification->data['type'] ?? '') === 'discussion_reply')
+
+                                            <flux:icon.chat-bubble-left-right
+                                                class="w-5 h-5 text-orange-500" />
+
+                                            @else
+
+                                            <flux:icon.bell
+                                                class="w-5 h-5 text-zinc-500" />
+
+                                            @endif
+
+                                        </div>
+
+                                        @endif
+
+                                    </div>
+
+                                    <div class="flex-1">
+
+                                        <div class="flex items-center justify-between gap-3">
+
+                                            <h4
+                                                class="font-medium text-sm
+                                    text-zinc-900 dark:text-white">
+
+                                                {{ $notification->data['title'] }}
+
+                                            </h4>
+
+                                            <span class="text-xs text-zinc-400">
+
+                                                {{ $notification->created_at->diffForHumans() }}
+
+                                            </span>
+
+                                        </div>
+
+                                        <p
+                                            class="mt-1 text-sm leading-relaxed
                                 text-zinc-500 dark:text-zinc-400">
 
-                                Laravel Authentication Basics
-                                has been updated with new content.
+                                            {{ $notification->data['message'] }}
 
-                            </p>
+                                        </p>
 
-                        </div>
+                                    </div>
 
-                    </div>
+                                </div>
 
-                </div>
-                --}}
+                            </div>
+                        </a>
+
+                        @endforeach
+
+                        @endif
 
                     </div>
 
@@ -568,8 +694,8 @@
         <flux:dropdown position="top" align="end">
             @auth
 
-                <flux:profile circle :chevron="false"
-                    avatar="{{ auth()->user()->avatar
+            <flux:profile circle :chevron="false"
+                avatar="{{ auth()->user()->avatar
                         ? asset('storage/' . auth()->user()->avatar)
                         : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" />
 

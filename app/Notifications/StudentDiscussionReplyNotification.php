@@ -6,7 +6,7 @@ use App\Models\DiscussionReply;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class NewDiscussionReplyNotification extends Notification
+class StudentDiscussionReplyNotification extends Notification
 {
     use Queueable;
 
@@ -14,22 +14,15 @@ class NewDiscussionReplyNotification extends Notification
         public DiscussionReply $reply
     ) {}
 
-    public function via($notifiable)
+    public function via(object $notifiable): array
     {
         return ['database'];
     }
 
-    public function toDatabase($notifiable)
+    public function toDatabase(object $notifiable): array
     {
-        dd(
-            $this->reply,
-            $this->reply->discussion,
-            $this->reply->discussion?->course,
-            $this->reply->discussion?->lesson
-        );
-        
-        $course = $this->reply->discussion->course;
-        $lesson = $this->reply->discussion->lesson;
+        $discussion = $this->reply->discussion;
+        $course = $discussion->course;
 
         return [
 
@@ -39,20 +32,17 @@ class NewDiscussionReplyNotification extends Notification
 
             'message' =>
             $this->reply->user->name .
-                ' replied to your discussion in "' .
-                $lesson->title .
-                '"',
+                ' replied to your discussion',
 
             'thumbnail' => $course?->thumbnail,
 
             'url' => route(
                 'courses.video',
                 [
-                    'course' => $course->id,
-                    'lesson' => $lesson->id,
+                    'course' => $discussion->course_id,
+                    'lesson' => $discussion->lesson_id,
                 ]
             ),
-
         ];
     }
 }

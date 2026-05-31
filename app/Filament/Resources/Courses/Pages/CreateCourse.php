@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Courses\Pages;
 
 use App\Filament\Resources\Courses\CourseResource;
-
+use App\Models\User;
+use App\Notifications\NewCourseNotification;
 use Filament\Resources\Pages\CreateRecord;
-
 use Illuminate\Support\Facades\Auth;
 
 class CreateCourse extends CreateRecord
@@ -22,5 +22,22 @@ class CreateCourse extends CreateRecord
         }
 
         return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        $course = $this->record;
+
+        $students = User::where(
+            'role',
+            'student'
+        )->get();
+
+        foreach ($students as $student) {
+
+            $student->notify(
+                new NewCourseNotification($course)
+            );
+        }
     }
 }

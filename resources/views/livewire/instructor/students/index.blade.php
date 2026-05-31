@@ -15,49 +15,63 @@
         </div>
 
         @forelse ($enrollments as $enrollment)
-            <div class="grid grid-cols-12 items-center border-b border-zinc-800 px-6 py-4 last:border-b-0">
-                <div class="col-span-4 flex items-center gap-3">
-                    <img
-                        src="{{ $enrollment->user->avatar
+        <div class="grid grid-cols-12 items-center border-b border-zinc-800 px-6 py-4 last:border-b-0">
+            <div class="col-span-4 flex items-center gap-3">
+                <img
+                    src="{{ $enrollment->user->avatar
                             ? asset('storage/' . $enrollment->user->avatar)
                             : 'https://ui-avatars.com/api/?name=' . urlencode($enrollment->user->name) }}"
-                        class="h-10 w-10 rounded-full object-cover"
-                    >
+                    class="h-10 w-10 rounded-full object-cover">
 
-                    <div>
-                        <p class="font-semibold text-white">
-                            {{ $enrollment->user->name }}
-                        </p>
-                        <p class="text-sm text-zinc-500">
-                            {{ $enrollment->user->email }}
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col-span-4">
-                    <p class="font-medium text-white">
-                        {{ $enrollment->course->title }}
+                <div>
+                    <p class="font-semibold text-white">
+                        {{ $enrollment->user->name }}
+                    </p>
+                    <p class="text-sm text-zinc-500">
+                        {{ $enrollment->user->email }}
                     </p>
                 </div>
-
-                <div class="col-span-2">
-                    <div class="h-2 w-full rounded-full bg-zinc-800">
-                        <div class="h-2 rounded-full bg-indigo-500" style="width: 0%"></div>
-                    </div>
-                    <p class="mt-1 text-xs text-zinc-500">0%</p>
-                </div>
-
-                <div class="col-span-2 text-sm text-zinc-400">
-                    {{ $enrollment->created_at->format('d M Y') }}
-                </div>
             </div>
-        @empty
-            <div class="p-10 text-center">
-                <h3 class="font-semibold text-white">Belum ada student</h3>
-                <p class="mt-2 text-sm text-zinc-500">
-                    Student yang enroll di course kamu akan muncul di sini.
+
+            <div class="col-span-4">
+                <p class="font-medium text-white">
+                    {{ $enrollment->course->title }}
                 </p>
             </div>
+
+            @php
+            $progress = $enrollment->progress;
+
+            $color =
+            $progress >= 100 ? 'bg-emerald-500' :
+            ($progress >= 50 ? 'bg-indigo-500' :
+            'bg-amber-500');
+            @endphp
+
+            <div class="col-span-2">
+                <div class="h-2 w-full rounded-full bg-zinc-800">
+                    <div
+                        class="h-2 rounded-full {{ $color }} transition-all duration-500"
+                        style="width: {{ $progress }}%">
+                    </div>
+                </div>
+
+                <p class="mt-1 text-xs text-zinc-500">
+                    {{ $progress }}%
+                </p>
+            </div>
+
+            <div class="col-span-2 text-sm text-zinc-400">
+                {{ $enrollment->created_at->format('d M Y') }}
+            </div>
+        </div>
+        @empty
+        <div class="p-10 text-center">
+            <h3 class="font-semibold text-white">Belum ada student</h3>
+            <p class="mt-2 text-sm text-zinc-500">
+                Student yang enroll di course kamu akan muncul di sini.
+            </p>
+        </div>
         @endforelse
     </div>
 </div>
