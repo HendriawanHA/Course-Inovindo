@@ -39,6 +39,30 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         ];
     }
 
+    public const RANKS = [
+        ['name' => 'Newbie', 'points' => 0],
+        ['name' => 'Explorer', 'points' => 50],
+        ['name' => 'Contributor', 'points' => 150],
+        ['name' => 'Player', 'points' => 300],
+        ['name' => 'Builder', 'points' => 600],
+        ['name' => 'Catalyst', 'points' => 1000],
+        ['name' => 'Operator', 'points' => 1500],
+        ['name' => 'Pro', 'points' => 2500],
+        ['name' => 'Legend', 'points' => 4000],
+    ];
+
+    public function scopeStudents($query)
+    {
+        return $query->where('role', 'student');
+    }
+
+    public function scopeTopStudents($query)
+    {
+        return $query
+            ->students()
+            ->orderByDesc('points');
+    }
+
 
     public function canAccessPanel(Panel $panel): bool
     {
@@ -107,5 +131,39 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             ->where('course_id', $courseId)
             ->where('status', 'paid')
             ->exists();
+    }
+
+    public function getRankAttribute()
+    {
+        return collect(self::RANKS)
+            ->where('points', '<=', $this->points)
+            ->last();
+    }
+
+    public function getRankLevelAttribute()
+    {
+        return collect(self::RANKS)
+            ->search($this->rank) + 1;
+    }
+
+    public function getNextRankAttribute()
+    {
+        return self::RANKS[$this->rank_level] ?? null;
+    }
+
+    public function getPointsToNextRankAttribute()
+    {
+        if (!$this->next_rank) {
+            return 0;
+        }
+
+        return $this->next_rank['points'] - $this->points;
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar
+            ? asset('storage/' . $this->avatar)
+            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
     }
 }

@@ -59,4 +59,96 @@ class Event extends Model
 
         return 'ended';
     }
+
+    public function getStatusBadgeAttribute()
+    {
+        if (now()->lt($this->start_time)) {
+            return [
+                'text' => 'Dimulai ' . $this->start_time->diffForHumans(),
+                'color' => 'green'
+            ];
+        }
+
+        if (now()->between($this->start_time, $this->end_time)) {
+            return [
+                'text' => '🔴 LIVE',
+                'color' => 'red'
+            ];
+        }
+
+        return [
+            'text' => 'Berakhir',
+            'color' => 'zinc'
+        ];
+    }
+
+    public function getThumbnailUrlAttribute()
+    {
+        return asset(
+            'storage/' . $this->thumbnail
+        );
+    }
+
+    public function getVideoTitleAttribute()
+    {
+        return match ($this->live_status) {
+            'draft' => 'Event Not Published',
+            'upcoming' => 'Upcoming Session',
+            'live' => 'Live Meeting',
+            'ended' => 'Recording',
+            default => 'Event Video',
+        };
+    }
+
+    public function getVideoUrlAttribute()
+    {
+        return match ($this->live_status) {
+            'live' => $this->meeting_url,
+            'ended' => $this->recording_url,
+            default => null,
+        };
+    }
+
+    public function getYoutubeIdAttribute()
+    {
+        if (!$this->video_url) {
+            return null;
+        }
+
+        preg_match(
+            '/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/',
+            $this->video_url,
+            $matches
+        );
+
+        return $matches[1] ?? null;
+    }
+
+    public function getRepeatInfoAttribute()
+    {
+        $title = strtolower($this->title);
+
+        if (str_contains($title, 'daily')) {
+            return [
+                'title' => 'Repeats every weekday',
+                'subtitle' => '(Monday to Friday)',
+            ];
+        }
+
+        if (str_contains($title, 'weekly')) {
+            return [
+                'title' => 'Repeats every week',
+                'subtitle' => '(Every week)',
+            ];
+        }
+
+        if (str_contains($title, 'monthly')) {
+            return [
+                'title' => 'Repeats every month',
+                'subtitle' => '(Once every month)',
+            ];
+        }
+
+        return null;
+    }
 }

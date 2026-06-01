@@ -1,16 +1,7 @@
 <x-app-layout>
-    <flux:navbar class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 px-6">
-        <flux:navbar.item
-            href="{{ request('back', route('courses.index')) }}"
-            wire:navigate>
-
-            <flux:icon.arrow-uturn-left variant="micro" />
-
-        </flux:navbar.item>
-        <flux:heading size="lg">
-            {{ $course->title }}
-        </flux:heading>
-    </flux:navbar>
+    <x-courses.detail-header
+        :title="$course->title"
+        :back-url="request('back', route('courses.index'))" />
 
     <flux:separator />
 
@@ -332,7 +323,7 @@
 
                         </flux:button>
 
-                
+
                     </div>
 
                 </div>

@@ -19,6 +19,13 @@ class Course extends Model
         'user_id',
     ];
 
+    protected $appends = [
+        'progress',
+        'can_access',
+        'is_bookmarked',
+        'has_purchased',
+    ];
+
     public function sections()
     {
         return $this->hasMany(Section::class);
@@ -91,6 +98,10 @@ class Course extends Model
     {
         return $this->price <= 0;
     }
+    public function getThumbnailUrlAttribute()
+    {
+        return asset('storage/' . $this->thumbnail);
+    }
 
     public function isPurchasedBy($user): bool
     {
@@ -102,5 +113,61 @@ class Course extends Model
             ->where('user_id', $user->id)
             ->where('status', 'paid')
             ->exists();
+    }
+
+    public function progressForUser($user): int
+    {
+        if (!$user) {
+            return 0;
+        }
+
+        $enrollment = $this->enrollments
+            ->where('user_id', $user->id)
+            ->first();
+
+        return $enrollment?->progress ?? 0;
+    }
+
+    public function canAccess($user): bool
+    {
+        return $this->isFree()
+            || $this->isPurchasedBy($user);
+    }
+
+    public function isBookmarkedBy($user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        return $user->bookmarkedCourses
+            ->contains($this->id);
+    }
+
+    public function getHasPurchasedAttribute()
+    {
+        return $this->isPurchasedBy(auth()->user());
+    }
+
+    public function scopePopular($query)
+    {
+        return $query
+            ->withCount('enrollments')
+            ->orderByDesc('enrollments_count');
+    }
+
+    public function getProgressAttribute()
+    {
+        return $this->progressForUser(auth()->user());
+    }
+
+    public function getCanAccessAttribute()
+    {
+        return $this->canAccess(auth()->user());
+    }
+
+    public function getIsBookmarkedAttribute()
+    {
+        return $this->isBookmarkedBy(auth()->user());
     }
 }
