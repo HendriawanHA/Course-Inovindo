@@ -1,43 +1,26 @@
-<x-app-layout>
-    <flux:main class="flex-1 p-8 bg-zinc-100 dark:bg-zinc-900">
-
-        <!-- Page Header -->
-        <x-courses.page-header
-            icon="calendar-days"
-            title="Events" />
-
-        <flux:separator class="mb-8" />
-
-        <!-- Konten Utama yang di Tengah -->
-        <div class="max-w-3xl mx-auto w-full">
-
-            <!-- Filter Tabs -->
-            <x-courses.events.event-filter
-                :filter="$filter" />
-
-            <!-- Featured Event -->
-            <flux:heading size="xl" class="mb-4 text-zinc-900 dark:text-white !font-bold">
-                New Event
+<div class="px-8 mt-10">
+        <div class="flex items-center justify-between mb-6">
+            <flux:heading size="lg">
+                Upcoming Events
             </flux:heading>
+            <flux:link href="{{ route('events.index') }}" wire:navigate>
+                View all
+            </flux:link>
+        </div>
 
-            <x-courses.events.featured-card
-                :featuredEvent="$featuredEvent" />
 
-            <!-- Monthly Section -->
-            <flux:heading size="xl" class="mb-5 text-zinc-900 dark:text-white !font-bold">
-                {{ $events->first()?->start_time->translatedFormat('F Y') }}
-            </flux:heading>
+        <div class="space-y-4">
 
-            @foreach ($events as $event)
+            @foreach ($latestEvents as $event)
 
-            <a href="{{ route('events.show', $event->slug) }}">
+            <a href="{{ route('events.show', $event->slug) }}" wire:navigate>
 
-                <flux:card class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 hover:shadow-xl transition-all mb-4">
+                <flux:card class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 shadow-sm hover:shadow-xl transition-all mb-4">
 
                     <div class="flex flex-col md:flex-row gap-6 items-start">
 
                         <img
-                            src="{{ $event->thumbnail_url }}"
+                            src="{{ asset('storage/' . $event->thumbnail) }}"
                             alt="Event"
                             class="w-full md:w-56 h-24 object-cover rounded-2xl" />
 
@@ -79,5 +62,4 @@
 
         </div>
 
-    </flux:main>
-</x-app-layout>
+    </div>

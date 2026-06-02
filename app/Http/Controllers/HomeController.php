@@ -11,9 +11,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-
-        $members = User::where('role', 'student')->latest()->take(3)->get();
-        $totalStudents = User::where('role', 'student')->count();
+        $totalStudents = User::students()->count();
         $user = auth()->user();
 
         /*
@@ -21,24 +19,6 @@ class HomeController extends Controller
         | USER RANK SYSTEM
         |--------------------------------------------------------------------------
         */
-
-        $ranks = [
-            ['name' => 'Newbie', 'points' => 0],
-            ['name' => 'Explorer', 'points' => 50],
-            ['name' => 'Contributor', 'points' => 150],
-            ['name' => 'Player', 'points' => 300],
-            ['name' => 'Builder', 'points' => 600],
-            ['name' => 'Catalyst', 'points' => 1000],
-            ['name' => 'Operator', 'points' => 1500],
-            ['name' => 'Pro', 'points' => 2500],
-            ['name' => 'Legend', 'points' => 4000],
-        ];
-
-        $currentRank = collect($ranks)
-            ->filter(function ($rank) use ($user) {
-                return $user->points >= $rank['points'];
-            })
-            ->last();
 
         /*
         |--------------------------------------------------------------------------
@@ -65,7 +45,7 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $members = User::where('role', 'student')
+        $members = User::students()
             ->latest()
             ->take(3)
             ->get();
@@ -76,7 +56,7 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $featuredCourses = Course::latest()
+        $topCourses = Course::popular()
             ->take(4)
             ->get();
 
@@ -96,20 +76,20 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $topStudents = User::where('role', 'student')
-            ->orderByDesc('points')
+        $topStudents = User::topStudents()
             ->take(5)
             ->get();
 
+
         return view('livewire.pages.courses.home', compact(
+            'user',
             'members',
-            'featuredCourses',
+            'topCourses',
             'latestEvents',
             'topStudents',
             'totalStudents',
 
             // USER STATS
-            'currentRank',
             'myCourses',
             'completedCourses'
         ));

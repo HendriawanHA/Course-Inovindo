@@ -34,7 +34,7 @@
                             <flux:icon.chat-bubble-bottom-center-text class="w-5 h-5" />
 
                             @if ($discussions->count())
-                                <div class="absolute top-1 right-1 w-2 h-2 rounded-full bg-indigo-500"></div>
+                            <div class="absolute top-1 right-1 w-2 h-2 rounded-full bg-indigo-500"></div>
                             @endif
                         </flux:navbar.item>
                     </div>
@@ -94,39 +94,39 @@
                     <div class="flex items-center gap-4">
 
                         @if ($previousLesson)
-                            <a wire:navigate
-                                href="{{ route('courses.video', [
+                        <a wire:navigate
+                            href="{{ route('courses.video', [
                                     'course' => $course->id,
                                     'lesson' => $previousLesson->id,
                                 ]) }}">
 
-                                <flux:button icon="arrow-left" variant="ghost"
-                                    class="border border-zinc-300 dark:border-zinc-700">
-                                </flux:button>
-
-                            </a>
-                        @else
-                            <flux:button icon="arrow-left" variant="subtle" disabled
-                                class="border border-zinc-300 dark:border-zinc-700 opacity-40 cursor-not-allowed">
+                            <flux:button icon="arrow-left" variant="ghost"
+                                class="border border-zinc-300 dark:border-zinc-700">
                             </flux:button>
+
+                        </a>
+                        @else
+                        <flux:button icon="arrow-left" variant="subtle" disabled
+                            class="border border-zinc-300 dark:border-zinc-700 opacity-40 cursor-not-allowed">
+                        </flux:button>
                         @endif
 
                         @if ($nextLesson)
-                            <a wire:navigate
-                                href="{{ route('courses.video', [
+                        <a wire:navigate
+                            href="{{ route('courses.video', [
                                     'course' => $course->id,
                                     'lesson' => $nextLesson->id,
                                 ]) }}">
 
-                                <flux:button icon="arrow-right" variant="ghost"
-                                    class="border border-zinc-300 dark:border-zinc-700">
-                                </flux:button>
-
-                            </a>
-                        @else
-                            <flux:button icon="arrow-right" variant="subtle" disabled
-                                class="border border-zinc-300 dark:border-zinc-700 opacity-40 cursor-not-allowed">
+                            <flux:button icon="arrow-right" variant="ghost"
+                                class="border border-zinc-300 dark:border-zinc-700">
                             </flux:button>
+
+                        </a>
+                        @else
+                        <flux:button icon="arrow-right" variant="subtle" disabled
+                            class="border border-zinc-300 dark:border-zinc-700 opacity-40 cursor-not-allowed">
+                        </flux:button>
                         @endif
 
                     </div>
@@ -148,43 +148,44 @@
 
             </div>
 
-            <flux:separator class="my-10" />
-
-            <livewire:discussions.lesson-discussion :lesson="$lesson" />
 
             <!-- Complete Button -->
-            <div class="flex justify-center mb-8">
+            <div class="flex justify-center m-8">
 
                 @php
-                    $completed = auth()->user()?->completedLessons?->contains($lesson->id);
+                $completed = auth()->user()?->completedLessons?->contains($lesson->id);
                 @endphp
 
                 @if ($completed)
-                    <flux:button color="emerald" variant="filled" class="px-10 py-6 text-base" disabled>
+                <flux:button color="emerald" variant="filled" class="px-10 py-6 text-base" disabled>
 
-                        Completed
+                    Completed
 
-                    </flux:button>
+                </flux:button>
                 @else
-                    <form method="POST"
-                        action="{{ route('lessons.complete', [
+                <form method="POST"
+                    action="{{ route('lessons.complete', [
                             'course' => $course->id,
                             'lesson' => $lesson->id,
                         ]) }}">
 
-                        @csrf
+                    @csrf
 
-                        <flux:button type="submit" variant="filled" icon-trailing="arrow-right"
-                            class="px-10 py-6 text-base">
+                    <flux:button type="submit" variant="filled" icon-trailing="arrow-right"
+                        class="px-10 py-6 text-base">
 
-                            Complete Lesson
+                        Complete Lesson
 
-                        </flux:button>
+                    </flux:button>
 
-                    </form>
+                </form>
                 @endif
 
             </div>
+
+            <flux:separator />
+
+            <livewire:discussions.lesson-discussion :lesson="$lesson" />
 
         </div>
 
@@ -206,71 +207,71 @@
                 overflow-hidden divide-y divide-zinc-200 dark:divide-zinc-800">
 
                 @foreach ($course->modules as $module)
-                    <div x-data="{ open: true }" class="bg-white dark:bg-zinc-900">
+                <div x-data="{ open: true }" class="bg-white dark:bg-zinc-900">
 
-                        <!-- Module Header -->
-                        <button type="button" @click="open = !open"
-                            class="w-full flex items-center justify-between p-4
+                    <!-- Module Header -->
+                    <button type="button" @click="open = !open"
+                        class="w-full flex items-center justify-between p-4
                         hover:bg-zinc-100 dark:hover:bg-zinc-800
                         transition-colors text-left">
 
-                            <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-3">
 
-                                <flux:icon.chevron-right variant="micro"
-                                    class="transition-transform duration-300 text-zinc-400"
-                                    x-bind:class="open ? 'rotate-90' : ''" />
+                            <flux:icon.chevron-right variant="micro"
+                                class="transition-transform duration-300 text-zinc-400"
+                                x-bind:class="open ? 'rotate-90' : ''" />
 
-                                <div>
+                            <div>
 
-                                    <p class="font-semibold text-zinc-900 dark:text-white">
-                                        {{ $module->title }}
-                                    </p>
+                                <p class="font-semibold text-zinc-900 dark:text-white">
+                                    {{ $module->title }}
+                                </p>
 
-                                    <p class="text-xs text-zinc-500 dark:text-zinc-400">
-                                        {{ $module->lessons->count() }} lessons
-                                    </p>
-
-                                </div>
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                                    {{ $module->lessons->count() }} lessons
+                                </p>
 
                             </div>
 
-                        </button>
+                        </div>
 
-                        <!-- Lessons -->
-                        <div x-show="open" x-transition
-                            class="divide-y divide-zinc-200 dark:divide-zinc-800
+                    </button>
+
+                    <!-- Lessons -->
+                    <div x-show="open" x-transition
+                        class="divide-y divide-zinc-200 dark:divide-zinc-800
                         bg-white dark:bg-zinc-900">
 
-                            @foreach ($module->lessons as $moduleLesson)
-                                @php
-                                    $isCompleted = auth()->user()?->completedLessons?->contains($moduleLesson->id);
+                        @foreach ($module->lessons as $moduleLesson)
+                        @php
+                        $isCompleted = auth()->user()?->completedLessons?->contains($moduleLesson->id);
 
-                                    $isActive = (int) request()->route('lesson') === (int) $moduleLesson->id;
-                                @endphp
+                        $isActive = (int) request()->route('lesson') === (int) $moduleLesson->id;
+                        @endphp
 
-                                <a wire:navigate
-                                    href="{{ route('courses.video', [
+                        <a wire:navigate
+                            href="{{ route('courses.video', [
                                         'course' => $course->id,
                                         'lesson' => $moduleLesson->id,
                                     ]) }}"
-                                    class="p-4 flex items-center gap-3
+                            class="p-4 flex items-center gap-3
                             hover:bg-zinc-100 dark:hover:bg-zinc-800
                             transition-colors
                             {{ $isActive ? 'bg-zinc-100 dark:bg-zinc-800' : '' }}">
 
-                                    <input type="checkbox" disabled class="accent-blue-700 dark:accent-blue-600"
-                                        {{ $isCompleted ? 'checked' : '' }}>
+                            <input type="checkbox" disabled class="accent-blue-700 dark:accent-blue-600"
+                                {{ $isCompleted ? 'checked' : '' }}>
 
-                                    <span class="text-sm text-zinc-700 dark:text-zinc-200">
-                                        {{ $moduleLesson->title }}
-                                    </span>
+                            <span class="text-sm text-zinc-700 dark:text-zinc-200">
+                                {{ $moduleLesson->title }}
+                            </span>
 
-                                </a>
-                            @endforeach
-
-                        </div>
+                        </a>
+                        @endforeach
 
                     </div>
+
+                </div>
                 @endforeach
 
             </div>

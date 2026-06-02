@@ -10,10 +10,31 @@ class EventController extends Controller
     public function index(Request $request)
     {
         $filter = $request->get('filter', 'all');
+        $search = $request->get('search');
 
         $query = Event::query();
 
-        // Upcoming + Live
+        /*
+    |--------------------------------------------------------------------------
+    | Search
+    |--------------------------------------------------------------------------
+    */
+
+        $query->when($search, function ($q) use ($search) {
+
+            $q->where(
+                'title',
+                'like',
+                '%' . $search . '%'
+            );
+        });
+
+        /*
+    |--------------------------------------------------------------------------
+    | Filter
+    |--------------------------------------------------------------------------
+    */
+
         if ($filter === 'upcoming') {
 
             $query->where(function ($q) {
@@ -26,10 +47,7 @@ class EventController extends Controller
                             ->where('end_time', '>=', now());
                     });
             });
-        }
-
-        // Past
-        elseif ($filter === 'past') {
+        } elseif ($filter === 'past') {
 
             $query->where('end_time', '<', now());
         }
@@ -47,7 +65,8 @@ class EventController extends Controller
             compact(
                 'featuredEvent',
                 'events',
-                'filter'
+                'filter',
+                'search'
             )
         );
     }

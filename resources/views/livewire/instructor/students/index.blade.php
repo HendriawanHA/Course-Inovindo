@@ -33,11 +33,30 @@
                     </div>
                 </div>
 
-                <div class="col-span-4">
-                    <p class="font-medium text-white">
-                        {{ $enrollment->course->title }}
+                <div>
+                    <p class="font-semibold text-white">
+                        {{ $enrollment->user->name }}
+                    </p>
+                    <p class="text-sm text-zinc-500">
+                        {{ $enrollment->user->email }}
                     </p>
                 </div>
+            </div>
+
+            <div class="col-span-4">
+                <p class="font-medium text-white">
+                    {{ $enrollment->course->title }}
+                </p>
+            </div>
+
+            @php
+            $progress = $enrollment->progress;
+
+            $color =
+            $progress >= 100 ? 'bg-emerald-500' :
+            ($progress >= 50 ? 'bg-indigo-500' :
+            'bg-amber-500');
+            @endphp
 
                 @php
                     $lessonIds = $enrollment->course->modules->flatMap(fn($module) => $module->lessons)->pluck('id');
@@ -63,17 +82,22 @@
                     </p>
                 </div>
 
-                <div class="col-span-2 text-sm text-zinc-400">
-                    {{ $enrollment->created_at->format('d M Y') }}
-                </div>
-            </div>
-        @empty
-            <div class="p-10 text-center">
-                <h3 class="font-semibold text-white">Belum ada student</h3>
-                <p class="mt-2 text-sm text-zinc-500">
-                    Student yang enroll di course kamu akan muncul di sini.
+                <p class="mt-1 text-xs text-zinc-500">
+                    {{ $progress }}%
                 </p>
             </div>
+
+            <div class="col-span-2 text-sm text-zinc-400">
+                {{ $enrollment->created_at->format('d M Y') }}
+            </div>
+        </div>
+        @empty
+        <div class="p-10 text-center">
+            <h3 class="font-semibold text-white">Belum ada student</h3>
+            <p class="mt-2 text-sm text-zinc-500">
+                Student yang enroll di course kamu akan muncul di sini.
+            </p>
+        </div>
         @endforelse
     </div>
 </div>

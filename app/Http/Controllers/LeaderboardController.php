@@ -8,14 +8,15 @@ class LeaderboardController extends Controller
 {
     public function index()
     {
-        $leaders = User::where('role', 'student')
-            ->orderByDesc('points')
+        $user = auth()->user();
+        $leaders = User::topStudents()
             ->take(6)
             ->get();
 
+
         return view(
             'livewire.pages.courses.leaderboard',
-            compact('leaders')
+            compact('leaders', 'user')
         );
     }
 }

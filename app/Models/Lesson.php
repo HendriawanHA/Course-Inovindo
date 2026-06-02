@@ -15,6 +15,7 @@ class Lesson extends Model
         'is_preview',
         'order',
     ];
+    
     public function module()
     {
         return $this->belongsTo(\App\Models\Module::class);

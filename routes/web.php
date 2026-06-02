@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Instructor\DashboardController as InstructorDashboardController;
 use App\Http\Controllers\Instructor\DiscussionController as InstructorDiscussionController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TransactionController;
 use App\Livewire\Instructor\Courses\Create as InstructorCoursesCreate;
 use App\Livewire\Instructor\Courses\Edit as InstructorCoursesEdit;
@@ -64,6 +65,11 @@ Route::middleware(['auth', 'verified', 'student'])->group(function () {
         '/courses/{course}/buy',
         [TransactionController::class, 'buy']
     )->name('courses.buy');
+
+    Route::get(
+        '/notifications/{notification}',
+        [NotificationController::class, 'read']
+    )->name('notifications.read');
 });
 
 Route::prefix('certificates')->name('certificates.')->group(function () {

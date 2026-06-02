@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Discussion;
 use App\Models\DiscussionReply;
+use App\Notifications\StudentDiscussionReplyNotification;
 use Illuminate\Http\Request;
 
 class DiscussionController extends Controller
@@ -42,11 +43,15 @@ class DiscussionController extends Controller
 
         abort_unless($isOwner, 403);
 
-        DiscussionReply::create([
+        $reply = DiscussionReply::create([
             'discussion_id' => $discussion->id,
             'user_id' => auth()->id(),
             'content' => $request->content,
         ]);
+
+        $discussion->user->notify(
+            new StudentDiscussionReplyNotification($reply)
+        );
 
         return back()->with('success', 'Balasan berhasil dikirim.');
     }

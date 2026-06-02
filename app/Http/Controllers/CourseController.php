@@ -11,6 +11,8 @@ use App\Models\LessonCompletion;
 
 class CourseController extends Controller
 {
+
+
     public function index()
     {
         $search = request('search');
@@ -39,9 +41,14 @@ class CourseController extends Controller
             ->latest()
             ->get();
 
+
+
         return view(
             'livewire.pages.courses.page-course',
-            compact('courses', 'search')
+            compact(
+                'courses',
+                'search'
+            )
         );
     }
 
@@ -54,6 +61,7 @@ class CourseController extends Controller
             ->enrollments()
             ->where('course_id', $course->id)
             ->first();
+
 
         return view(
             'livewire.pages.courses.detail-page',
@@ -74,9 +82,65 @@ class CourseController extends Controller
             ->latest()
             ->get();
 
+
         return view(
             'livewire.pages.courses.saved-course',
-            compact('courses')
+            compact(
+                'courses'
+            )
+        );
+    }
+
+    public function myCourses()
+    {
+        $search = request('search');
+
+        $courses = Course::query()
+
+            ->whereHas('enrollments', function ($query) {
+
+                $query->where(
+                    'user_id',
+                    auth()->id()
+                );
+            })
+
+            ->when($search, function ($query) use ($search) {
+
+                $query->where(
+                    'title',
+                    'like',
+                    '%' . $search . '%'
+                );
+            })
+
+            ->with([
+                'enrollments' => function ($query) {
+
+                    $query->where(
+                        'user_id',
+                        auth()->id()
+                    );
+                },
+
+                'modules',
+                'lessons',
+                'instructor',
+            ])
+
+            ->latest()
+
+            ->get();
+
+
+
+
+        return view(
+            'livewire.pages.courses.page-course',
+            compact(
+                'courses',
+                'search'
+            )
         );
     }
 
@@ -330,6 +394,7 @@ class CourseController extends Controller
             ->where('lesson_id', $lesson->id)
             ->latest()
             ->get();
+
 
         return view(
             'livewire.pages.courses.video-course',

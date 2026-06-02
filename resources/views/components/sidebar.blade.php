@@ -24,12 +24,18 @@
             </flux:sidebar.group>
 
             <flux:sidebar.group heading="COURSES" class="mt-8">
-                <flux:sidebar.item icon="sparkles" href="#">AI-Driven Content Creation</flux:sidebar.item>
-                <flux:sidebar.item icon="variable" href="#">Content Creation 2.0</flux:sidebar.item>
-                <flux:sidebar.item icon="cpu-chip" href="#">AI Mastery</flux:sidebar.item>
-                <flux:sidebar.item icon="video-camera" href="#">Video Editing Mastery</flux:sidebar.item>
-                <flux:sidebar.item icon="microphone" href="#">Generative AI</flux:sidebar.item>
-                <flux:sidebar.item icon="square-3-stack-3d" href="#">Submission</flux:sidebar.item>
+
+                @foreach($topCourses as $index => $course)
+
+                <flux:sidebar.item
+                    href="{{ route('courses.show', $course->id) }}"
+                    icon="book-open">
+                    {{ $course->title }}
+
+                </flux:sidebar.item>
+
+                @endforeach
+
             </flux:sidebar.group>
 
             <flux:sidebar.group heading="COMMUNITY" class="mt-8">

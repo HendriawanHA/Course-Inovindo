@@ -107,4 +107,38 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             ->where('status', 'paid')
             ->exists();
     }
+
+    public function getRankAttribute()
+    {
+        return collect(self::RANKS)
+            ->where('points', '<=', $this->points)
+            ->last();
+    }
+
+    public function getRankLevelAttribute()
+    {
+        return collect(self::RANKS)
+            ->search($this->rank) + 1;
+    }
+
+    public function getNextRankAttribute()
+    {
+        return self::RANKS[$this->rank_level] ?? null;
+    }
+
+    public function getPointsToNextRankAttribute()
+    {
+        if (!$this->next_rank) {
+            return 0;
+        }
+
+        return $this->next_rank['points'] - $this->points;
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar
+            ? asset('storage/' . $this->avatar)
+            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
+    }
 }
