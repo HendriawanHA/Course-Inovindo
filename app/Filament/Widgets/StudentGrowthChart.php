@@ -7,9 +7,10 @@ use Filament\Widgets\ChartWidget;
 
 class StudentGrowthChart extends ChartWidget
 {
-        protected ?string $heading = 'Student Growth';
+    protected ?string $heading = 'Student Growth';
     protected  ?string $maxHeight = '300px';
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 2;
+    protected static ?int $sort = 4;
 
 
     protected function getData(): array
