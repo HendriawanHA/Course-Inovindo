@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Discussion;
 use App\Models\DiscussionReply;
-use App\Models\User;
 use App\Notifications\NewDiscussionNotification;
 use App\Notifications\NewDiscussionReplyNotification;
 use Illuminate\Http\Request;
@@ -26,10 +26,10 @@ class DiscussionController extends Controller
             'content' => $validated['content'],
         ]);
 
-        $instructors = User::where('role', 'instructor')->get();
+        $course = Course::find($validated['course_id']);
 
-        foreach ($instructors as $instructor) {
-            $instructor->notify(new NewDiscussionNotification($discussion));
+        if ($course && $course->instructor) {
+            $course->instructor->notify(new NewDiscussionNotification($discussion));
         }
 
         return back();
@@ -47,10 +47,10 @@ class DiscussionController extends Controller
             'content' => $validated['content'],
         ]);
 
-        $instructors = User::where('role', 'instructor')->get();
+        $course = $discussion->course;
 
-        foreach ($instructors as $instructor) {
-            $instructor->notify(new NewDiscussionReplyNotification($reply));
+        if ($course && $course->instructor) {
+            $course->instructor->notify(new NewDiscussionReplyNotification($reply));
         }
 
         return back();

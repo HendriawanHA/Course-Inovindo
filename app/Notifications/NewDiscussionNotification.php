@@ -3,11 +3,10 @@
 namespace App\Notifications;
 
 use App\Models\Discussion;
-use Filament\Notifications\Notification;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification as BaseNotification;
+use Illuminate\Notifications\Notification;
 
-class NewDiscussionNotification extends BaseNotification
+class NewDiscussionNotification extends Notification
 {
     use Queueable;
 
@@ -22,11 +21,18 @@ class NewDiscussionNotification extends BaseNotification
 
     public function toDatabase(object $notifiable): array
     {
-        return Notification::make()
-            ->title('Diskusi baru')
-            ->body($this->discussion->user->name . ' bertanya di lesson: ' . $this->discussion->lesson->title)
-            ->icon('heroicon-o-chat-bubble-left-right')
-            ->color('primary')
-            ->getDatabaseMessage();
+        $course = $this->discussion->course;
+        $lesson = $this->discussion->lesson;
+
+        return [
+            'type' => 'new_discussion',
+            'title' => 'Diskusi baru',
+            'message' => $this->discussion->user->name . ' bertanya di "' . ($lesson?->title ?? $course?->title) . '"',
+            'thumbnail' => $course?->thumbnail,
+            'url' => route('courses.video', [
+                'course' => $course->id,
+                'lesson' => $lesson->id,
+            ]),
+        ];
     }
 }

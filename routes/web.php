@@ -97,6 +97,7 @@ Route::middleware(['auth', 'instructor'])->prefix('instructor')->name('instructo
         Route::get('/create', InstructorCoursesCreate::class)->name('create');
         Route::get('/{course}/edit', InstructorCoursesEdit::class)->name('edit');
         Route::get('/{course}/preview', InstructorCoursesPreview::class)->name('preview');
+        Route::get('/{course}/discussions', [InstructorDiscussionController::class, 'byCourse'])->name('discussions');
     });
 
     // Discussions

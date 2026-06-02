@@ -14,7 +14,7 @@ class DiscussionController extends Controller
     public function index(Request $request)
     {
         $courses = Course::where('user_id', auth()->id())
-            ->withCount('discussions')
+            ->withCount(['discussions', 'enrollments'])
             ->get();
 
         $courseIds = $courses->pluck('id');
@@ -29,6 +29,23 @@ class DiscussionController extends Controller
             ->get();
 
         return view('instructor.discussions.index', compact('courses', 'discussions'));
+    }
+
+    public function byCourse(Request $request, Course $course)
+    {
+        abort_unless($course->user_id === auth()->id(), 403);
+
+        $courses = Course::where('user_id', auth()->id())
+            ->withCount(['discussions', 'enrollments'])
+            ->get();
+
+        $discussions = Discussion::query()
+            ->where('course_id', $course->id)
+            ->with(['user', 'lesson', 'replies.user'])
+            ->latest()
+            ->get();
+
+        return view('instructor.discussions.index', compact('courses', 'discussions', 'course'));
     }
 
     public function reply(Request $request, Discussion $discussion)
