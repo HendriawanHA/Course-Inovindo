@@ -29,12 +29,12 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->brandName('Course Inovindo')
-            ->brandLogo(asset('images/logo-transparan.webp'))
             ->login()
             ->databaseNotifications()
             ->colors([
                 'primary' => Color::Indigo,
             ])
+            // ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -46,7 +46,19 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\StudentGrowthChart::class,
             ])
             ->plugins([
+                BreezyCore::make()
+                    ->myProfile(
+                        shouldRegisterUserMenu: true,
+                        userMenuLabel: 'My Profile',
+                        shouldRegisterNavigation: false,
+                        navigationGroup: 'Settings',
+                        hasAvatars: true,
+                        slug: 'my-profile'
+                    )
 
+                    ->myProfileComponents([
+                        'personal_info' => \App\Livewire\MyPersonalInfo::class,
+                    ])
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -61,6 +73,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\EnsureInstructorProfileAccess::class,
             ]);
     }
 }

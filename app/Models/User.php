@@ -39,9 +39,34 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         ];
     }
 
+    public const RANKS = [
+        ['name' => 'Newbie', 'points' => 0],
+        ['name' => 'Explorer', 'points' => 50],
+        ['name' => 'Contributor', 'points' => 150],
+        ['name' => 'Player', 'points' => 300],
+        ['name' => 'Builder', 'points' => 600],
+        ['name' => 'Catalyst', 'points' => 1000],
+        ['name' => 'Operator', 'points' => 1500],
+        ['name' => 'Pro', 'points' => 2500],
+        ['name' => 'Legend', 'points' => 4000],
+    ];
+
+    public function scopeStudents($query)
+    {
+        return $query->where('role', 'student');
+    }
+
+    public function scopeTopStudents($query)
+    {
+        return $query
+            ->students()
+            ->orderByDesc('points');
+    }
+
+
     public function canAccessPanel(Panel $panel): bool
     {
-        return in_array($this->role, ['admin']);
+        return in_array($this->role, ['admin', 'instructor']);
     }
 
     public function enrollments()
