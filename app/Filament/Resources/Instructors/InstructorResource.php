@@ -29,10 +29,6 @@ class InstructorResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function canViewAny(): bool
-    {
-        return Auth::user()?->role === 'admin';
-    }
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()

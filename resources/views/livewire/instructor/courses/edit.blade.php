@@ -17,7 +17,7 @@
         </a>
     </div>
 
-  
+
 
     {{-- SECTION 1: COURSE DETAILS --}}
     <section class="rounded-3xl border border-zinc-800 bg-zinc-900">
