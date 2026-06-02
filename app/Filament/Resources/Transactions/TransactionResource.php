@@ -30,6 +30,11 @@ class TransactionResource extends Resource
 
     protected static ?string $navigationLabel = 'Transactions';
 
+    public static function canViewAny(): bool
+    {
+        return Auth::user()?->role === 'admin';
+    }
+
     protected static ?string $modelLabel = 'Transaction';
 
     protected static ?string $pluralModelLabel = 'Transactions';

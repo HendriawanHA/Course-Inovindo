@@ -27,7 +27,11 @@ class StudentResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::AcademicCap;
 
     protected static ?string $recordTitleAttribute = 'Student';
-    
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()?->role === 'admin';
+    }
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
