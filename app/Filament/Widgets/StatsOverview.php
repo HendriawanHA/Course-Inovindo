@@ -12,6 +12,9 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends BaseWidget
 {
+    protected int|string|array $columnSpan = 3;
+    protected static ?int $sort = 4;
+
     protected function getStats(): array
     {
         return [
@@ -24,7 +27,8 @@ class StatsOverview extends BaseWidget
                 ->description('Total lessons')
                 ->color('success'),
 
-            Stat::make('Students',
+            Stat::make(
+                'Students',
                 User::where('role', 'student')->count()
             )
                 ->description('Registered students')

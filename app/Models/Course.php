@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class Course extends Model
@@ -146,7 +147,7 @@ class Course extends Model
 
     public function getHasPurchasedAttribute()
     {
-        return $this->isPurchasedBy(auth()->user());
+        return $this->isPurchasedBy(Auth::user());
     }
 
     public function scopePopular($query)
@@ -158,16 +159,16 @@ class Course extends Model
 
     public function getProgressAttribute()
     {
-        return $this->progressForUser(auth()->user());
+        return $this->progressForUser(Auth::user());
     }
 
     public function getCanAccessAttribute()
     {
-        return $this->canAccess(auth()->user());
+        return $this->canAccess(Auth::user());
     }
 
     public function getIsBookmarkedAttribute()
     {
-        return $this->isBookmarkedBy(auth()->user());
+        return $this->isBookmarkedBy(Auth::user());
     }
 }
