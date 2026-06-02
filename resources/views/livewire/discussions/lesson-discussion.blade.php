@@ -29,7 +29,7 @@
 
                         @if ($discussion->user->role === 'instructor')
                         <span
-                            class="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
+                            class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
                             Instructor
                         </span>
                         @endif
@@ -46,7 +46,7 @@
                     <button
                         type="button"
                         wire:click="startReply({{ $discussion->id }}, '{{ addslashes($discussion->user->name) }}')"
-                        class="mt-3 text-sm text-indigo-500 hover:text-indigo-700">
+                        class="mt-3 text-sm text-blue-500 hover:text-blue-700">
                         Reply
                     </button>
 
@@ -68,7 +68,7 @@
 
                                     @if ($reply->user->role === 'instructor')
                                     <span
-                                        class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
+                                        class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
                                         Instructor
                                     </span>
                                     @endif
@@ -91,8 +91,8 @@
         </div>
         @empty
         <div class="flex flex-col items-center justify-center text-center px-8 py-14">
-            <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-5">
-                <flux:icon.chat-bubble-left-right class="w-8 h-8 text-indigo-500" />
+            <div class="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-5">
+                <flux:icon.chat-bubble-left-right class="w-8 h-8 text-blue-500" />
             </div>
 
             <h3 class="font-semibold text-zinc-900 dark:text-white">
@@ -110,12 +110,12 @@
 
         @if ($replyingTo)
         <div
-            class="mb-3 flex items-center justify-between rounded-xl bg-indigo-50 dark:bg-indigo-500/10 px-4 py-2 text-sm">
-            <span class="text-indigo-700 dark:text-indigo-300">
+            class="mb-3 flex items-center justify-between rounded-xl bg-blue-50 dark:bg-blue-500/10 px-4 py-2 text-sm">
+            <span class="text-blue-700 dark:text-blue-300">
                 Replying to <strong>{{ $replyingName }}</strong>
             </span>
 
-            <button type="button" wire:click="cancelReply" class="text-indigo-500 hover:text-indigo-700">
+            <button type="button" wire:click="cancelReply" class="text-blue-500 hover:text-blue-700">
                 Cancel
             </button>
         </div>
@@ -128,10 +128,10 @@
                 required
                 placeholder="Write a comment..."
                 oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"
-                class="min-h-[48px] max-h-40 flex-1 resize-none rounded-2xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 py-3 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none overflow-hidden"></textarea>
+                class="min-h-[48px] max-h-40 flex-1 resize-none rounded-2xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 py-3 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none overflow-hidden"></textarea>
 
             <button type="submit"
-                class="inline-flex h-[48px] items-center justify-center rounded-2xl bg-indigo-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 active:scale-95">
+                class="inline-flex h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500 active:scale-95">
                 {{ $replyingTo ? 'Reply' : 'Send' }}
             </button>
         </div>

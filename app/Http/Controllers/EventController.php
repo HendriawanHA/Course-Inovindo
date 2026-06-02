@@ -13,15 +13,7 @@ class EventController extends Controller
         $search = $request->get('search');
 
         $query = Event::query();
-
-        /*
-    |--------------------------------------------------------------------------
-    | Search
-    |--------------------------------------------------------------------------
-    */
-
         $query->when($search, function ($q) use ($search) {
-
             $q->where(
                 'title',
                 'like',
@@ -29,26 +21,15 @@ class EventController extends Controller
             );
         });
 
-        /*
-    |--------------------------------------------------------------------------
-    | Filter
-    |--------------------------------------------------------------------------
-    */
-
         if ($filter === 'upcoming') {
-
             $query->where(function ($q) {
-
                 $q->where('start_time', '>', now())
-
                     ->orWhere(function ($q2) {
-
                         $q2->where('start_time', '<=', now())
                             ->where('end_time', '>=', now());
                     });
             });
         } elseif ($filter === 'past') {
-
             $query->where('end_time', '<', now());
         }
 
@@ -57,7 +38,6 @@ class EventController extends Controller
             ->get();
 
         $featuredEvent = $events->first();
-
         $events = $events->skip(1);
 
         return view(

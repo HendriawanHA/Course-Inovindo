@@ -16,32 +16,24 @@ class CourseController extends Controller
     public function index()
     {
         $search = request('search');
-
         $courses = Course::query()
-
             ->with([
                 'enrollments' => function ($query) {
                     $query->where('user_id', auth()->id());
                 },
-
                 'modules',
                 'lessons',
                 'instructor',
             ])
-
             ->when($search, function ($query) use ($search) {
-
                 $query->where(
                     'title',
                     'like',
                     '%' . $search . '%'
                 );
             })
-
             ->latest()
             ->get();
-
-
 
         return view(
             'livewire.pages.courses.page-course',
@@ -54,19 +46,77 @@ class CourseController extends Controller
 
     public function show($id)
     {
-        $course = Course::with('modules.lessons')
-            ->findOrFail($id);
+        $course = Course::with('modules.lessons')->findOrFail($id);
+        $user = auth()->user();
 
-        $enrollment = auth()->user()
-            ->enrollments()
+        $enrollment = $this->getEnrollment($user, $course);
+        $completedLessonIds = $this->getCompletedLessonIds($user, $course);
+
+        $stats = $this->calculateProgress($course, $completedLessonIds);
+        $navigation = $this->getNavigation($course, $user);
+
+        $modules = $course->modules->map(function ($module) use ($completedLessonIds) {
+
+            $module->total_lessons = $module->lessons->count();
+
+            $module->lessons = $module->lessons->map(function ($lesson) use ($completedLessonIds) {
+
+                $lesson->is_completed = in_array($lesson->id, $completedLessonIds);
+
+                return $lesson;
+            });
+
+            return $module;
+        });
+
+        return view('livewire.pages.courses.detail-page', array_merge(
+            compact('course', 'enrollment', 'completedLessonIds', 'modules'),
+            $stats,
+            $navigation
+        ));
+    }
+
+    private function getEnrollment($user, $course)
+    {
+        return $user->enrollments()
             ->where('course_id', $course->id)
             ->first();
+    }
 
+    private function getCompletedLessonIds($user, $course)
+    {
+        return $user->completedLessons()
+            ->whereIn('lesson_id', $course->lessons->pluck('id'))
+            ->pluck('lesson_id')
+            ->toArray();
+    }
 
-        return view(
-            'livewire.pages.courses.detail-page',
-            compact('course', 'enrollment')
-        );
+    private function calculateProgress($course, $completedLessonIds)
+    {
+        $totalLessons = $course->lessons()->count();
+        $completedLessons = count($completedLessonIds);
+
+        return [
+            'totalLessons' => $totalLessons,
+            'completedLessons' => $completedLessons,
+            'progress' => $totalLessons > 0
+                ? round(($completedLessons / $totalLessons) * 100)
+                : 0,
+            'hasStarted' => $completedLessons > 0,
+            'isCompleted' => $totalLessons > 0 && $completedLessons >= $totalLessons,
+        ];
+    }
+
+    private function getNavigation($course, $user)
+    {
+        $firstLesson = $course->firstLesson();
+        $nextLesson = $course->getNextLessonForUser($user);
+
+        return [
+            'firstLesson' => $firstLesson,
+            'nextLesson' => $nextLesson,
+            'targetLesson' => $nextLesson ?? $firstLesson,
+        ];
     }
 
     public function savedCourses()
@@ -82,7 +132,6 @@ class CourseController extends Controller
             ->latest()
             ->get();
 
-
         return view(
             'livewire.pages.courses.saved-course',
             compact(
@@ -94,46 +143,33 @@ class CourseController extends Controller
     public function myCourses()
     {
         $search = request('search');
-
         $courses = Course::query()
-
             ->whereHas('enrollments', function ($query) {
-
                 $query->where(
                     'user_id',
                     auth()->id()
                 );
             })
-
             ->when($search, function ($query) use ($search) {
-
                 $query->where(
                     'title',
                     'like',
                     '%' . $search . '%'
                 );
             })
-
             ->with([
                 'enrollments' => function ($query) {
-
                     $query->where(
                         'user_id',
                         auth()->id()
                     );
                 },
-
                 'modules',
                 'lessons',
                 'instructor',
             ])
-
             ->latest()
-
             ->get();
-
-
-
 
         return view(
             'livewire.pages.courses.page-course',
@@ -153,46 +189,26 @@ class CourseController extends Controller
             ->where('course_id', $course->id)
             ->exists()
         ) {
-
             $user->bookmarkedCourses()
                 ->detach($course->id);
         } else {
-
             $user->bookmarkedCourses()
                 ->attach($course->id);
         }
-
         return back();
     }
 
     public function completeLesson($courseId, $lessonId)
     {
         $user = auth()->user();
-
         $course = Course::with('modules.lessons')
             ->findOrFail($courseId);
-
         $lesson = Lesson::findOrFail($lessonId);
 
-        /*
-|--------------------------------------------------------------------------
-| POINT REWARD CONFIG
-|--------------------------------------------------------------------------
-*/
-
         $isPaidCourse = $course->price > 0;
-
         $lessonReward = $isPaidCourse ? 3 : 1;
-
         $moduleReward = $isPaidCourse ? 15 : 5;
-
         $courseReward = $isPaidCourse ? 50 : 20;
-
-        /*
-    |--------------------------------------------------------------------------
-    | CEK apakah lesson sudah selesai sebelumnya
-    |--------------------------------------------------------------------------
-    */
 
         $alreadyCompleted = LessonCompletion::where(
             'user_id',
@@ -205,38 +221,16 @@ class CourseController extends Controller
             ->exists();
 
         if (!$alreadyCompleted) {
-
-            /*
-        |--------------------------------------------------------------------------
-        | Simpan lesson completion
-        |--------------------------------------------------------------------------
-        */
-
             LessonCompletion::create([
                 'user_id' => $user->id,
                 'lesson_id' => $lesson->id,
                 'completed_at' => now(),
             ]);
-
-            /*
-        |--------------------------------------------------------------------------
-        | LESSON REWARD
-        |--------------------------------------------------------------------------
-        */
-
             $user->increment('points', $lessonReward);
         }
 
-        /*
-    |--------------------------------------------------------------------------
-    | MODULE COMPLETE CHECK
-    |--------------------------------------------------------------------------
-    */
-
         $module = $lesson->module;
-
         $moduleLessonIds = $module->lessons->pluck('id');
-
         $completedInModule = LessonCompletion::where(
             'user_id',
             $user->id
@@ -253,23 +247,14 @@ class CourseController extends Controller
             $completedInModule === $module->lessons->count()
             && !$moduleAlreadyCompleted
         ) {
-
             $user->increment('points', $moduleReward);
-
             session()->put(
                 'module_reward_' . $module->id . '_' . $user->id,
                 true
             );
         }
 
-        /*
-    |--------------------------------------------------------------------------
-    | COURSE COMPLETE CHECK
-    |--------------------------------------------------------------------------
-    */
-
         $totalLessons = $course->lessons()->count();
-
         $completedLessons = LessonCompletion::where(
             'user_id',
             $user->id
@@ -283,12 +268,6 @@ class CourseController extends Controller
         $progress = round(
             ($completedLessons / $totalLessons) * 100
         );
-
-        /*
-    |--------------------------------------------------------------------------
-    | Enrollment
-    |--------------------------------------------------------------------------
-    */
 
         $enrollment = Enrollment::firstOrCreate([
             'user_id' => $user->id,
@@ -307,58 +286,75 @@ class CourseController extends Controller
         ) {
 
             $courseCompletedNow = true;
-
             $enrollment->update([
                 'status' => 'completed',
                 'progress' => 100,
                 'completed_at' => now(),
             ]);
         } else {
-
             $enrollment->update([
                 'progress' => $progress,
             ]);
         }
 
-        /*
-    |--------------------------------------------------------------------------
-    | COURSE REWARD
-    |--------------------------------------------------------------------------
-    */
-
         if ($courseCompletedNow) {
-
             $user->increment('points', $courseReward);
         }
-
-        /*
-    |--------------------------------------------------------------------------
-    | LEVEL SYSTEM
-    |--------------------------------------------------------------------------
-    */
-
         $user->level = floor($user->points / 100) + 1;
-
         $user->save();
-
         return back();
     }
 
     public function video($courseId, $lessonId)
     {
-        $course = Course::with('modules.lessons')
-            ->findOrFail($courseId);
+        $course = Course::with('modules.lessons')->findOrFail($courseId);
+        $lesson = Lesson::findOrFail($lessonId);
 
-        $lesson = Lesson::with('module.lessons')
-            ->findOrFail($lessonId);
+        $enrollment = $this->ensureEnrollment($course);
 
-        /*
-    |--------------------------------------------------------------------------
-    | Auto Enrollment
-    |--------------------------------------------------------------------------
-    */
+        $lessons = $course->lessons->values();
+        $currentIndex = $lessons->search(fn($l) => $l->id === $lesson->id);
 
-        Enrollment::firstOrCreate([
+        $previousLesson = $lessons[$currentIndex - 1] ?? null;
+        $nextLesson = $lessons[$currentIndex + 1] ?? null;
+        $totalLessons = $lessons->count();
+
+        $completedIds = auth()->user()
+            ->completedLessons()
+            ->whereIn('lesson_id', $lessons->pluck('id'))
+            ->pluck('lesson_id')
+            ->toArray();
+
+        $modules = $course->modules->map(function ($module) use ($completedIds) {
+            $module->lessons = $module->lessons->map(function ($lesson) use ($completedIds) {
+                $lesson->is_completed = in_array($lesson->id, $completedIds);
+                return $lesson;
+            });
+
+            return $module;
+        });
+
+        $discussions = Discussion::with(['user', 'replies.user'])
+            ->where('course_id', $course->id)
+            ->where('lesson_id', $lesson->id)
+            ->latest()
+            ->get();
+
+        return view('livewire.pages.courses.video-course', [
+            'course' => $course,
+            'lesson' => $lesson,
+            'modules' => $modules,
+            'currentIndex' => $currentIndex,
+            'totalLessons' => $totalLessons,
+            'previousLesson' => $previousLesson,
+            'nextLesson' => $nextLesson,
+            'discussions' => $discussions,
+        ]);
+    }
+
+    private function ensureEnrollment($course)
+    {
+        return Enrollment::firstOrCreate([
             'user_id' => auth()->id(),
             'course_id' => $course->id,
         ], [
@@ -366,47 +362,25 @@ class CourseController extends Controller
             'progress' => 0,
             'enrolled_at' => now(),
         ]);
+    }
 
-        /*
-    |--------------------------------------------------------------------------
-    | Navigation Lesson
-    |--------------------------------------------------------------------------
-    */
+    private function resolveNavigation($lessons, $currentLesson)
+    {
+        $index = $lessons->search(fn($l) => $l->id === $currentLesson->id);
 
-        $allLessons = $course->lessons()->get();
+        return [
+            $lessons[$index - 1] ?? null,
+            $lessons[$index + 1] ?? null,
+            $index
+        ];
+    }
 
-        $currentLessonIndex = $allLessons
-            ->search(fn($item) => $item->id === $lesson->id);
-
-        $previousLesson = $allLessons[$currentLessonIndex - 1] ?? null;
-
-        $nextLesson = $allLessons[$currentLessonIndex + 1] ?? null;
-
-        $totalLessons = $allLessons->count();
-
-        $discussions = \App\Models\Discussion::with('user')
+    private function getDiscussions($course, $lesson)
+    {
+        return Discussion::with(['user', 'replies.user'])
             ->where('course_id', $course->id)
             ->where('lesson_id', $lesson->id)
             ->latest()
             ->get();
-        $discussions = Discussion::with(['user', 'replies.user'])
-            ->where('course_id', $course->id)
-            ->where('lesson_id', $lesson->id)
-            ->latest()
-            ->get();
-
-
-        return view(
-            'livewire.pages.courses.video-course',
-            compact(
-                'course',
-                'lesson',
-                'currentLessonIndex',
-                'totalLessons',
-                'previousLesson',
-                'nextLesson',
-                'discussions'
-            )
-        );
     }
 }

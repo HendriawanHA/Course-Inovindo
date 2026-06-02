@@ -10,7 +10,6 @@
 
         <!-- Konten Utama yang di Tengah -->
         <div class="max-w-3xl mx-auto w-full">
-
             <!-- Filter Tabs -->
             <x-courses.events.event-filter
                 :filter="$filter" />
@@ -24,58 +23,11 @@
                 :featuredEvent="$featuredEvent" />
 
             <!-- Monthly Section -->
-            <flux:heading size="xl" class="mb-5 text-zinc-900 dark:text-white !font-bold">
-                {{ $events->first()?->start_time->translatedFormat('F Y') }}
-            </flux:heading>
+            <x-courses.events.monthly-section
+                :events="$events" />
 
-            @foreach ($events as $event)
-
-            <a href="{{ route('events.show', $event->slug) }}">
-
-                <flux:card class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 hover:shadow-xl transition-all mb-4">
-
-                    <div class="flex flex-col md:flex-row gap-6 items-start">
-
-                        <img
-                            src="{{ $event->thumbnail_url }}"
-                            alt="Event"
-                            class="w-full md:w-56 h-24 object-cover rounded-2xl" />
-
-                        <div class="flex-1 min-w-0">
-
-                            <flux:heading size="lg" class="text-zinc-900 dark:text-white">
-                                {{ $event->title }}
-                            </flux:heading>
-
-                            <div class="flex items-center gap-2 mt-3 text-zinc-500 dark:text-zinc-400">
-
-                                <flux:icon.calendar-days variant="micro" />
-
-                                <flux:text class="text-sm">
-                                    {{ $event->start_time->format('l, F d, Y • h:i A') }}
-                                </flux:text>
-
-                            </div>
-
-                            <div class="flex items-center gap-2 mt-2 text-zinc-500 dark:text-zinc-400">
-
-                                <flux:icon.video-camera variant="micro" />
-
-                                <flux:text class="text-sm">
-                                    {{ $event->delivery_type }}
-                                </flux:text>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </flux:card>
-
-            </a>
-
-            @endforeach
+            <x-courses.events.event-list
+                :events="$events" />
 
         </div>
 
