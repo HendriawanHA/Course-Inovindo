@@ -5,7 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Jika baris di bawah ini masih ada, biarkan tetap di bawah */
 @custom-variant dark (&:where(.dark, .dark *));
 
 .scroll-hide::-webkit-scrollbar {
