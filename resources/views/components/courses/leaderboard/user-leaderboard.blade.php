@@ -8,7 +8,7 @@
                     circle
                     src="{{ $user->avatar_url }}" />
                 <div class="absolute -bottom-1 -right-1">
-                    <div class="w-8 h-8 rounded-full bg-amber-500 text-black text-sm font-bold flex items-center justify-center border-4 border-white dark:border-zinc-900">
+                    <div class="w-8 h-8 rounded-full bg-amber-500 text-black text-sm font-bold flex items-center justify-center border- border-white dark:border-zinc-900">
                         {{ $user->rank_level }}
                     </div>
                 </div>

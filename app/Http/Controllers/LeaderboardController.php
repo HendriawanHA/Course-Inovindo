@@ -13,7 +13,6 @@ class LeaderboardController extends Controller
             ->take(6)
             ->get();
 
-
         return view(
             'livewire.pages.courses.leaderboard',
             compact('leaders', 'user')
