@@ -1,7 +1,16 @@
 @props([
 'course',
-'mode' => 'default'
+'mode' => 'default',
+'backUrl' => route('courses.index'),
+
 ])
+
+@php
+$backUrl = match($mode) {
+'saved' => route('courses.saved'),
+default => route('courses.index'),
+};
+@endphp
 
 @php
 $buyModalData = [
@@ -40,7 +49,10 @@ $buyModalData = [
 
     @if ($course->can_access)
     <a
-        href="{{ route('courses.show', $course->id) }}"
+        href="{{ route('courses.show', [
+        'id' => $course->id,
+        'back' => $backUrl
+    ]) }}"
         wire:navigate>
         @else
         <div

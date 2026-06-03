@@ -23,10 +23,11 @@
         @else
         <x-courses.course-grid
             :courses="$courses"
-            :mode="'saved'" />
+            mode="saved"
+            :back-url="route('courses.saved')" />
         @endif
 
         <x-courses.buy-course-modal />
-        
+
     </flux:main>
 </x-app-layout>

@@ -1,4 +1,4 @@
-@props(['course', 'targetLesson', 'hasStarted', 'isCompleted'])
+@props(['course', 'targetLesson', 'hasStarted', 'isCompleted',])
 
 <div class="flex justify-between">
     <flux:heading size="xl" class="text-3xl md:text-4xl">
@@ -11,7 +11,10 @@
         href="{{ route('courses.video', [
                 'course' => $course->id,
                 'lesson' => $targetLesson->id,
-                'back' => request()->fullUrl()
+                'back' => route('courses.show', [
+    'id' => $course->id,
+    'back' => request('back')
+])
             ]) }}"
         wire:navigate
         variant="primary"

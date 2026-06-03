@@ -24,25 +24,22 @@
         </div>
 
         <!-- Right Level -->
-        <div class="text-right">
+        <div class="text-center">
             <flux:badge color="amber" class="rounded-full px-5 py-2 gap-2 text-sm font-medium">
                 <flux:icon.trophy variant="mini" />
                 Level {{ $user->rank_level }}
                 <flux:separator vertical />
                 {{ $user->rank['name'] }}
             </flux:badge>
-            <div class="flex items-center justify-end gap-2 mt-4">
-                <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">
+            <flux:text class="text-sm text-zinc-500 dark:text-zinc-400 mt-4">
 
-                    @if ($user->next_rank)
-                    {{ $user->points_to_next_rank }} points to level up
-                    @else
-                    Max rank reached
-                    @endif
+                @if ($user->next_rank)
+                {{ $user->points_to_next_rank }} points to level up
+                @else
+                Max rank reached
+                @endif
 
-                </flux:text>
-                <flux:icon.question-mark-circle class="size-4 text-zinc-400" />
-            </div>
+            </flux:text>
         </div>
     </div>
 
