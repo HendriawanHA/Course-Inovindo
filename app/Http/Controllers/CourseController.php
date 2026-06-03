@@ -124,7 +124,9 @@ class CourseController extends Controller
         $courses = auth()->user()
             ->bookmarkedCourses()
             ->with([
-                'modules.lessons',
+                'modules',
+                'lessons',
+                'instructor',
                 'enrollments' => function ($query) {
                     $query->where('user_id', auth()->id());
                 }

@@ -25,6 +25,9 @@ class Course extends Model
         'can_access',
         'is_bookmarked',
         'has_purchased',
+        'is_completed',
+        'first_lesson',
+        'next_lesson',
     ];
 
     public function sections()
@@ -71,6 +74,10 @@ class Course extends Model
         })->first();
     }
 
+    public function getFirstLessonAttribute()
+    {
+        return $this->firstLesson();
+    }
     public function getNextLessonForUser($user)
     {
         $completedLessonIds = $user->completedLessons
@@ -80,6 +87,17 @@ class Course extends Model
             ->whereNotIn('lessons.id', $completedLessonIds)
             ->orderBy('order')
             ->first();
+    }
+
+    public function getNextLessonAttribute()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return null;
+        }
+
+        return $this->getNextLessonForUser($user);
     }
 
     public function bookmarkedBy()
@@ -170,5 +188,10 @@ class Course extends Model
     public function getIsBookmarkedAttribute()
     {
         return $this->isBookmarkedBy(Auth::user());
+    }
+
+    public function getIsCompletedAttribute()
+    {
+        return $this->progress >= 100;
     }
 }

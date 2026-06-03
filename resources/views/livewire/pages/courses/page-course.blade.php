@@ -6,7 +6,6 @@
             openBuyModal:false,
             selectedCourse:null
         }"
-
         @open-buy-modal.window="
             selectedCourse = $event.detail;
             openBuyModal = true;
@@ -21,9 +20,8 @@
         <x-courses.course-filter />
 
         <x-courses.course-grid
-            :courses="$courses" />
+            :courses="$courses"/>
 
-        {{-- SATU MODAL SAJA --}}
         <x-courses.buy-course-modal />
 
     </flux:main>
