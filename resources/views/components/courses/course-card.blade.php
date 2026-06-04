@@ -74,7 +74,7 @@ $buyModalData = [
                                     from-black/20 via-black/10 to-transparent">
                     </div>
                     <x-courses.status-badge :course="$course"
-                        :mode="'default'" />
+                        :mode="$mode" />
                 </div>
                 <div class="p-5">
                     <flux:heading

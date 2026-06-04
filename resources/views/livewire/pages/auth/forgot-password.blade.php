@@ -66,21 +66,17 @@ new #[Layout('layouts.guest')] class extends Component
 
             <div class="relative z-10">
                 <div class="text-center mb-8">
-                    <div class="mx-auto mb-5
-                    w-14 h-14
-                    rounded-2xl
-                    bg-blue-600/10
-                    flex items-center justify-center">
+                    <div class="flex justify-center items-center gap-2 mb-5">
                         <flux:icon.lock-closed
                             variant="mini"
                             class="text-blue-700 size-6" />
+                        <flux:heading
+                            size="xl"
+                            class="text-zinc-900 dark:text-white font-bold">
+                            Forgot Password
+                        </flux:heading>
                     </div>
-                    <flux:heading
-                        size="xl"
-                        class="text-zinc-900 dark:text-white font-bold">
-                        Forgot Password
-                    </flux:heading>
-                    <flux:text class="mt-3 text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    <flux:text class="mt-3 hidden lg:block text-zinc-600 dark:text-zinc-400 leading-relaxed">
                         Enter your email address and we'll send
                         you a password reset link.
                     </flux:text>

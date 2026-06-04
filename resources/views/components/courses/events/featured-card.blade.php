@@ -2,19 +2,19 @@
 <a href="{{ route('events.show', $featuredEvent->slug) }}">
     <flux:card class="mb-10 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:shadow-xl transition-all">
         <!-- Event Image -->
-        <div class="relative w-full h-80 bg-zinc-900 rounded-t-2xl overflow-hidden">
+        <div class="relative w-full h-52 md:h-64 lg:h-80 bg-zinc-900 rounded-t-2xl overflow-hidden">
             <img
                 src="{{ $featuredEvent->thumbnail_url }}""
                             class=" w-full h-full object-cover"
                 alt="Event Thumbnail" />
         </div>
 
-        <div class="p-6">
-            <div class="flex items-start justify-between gap-4">
+        <div class="py-6 md:p-6">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                 <flux:heading size="xl" class="text-zinc-900 dark:text-white !font-bold leading-tight">
                     {{ $featuredEvent->title }}
                 </flux:heading>
-                <flux:badge rounded color="purple" class="px-5 py-1 whitespace-nowrap font-medium">
+                <flux:badge rounded color="purple" class="w-fit px-4 py-1 my-2 whitespace-nowrap font-medium">
                     {{ $featuredEvent->delivery_type }}
                 </flux:badge>
             </div>

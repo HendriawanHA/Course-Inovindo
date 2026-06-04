@@ -19,7 +19,7 @@
         <div
             class="
                    px-6 py-8 text-zinc-700">
-            <div class="flex items-center gap-4">
+            <div class="flex flex-row sm:items-center gap-4">
                 <div class="size-14 rounded-2xl bg-gradient-to-tr from-blue-700 to-emerald-500
                             flex items-center justify-center">
                     <flux:icon.sparkles
@@ -31,7 +31,7 @@
                         Earn Points
                     </h2>
                     <p class="dark:text-blue-100 text-sm mt-1">
-                        Complete learning activities and collect XP.
+                        Complete learning activities and collect point.
                     </p>
                 </div>
             </div>
@@ -55,19 +55,19 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span>Complete Lesson</span>
-                            <span class="font-bold text-blue-600">
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">
                                 +1 XP
                             </span>
                         </div>
                         <div class="flex justify-between">
                             <span>Complete Module</span>
-                            <span class="font-bold text-blue-600">
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">
                                 +5 XP
                             </span>
                         </div>
                         <div class="flex justify-between">
                             <span>Complete Course</span>
-                            <span class="font-bold text-blue-600">
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">
                                 +20 XP
                             </span>
                         </div>
@@ -88,19 +88,19 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span>Complete Lesson</span>
-                            <span class="font-bold text-blue-600">
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">
                                 +3 XP
                             </span>
                         </div>
                         <div class="flex justify-between">
                             <span>Complete Module</span>
-                            <span class="font-bold text-blue-600">
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">
                                 +15 XP
                             </span>
                         </div>
                         <div class="flex justify-between">
                             <span>Complete Course</span>
-                            <span class="font-bold text-blue-600">
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">
                                 +50 XP
                             </span>
                         </div>

@@ -1,22 +1,46 @@
-<div class="px-8 mt-10">
+<div class="px-4 md:px-8 mt-8 md:mt-10">
 
-        <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between gap-3 mb-6">
 
-            <flux:heading size="lg">
-                Most Popular Courses
-            </flux:heading>
+        <flux:heading size="lg">
+            Most Popular Courses
+        </flux:heading>
 
-            <flux:link href="{{ route('courses.index') }}" wire:navigate>
-                View all
-            </flux:link>
+        <flux:link href="{{ route('courses.index') }}" wire:navigate>
+            View all
+        </flux:link>
 
-        </div>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-5">
 
-            @foreach ($topCourses as $index => $course)
+        @foreach ($topCourses as $index => $course)
 
-            <a href="{{ route('courses.show', $course->id) }}" wire:navigate>
+        @php
+        $buyModalData = [
+        'id' => $course->id,
+        'title' => addslashes($course->title),
+        'thumbnail' => $course->thumbnail_url,
+        'price' => number_format($course->price, 0, ',', '.'),
+        'avatar' => $course->instructor->avatar_url ?? '',
+        'instructor' => $course->instructor->name ?? 'Unknown Instructor',
+        'modules' => $course->modules->count(),
+        'lessons' => $course->lessons->count(),
+        'buyUrl' => route('courses.buy', $course->id),
+        ];
+        @endphp
+
+        @if($course->can_access)
+
+        <a href="{{ route('courses.show', $course->id) }}" wire:navigate>
+
+            @else
+
+            <div
+                @click="$dispatch('open-buy-modal', @js($buyModalData))"
+                class="cursor-pointer">
+
+                @endif
 
                 <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 
                             rounded-2xl overflow-hidden hover:border-zinc-300 dark:hover:border-zinc-700 shadow-sm
@@ -54,10 +78,11 @@
 
                 </div>
 
-            </a>
-
-            @endforeach
-
-        </div>
-
+                @if ($course->can_access)
+        </a>
+        @else
     </div>
+    @endif
+
+    @endforeach
+</div>

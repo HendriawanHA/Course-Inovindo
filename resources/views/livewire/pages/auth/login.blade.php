@@ -57,7 +57,7 @@ new #[Layout('layouts.guest')] class extends Component
                     <div class="mb-4">
                         <div>
                             <h1
-                                class="flex items-center text-xl font-bold text-green-500 dark:text-greenn-500 tracking-tight">
+                                class="flex justify-center items-center text-xl font-bold text-green-500 dark:text-greenn-500 tracking-tight">
                                 <flux:icon name="book-open" class="inline w-6 h-6 mr-2 text-blue-700" />
                                 <div class="flex gap-1">
                                     <span class="text-blue-700">Inovindo</span>
@@ -84,14 +84,14 @@ new #[Layout('layouts.guest')] class extends Component
                 </div>
 
                 <div class="flex flex-col justify-center p-8 lg:p-10">
-                    <div class="lg:hidden mb-8 text-center">
-                        <flux:badge color="indigo" class="mb-4">
-                            Inovindo LMS
-                        </flux:badge>
-                        <flux:heading size="xl" class="text-zinc-900 dark:text-white">
-                            Welcome Back
-                        </flux:heading>
-                    </div>
+                    <h1
+                        class="flex justify-center items-center text-xl lg:hidden mb-6 font-bold text-green-500 dark:text-greenn-500 tracking-tight">
+                        <flux:icon name="book-open" class="inline w-6 h-6 mr-2 text-blue-700" />
+                        <div class="flex gap-1">
+                            <span class="text-blue-700">Inovindo</span>
+                            Course
+                        </div>
+                    </h1>
                     <div>
                         <flux:heading size="xl" class="text-center text-zinc-900 dark:text-white">
                             Log In
@@ -150,6 +150,13 @@ new #[Layout('layouts.guest')] class extends Component
                                 class="flex items-center justify-center text-sm">
                                 Create account
                             </flux:link>
+                        </div>
+
+                        <div class="lg:hidden mb-8">
+                            <img
+                                src="{{ asset('images/logo-transparan.webp') }}"
+                                alt="Inovindo LMS"
+                                class="w-36 mx-auto mb-4" />
                         </div>
                     </div>
                 </div>

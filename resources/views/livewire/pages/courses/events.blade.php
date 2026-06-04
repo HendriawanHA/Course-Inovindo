@@ -1,5 +1,5 @@
 <x-app-layout>
-    <flux:main class="flex-1 p-8 bg-zinc-100 dark:bg-zinc-900">
+    <flux:main class="flex-1 p-4 md:p-6 lg:p-8 bg-zinc-100 dark:bg-zinc-900">
         <x-courses.page-header
             icon="calendar-days"
             title="Events" />
@@ -10,7 +10,7 @@
             <x-courses.events.event-filter
                 :filter="$filter" />
 
-            <flux:heading size="xl" class="mb-4 text-zinc-900 dark:text-white !font-bold">
+            <flux:heading size="xl" class="hidden md:block mb-4 text-zinc-900 dark:text-white !font-bold">
                 New Event
             </flux:heading>
 

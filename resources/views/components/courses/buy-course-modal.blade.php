@@ -1,7 +1,6 @@
 <div
     x-cloak
     x-show="openBuyModal"
-    x-transition
     class="fixed inset-0 z-50 flex items-center justify-center p-4">
 
     <div
@@ -11,6 +10,8 @@
 
     <div
         @click.stop
+        x-show="openBuyModal"
+        x-transition
         class="relative w-full max-w-md rounded-3xl
                bg-white dark:bg-zinc-900
                border border-zinc-200 dark:border-zinc-800

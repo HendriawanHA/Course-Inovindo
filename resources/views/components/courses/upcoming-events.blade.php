@@ -1,4 +1,4 @@
-<div class="px-8 mt-10">
+<div class="px-4 md:px-8 mt-8 md:mt-10">
         <div class="flex items-center justify-between mb-6">
             <flux:heading size="lg">
                 Upcoming Events
@@ -15,18 +15,18 @@
 
             <a href="{{ route('events.show', $event->slug) }}" wire:navigate>
 
-                <flux:card class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 shadow-sm hover:shadow-xl transition-all mb-4">
+                <flux:card class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 shadow-sm hover:shadow-xl transition-all mb-4">
 
                     <div class="flex flex-col md:flex-row gap-6 items-start">
 
                         <img
                             src="{{ asset('storage/' . $event->thumbnail) }}"
                             alt="Event"
-                            class="w-full md:w-56 h-24 object-cover rounded-2xl" />
+                            class="w-full md:w-56 h-28 md:h-24 object-cover rounded-2xl" />
 
                         <div class="flex-1 min-w-0">
 
-                            <flux:heading size="lg" class="text-zinc-900 dark:text-white">
+                            <flux:heading size="sm" class="text-zinc-900 dark:text-white text-base md:text-lg">
                                 {{ $event->title }}
                             </flux:heading>
 
@@ -34,7 +34,7 @@
 
                                 <flux:icon.calendar-days variant="micro" />
 
-                                <flux:text class="text-sm">
+                                <flux:text class="text-xs md:text-sm">
                                     {{ $event->start_time->format('l, F d, Y • h:i A') }}
                                 </flux:text>
 
@@ -44,7 +44,7 @@
 
                                 <flux:icon.video-camera variant="micro" />
 
-                                <flux:text class="text-sm">
+                                <flux:text class="text-xs md:text-sm">
                                     {{ $event->delivery_type }}
                                 </flux:text>
 
