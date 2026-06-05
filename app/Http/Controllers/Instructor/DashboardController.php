@@ -18,6 +18,10 @@ class DashboardController extends Controller
         $courses = Course::where('user_id', auth()->id())
             ->withCount('enrollments')
             ->withCount('discussions')
+            ->withCount([
+                'discussions as unanswered_discussions_count' => fn($query) => $query
+                    ->whereDoesntHave('replies', fn($replyQuery) => $replyQuery->whereRelation('user', 'role', 'instructor')),
+            ])
             ->latest()
             ->get();
 
@@ -31,6 +35,10 @@ class DashboardController extends Controller
             ->sum('amount');
 
         $totalDiscussions = Discussion::whereIn('course_id', $courseIds)->count();
+
+        $totalUnansweredDiscussions = Discussion::whereIn('course_id', $courseIds)
+            ->whereDoesntHave('replies', fn($query) => $query->whereRelation('user', 'role', 'instructor'))
+            ->count();
 
         $totalEnrollments = Enrollment::whereIn('course_id', $courseIds)->count();
         $completedEnrollments = Enrollment::whereIn('course_id', $courseIds)
@@ -57,6 +65,7 @@ class DashboardController extends Controller
             'totalStudents',
             'totalRevenue',
             'totalDiscussions',
+            'totalUnansweredDiscussions',
             'completionRate',
             'recentEnrollments',
             'totalLessons',

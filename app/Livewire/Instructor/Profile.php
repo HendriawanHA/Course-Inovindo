@@ -18,6 +18,7 @@ class Profile extends Component
 
     public string $name = '';
     public string $email = '';
+    public string $bio = '';
 
     public ?TemporaryUploadedFile $avatar = null;
 
@@ -31,6 +32,7 @@ class Profile extends Component
 
         $this->name = $user->name;
         $this->email = $user->email;
+        $this->bio = $user->bio ?? '';
     }
 
     public function updateProfile(): void
@@ -38,14 +40,23 @@ class Profile extends Component
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
+            'bio' => ['nullable', 'string', 'max:1000'],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ]);
 
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'bio' => $validated['bio'] ?? null,
+        ];
+
         if ($this->avatar) {
-            $validated['avatar'] = $this->avatar->store('avatars', 'public');
+            $data['avatar'] = $this->avatar->store('avatars', 'public');
         }
 
-        auth()->user()->update($validated);
+        auth()->user()->update($data);
+
+        $this->avatar = null;
 
         Toaster::success('Profile berhasil diperbarui.');
     }

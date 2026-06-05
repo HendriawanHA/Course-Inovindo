@@ -1,13 +1,13 @@
 <div class="space-y-8">
 
     <div>
-        <h1 class="text-3xl font-bold text-white">Profile</h1>
-        <p class="mt-2 text-sm text-zinc-400">
+        <h1 class="text-3xl font-bold text-zinc-900 dark:text-white">Profile</h1>
+        <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             Kelola informasi akun instruktur.
         </p>
     </div>
 
-    <section class="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
+    <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <div class="flex flex-col gap-6 md:flex-row md:items-center">
             <div>
 
@@ -19,13 +19,13 @@
                         {{-- AVATAR --}}
                         @if ($avatar)
                             <img src="{{ $avatar->temporaryUrl() }}"
-                                class="h-32 w-32 rounded-full object-cover ring-4 ring-zinc-800">
+                                class="h-32 w-32 rounded-full object-cover ring-4 ring-zinc-200 dark:ring-zinc-800">
                         @elseif (auth()->user()->avatar)
                             <img src="{{ asset('storage/' . auth()->user()->avatar) }}"
-                                class="h-32 w-32 rounded-full object-cover ring-4 ring-zinc-800">
+                                class="h-32 w-32 rounded-full object-cover ring-4 ring-zinc-200 dark:ring-zinc-800">
                         @else
                             <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}"
-                                class="h-32 w-32 rounded-full object-cover ring-4 ring-zinc-800">
+                                class="h-32 w-32 rounded-full object-cover ring-4 ring-zinc-200 dark:ring-zinc-800">
                         @endif
 
                         {{-- LOADING OVERLAY --}}
@@ -42,7 +42,7 @@
 
                         {{-- EDIT BUTTON --}}
                         <label for="avatar-upload"
-                            class="absolute bottom-1 right-1 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-4 border-zinc-900 bg-indigo-600 text-white shadow-lg transition hover:scale-110 hover:bg-indigo-500">
+                            class="absolute bottom-1 right-1 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-4 border-white bg-indigo-600 text-white shadow-lg transition hover:scale-110 hover:bg-indigo-500 dark:border-zinc-900">
                             {{-- PEN ICON --}}
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor" stroke-width="2">
@@ -61,12 +61,16 @@
             </div>
 
             <div>
-                <h2 class="text-2xl font-bold text-white">
+                <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">
                     {{ auth()->user()->name }}
                 </h2>
 
-                <p class="mt-1 text-sm text-zinc-400">
+                <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
                     {{ auth()->user()->email }}
+                </p>
+
+                <p class="mt-4 max-w-2xl whitespace-pre-line text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                    {{ auth()->user()->bio ?: 'Tambahkan bio singkat agar student lebih mengenal Anda.' }}
                 </p>
 
                 <span
@@ -77,23 +81,37 @@
         </div>
     </section>
 
-    <section class="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
-        <h2 class="text-xl font-bold text-white">Account Information</h2>
+    <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Account Information</h2>
         <div class="mt-6 space-y-5">
             <div>
-                <label class="text-sm font-semibold text-white">Name</label>
+                <label class="text-sm font-semibold text-zinc-900 dark:text-white">Name</label>
                 <input type="text" wire:model="name"
-                    class="mt-2 w-full rounded-2xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white focus:border-indigo-500 focus:ring-indigo-500">
+                    class="mt-2 w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
                 @error('name')
                     <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                 @enderror
             </div>
 
             <div>
-                <label class="text-sm font-semibold text-white">Email</label>
+                <label class="text-sm font-semibold text-zinc-900 dark:text-white">Email</label>
                 <input type="email" wire:model="email"
-                    class="mt-2 w-full rounded-2xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white focus:border-indigo-500 focus:ring-indigo-500">
+                    class="mt-2 w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
                 @error('email')
+                    <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="text-sm font-semibold text-zinc-900 dark:text-white">Bio</label>
+                <textarea wire:model="bio" rows="5"
+                    placeholder="Ceritakan pengalaman, keahlian, atau fokus mengajar Anda..."
+                    class="mt-2 w-full resize-y rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm leading-relaxed text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"></textarea>
+                <div class="mt-2 flex items-center justify-between gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+                    <span>Bio akan tampil di profil instruktur.</span>
+                    <span>{{ strlen($bio) }}/1000</span>
+                </div>
+                @error('bio')
                     <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                 @enderror
             </div>
@@ -105,24 +123,24 @@
         </div>
     </section>
 
-    <section class="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
-        <h2 class="text-xl font-bold text-white">Change Password</h2>
+    <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Change Password</h2>
 
         <div class="mt-6 space-y-5">
             <input type="password" wire:model="current_password" placeholder="Current password"
-                class="w-full rounded-2xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white">
+                class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
             @error('current_password')
                 <p class="text-sm text-red-400">{{ $message }}</p>
             @enderror
 
             <input type="password" wire:model="password" placeholder="New password"
-                class="w-full rounded-2xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white">
+                class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
             @error('password')
                 <p class="text-sm text-red-400">{{ $message }}</p>
             @enderror
 
             <input type="password" wire:model="password_confirmation" placeholder="Confirm new password"
-                class="w-full rounded-2xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white">
+                class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
 
             <button wire:click="updatePassword"
                 class="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-500">

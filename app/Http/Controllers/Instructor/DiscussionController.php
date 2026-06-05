@@ -11,41 +11,69 @@ use Illuminate\Http\Request;
 
 class DiscussionController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $courses = Course::where('user_id', auth()->id())
-            ->withCount(['discussions', 'enrollments'])
-            ->get();
+        $courses = $this->discussionCourses();
 
-        $courseIds = $courses->pluck('id');
+        if ($courses->isEmpty()) {
+            $discussions = Discussion::whereRaw('1 = 0')->paginate(10);
+            $totalDiscussions = 0;
+            $unansweredDiscussions = 0;
 
-        $discussions = Discussion::query()
-            ->whereIn('course_id', $courseIds)
-            ->with(['user', 'course', 'lesson', 'replies.user'])
-            ->when($request->course_id, function ($query) use ($request) {
-                $query->where('course_id', $request->course_id);
-            })
-            ->latest()
-            ->get();
+            return view('instructor.discussions.index', compact('courses', 'discussions', 'totalDiscussions', 'unansweredDiscussions'));
+        }
 
-        return view('instructor.discussions.index', compact('courses', 'discussions'));
+        return redirect()->route('instructor.courses.discussions', $courses->first());
     }
 
-    public function byCourse(Request $request, Course $course)
+    public function byCourse(Course $course)
     {
         abort_unless($course->user_id === auth()->id(), 403);
 
-        $courses = Course::where('user_id', auth()->id())
-            ->withCount(['discussions', 'enrollments'])
-            ->get();
+        $courses = $this->discussionCourses();
 
         $discussions = Discussion::query()
             ->where('course_id', $course->id)
-            ->with(['user', 'lesson', 'replies.user'])
-            ->latest()
-            ->get();
+            ->with(['user', 'course', 'lesson', 'replies.user'])
+            ->select('discussions.*')
+            ->selectRaw('COALESCE((select MAX(dr.created_at) from discussion_replies dr where dr.discussion_id = discussions.id), discussions.created_at) as last_activity_at')
+            ->orderByDesc('last_activity_at')
+            ->latest('discussions.created_at')
+            ->paginate(10);
 
-        return view('instructor.discussions.index', compact('courses', 'discussions', 'course'));
+        $totalDiscussions = Discussion::where('course_id', $course->id)->count();
+
+        $unansweredDiscussions = Discussion::where('course_id', $course->id)
+            ->whereDoesntHave('replies', fn($query) => $query->whereRelation('user', 'role', 'instructor'))
+            ->count();
+
+        return view('instructor.discussions.index', compact('courses', 'discussions', 'course', 'totalDiscussions', 'unansweredDiscussions'));
+    }
+
+    private function discussionCourses()
+    {
+        return Course::where('user_id', auth()->id())
+            ->withCount(['discussions', 'enrollments'])
+            ->withCount([
+                'discussions as unanswered_discussions_count' => fn($query) => $query
+                    ->whereDoesntHave('replies', fn($replyQuery) => $replyQuery->whereRelation('user', 'role', 'instructor')),
+            ])
+            ->withMax('discussions', 'created_at')
+            ->withMax('discussionReplies', 'created_at')
+            ->latest()
+            ->get()
+            ->map(function ($course) {
+                $latestActivityAt = collect([
+                    $course->discussions_max_created_at,
+                    $course->discussion_replies_max_created_at,
+                ])->filter()->max();
+
+                $course->setAttribute('latest_activity_at', $latestActivityAt);
+
+                return $course;
+            })
+            ->sortByDesc('latest_activity_at')
+            ->values();
     }
 
     public function reply(Request $request, Discussion $discussion)
@@ -71,5 +99,15 @@ class DiscussionController extends Controller
         );
 
         return back()->with('success', 'Balasan berhasil dikirim.');
+    }
+
+    public function replyFromComposer(Request $request)
+    {
+        $request->validate([
+            'discussion_id' => ['required', 'integer', 'exists:discussions,id'],
+            'content' => ['required', 'string', 'max:2000'],
+        ]);
+
+        return $this->reply($request, Discussion::findOrFail($request->integer('discussion_id')));
     }
 }

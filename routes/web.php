@@ -103,6 +103,7 @@ Route::middleware(['auth', 'instructor'])->prefix('instructor')->name('instructo
     // Discussions
     Route::prefix('discussions')->name('discussions.')->group(function () {
         Route::get('/', [InstructorDiscussionController::class, 'index'])->name('index');
+        Route::post('/reply', [InstructorDiscussionController::class, 'replyFromComposer'])->name('reply.store');
         Route::post('/{discussion}/reply', [InstructorDiscussionController::class, 'reply'])->name('reply');
     });
 

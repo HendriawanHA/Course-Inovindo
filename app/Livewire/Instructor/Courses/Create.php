@@ -32,7 +32,7 @@ class Create extends Component
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
-            'thumbnail' => ['nullable', 'image', 'max:2048'],
+            'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
         if ($this->thumbnail) {
@@ -40,7 +40,7 @@ class Create extends Component
         }
 
         $validated['user_id'] = Auth::id();
-        $validated['is_published'] = $this->is_published;
+        $validated['is_published'] = false;
 
         $course = Course::create($validated);
 
