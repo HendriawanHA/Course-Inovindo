@@ -1,4 +1,4 @@
-<div class="px-4 md:px-8 mt-8 md:mt-10">
+<div class="mt-8 md:mt-10">
         <div class="flex items-center justify-between mb-6">
             <flux:heading size="lg">
                 Upcoming Events

@@ -1,5 +1,7 @@
 @props(['event'])
-<flux:heading size="xl" class="text-zinc-900 dark:text-white !font-bold">
+<flux:heading
+    size="xl"
+    class="text-2xl md:text-4xl leading-tight break-words text-zinc-900 dark:text-white !font-bold">
     {{ $event->title }}
 </flux:heading>
 
@@ -7,9 +9,10 @@
     Details
 </flux:heading>
 
-<flux:heading size="xl" class="text-zinc-900 dark:text-white !font-bold">
+<flux:text
+    class="text-lg md:text-xl font-semibold text-zinc-700 dark:text-zinc-300">
     {{ $event->event_type }}
-</flux:heading>
+</flux:text>
 
 <div
     class="prose dark:prose-invert max-w-none text-justify prose-p:my-1 prose-li:my-0 prose-headings:mb-2 prose-headings:mt-4">

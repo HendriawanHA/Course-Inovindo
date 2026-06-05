@@ -28,7 +28,7 @@
         <x-courses.upcoming-events
             :latestEvents="$latestEvents" />
 
-        <div class="px-4 md:px-6 lg:px-8 mt-10 pb-10">
+        <div class="mt-10 pb-10">
             <flux:heading size="lg" class="mb-6">
                 Top Students
             </flux:heading>

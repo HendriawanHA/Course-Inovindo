@@ -1,18 +1,18 @@
-<div class="flex justify-between items-center gap-2 text-zinc-500 dark:text-zinc-400 px-6 mb-6">
+<div class="flex items-center justify-between gap-3 px-4 md:px-6 mb-6 text-zinc-500 dark:text-zinc-400">
 
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3 min-w-0">
 
         <flux:navbar.item href="{{ request('back', route('courses.show', $course->id)) }}">
             <flux:icon.arrow-left variant="micro" />
         </flux:navbar.item>
 
-        <flux:heading size="xl" class="dark:text-white text-zinc-900">
+        <flux:heading size="lg" class="truncate md:text-2xl dark:text-white text-zinc-900">
             {{ $course->title }}
         </flux:heading>
 
     </div>
 
-    <div class="flex items-center gap-1 mr-5">
+    <div class="flex items-center gap-1">
 
         <!-- DISCUSSION -->
         <flux:navbar.item
@@ -27,8 +27,12 @@
         </flux:navbar.item>
 
         <!-- SIDEBAR -->
-        <flux:navbar.item @click="sidebarOpen = !sidebarOpen" class="cursor-pointer">
+        <flux:navbar.item
+            @click="sidebarOpen = !sidebarOpen"
+            class="cursor-pointer">
+
             <flux:icon.list-bullet />
+
         </flux:navbar.item>
 
     </div>

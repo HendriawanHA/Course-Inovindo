@@ -1,7 +1,7 @@
 @props(['course', 'targetLesson', 'hasStarted', 'isCompleted',])
 
-<div class="flex justify-between">
-    <flux:heading size="xl" class="text-3xl md:text-4xl">
+<div class="flex flex-col text-center md:flex-row md:items-center justify-between gap-4">
+    <flux:heading size="xl" class="text-2xl md:text-4xl">
         Welcome, {{ auth()->user()->name }}.
     </flux:heading>
 
@@ -18,7 +18,7 @@
             ]) }}"
         wire:navigate
         variant="primary"
-        class="!rounded-full hover:!text-white
+        class="w-full md:w-auto !rounded-full hover:!text-white
             !border-2 border-blue-700/60 hover:bg-blue-700">
 
         @if($isCompleted)

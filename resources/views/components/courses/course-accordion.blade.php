@@ -2,7 +2,7 @@
 
 <div class="space-y-6">
 
-    <div class="flex justify-between items-center">
+    <div class="flex flex-row md:items-center justify-between gap-4">
         <div class="flex flex-col gap-1">
             <flux:heading size="lg">Content</flux:heading>
 
@@ -40,7 +40,7 @@
             <!-- MODULE HEADER -->
             <button
                 @click="open = !open"
-                class="w-full p-4 flex justify-between items-center bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                class="w-full p-4 flex items-start justify-between gap-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
 
                 <div class="flex items-center gap-3">
                     <flux:icon.chevron-right
@@ -48,7 +48,7 @@
                         class="text-zinc-400 transition-transform duration-300"
                         :class="'rotate-90'" : open />
 
-                    <span class="font-semibold text-zinc-900 dark:text-zinc-100 text-left">
+                    <span class="font-semibold text-left break-words text-zinc-900 dark:text-zinc-100">
                         {{ $module->title }}
                     </span>
                 </div>
@@ -64,7 +64,7 @@
 
                 @foreach ($module->lessons as $lesson)
 
-                <div class="p-4 flex items-center gap-4 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/40 transition">
+                <div class="p-4 flex items-start gap-4 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/40 transition">
 
                     <!-- STATUS -->
                     <div class="
@@ -83,7 +83,7 @@
                     <!-- TITLE -->
                     <flux:text
                         size="sm"
-                        class="{{ $lesson->is_completed
+                        class="break-words {{ $lesson->is_completed
                             ? 'text-blue-700 dark:text-blue-500 font-medium'
                             : 'group-hover:text-zinc-900 dark:group-hover:text-white'
                         }}">

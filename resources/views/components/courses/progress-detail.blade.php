@@ -4,9 +4,9 @@
 'progress',
 ])
 <flux:heading size="lg">Progress</flux:heading>
-<div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl mb-10 shadow-sm">
+<div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 md:p-8 rounded-2xl mb-10 shadow-sm">
 
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-between items-center gap-4 mb-4">
         <flux:text class="text-sm">
             Completed {{ $completedLessons }} of {{ $totalLessons }} lessons
         </flux:text>

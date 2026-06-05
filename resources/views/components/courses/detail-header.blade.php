@@ -1,4 +1,4 @@
-<flux:navbar class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 px-6">
+<flux:navbar class="flex items-center gap-2 px-4 md:px-6 text-zinc-500 dark:text-zinc-400">
 
     <flux:navbar.item
         href="{{ $backUrl }}"

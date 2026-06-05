@@ -1,7 +1,7 @@
 <div id="discussion-section"
     class="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
 
-    <div class="px-6 py-5 border-zinc-200 dark:border-zinc-800">
+    <div class="px-4 md:px-6 py-5 border-zinc-200 dark:border-zinc-800">
         <flux:heading size="lg" class="text-zinc-900 dark:text-white">
             Discussion
         </flux:heading>
@@ -22,7 +22,7 @@
                     class="w-10 h-10 rounded-full object-cover shrink-0">
 
                 <div class="flex-1">
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
                         <h4 class="font-semibold text-zinc-900 dark:text-white">
                             {{ $discussion->user->name }}
                         </h4>
@@ -51,7 +51,7 @@
                     </button>
 
                     @if ($discussion->replies->count())
-                    <div class="mt-5 space-y-4 border-l-2 border-zinc-200 dark:border-zinc-800 pl-4">
+                    <div class="mt-4 md:mt-5 space-y-4 border-l-2 border-zinc-200 dark:border-zinc-800 pl-4">
                         @foreach ($discussion->replies as $reply)
                         <div class="flex gap-3">
                             <img
@@ -121,17 +121,17 @@
         </div>
         @endif
 
-        <div class="flex items-end gap-3">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
             <textarea
                 wire:model="content"
                 rows="1"
                 required
                 placeholder="Write a comment..."
                 oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"
-                class="min-h-[48px] max-h-40 flex-1 resize-none rounded-2xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 py-3 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none overflow-hidden"></textarea>
+                class="w-full min-h-[48px] max-h-40 flex-1 resize-none rounded-2xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 py-3 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none overflow-hidden"></textarea>
 
             <button type="submit"
-                class="inline-flex h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500 active:scale-95">
+                class="w-full sm:w-auto inline-flex  h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500 active:scale-95">
                 {{ $replyingTo ? 'Reply' : 'Send' }}
             </button>
         </div>

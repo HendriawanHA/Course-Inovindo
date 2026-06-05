@@ -16,7 +16,7 @@
         <flux:icon.eye-slash
             class="size-12 text-zinc-500 mb-4" />
 
-        <h3 class="text-xl font-semibold">
+        <h3 class="text-lg md:text-xl font-semibold">
             Event Not Published
         </h3>
 
@@ -35,7 +35,7 @@
         <flux:icon.clock
             class="size-12 text-indigo-400 mb-4" />
 
-        <h3 class="text-xl font-semibold">
+        <h3 class="text-lg md:text-xl font-semibold">
             Event Has Not Started Yet
         </h3>
 

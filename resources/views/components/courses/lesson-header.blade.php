@@ -1,11 +1,11 @@
-<div class="flex items-center justify-between mb-8">
+<div class="flex gap-4 flex-row justify-between md:items-center mb-8">
 
-    <div>
+    <div class="min-w-0">
         <flux:text class="text-zinc-500 dark:text-zinc-400">
             Lesson {{ $currentIndex + 1 }} of {{ $totalLessons }}
         </flux:text>
 
-        <flux:heading size="xl" class="mt-2 text-zinc-900 dark:text-white">
+        <flux:heading size="xl" class="mt-2 break-words text-zinc-900 dark:text-white">
             {{ $lesson->title }}
         </flux:heading>
     </div>

@@ -9,18 +9,18 @@
         bg-gradient-to-br
         from-emerald-50 to-white
         dark:from-emerald-950/40 dark:to-zinc-900
-        p-8">
+        p-5 md:p-8">
 
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
 
             <!-- LEFT -->
             <div class="flex items-start gap-4">
 
-                <div class="w-16 h-16 rounded-2xl
+                <div class="w-24 h-12 md:w-16 md:h-16 rounded-2xl
                     bg-emerald-500/10
                     flex items-center justify-center">
 
-                    <flux:icon.trophy class="w-8 h-8 text-emerald-500" />
+                    <flux:icon.trophy class="w-6 h-6 lg:w-8 lg:h-8 text-emerald-500" />
 
                 </div>
 
@@ -40,14 +40,14 @@
             </div>
 
             <!-- RIGHT -->
-            <div class="flex items-center gap-3">
+            <div class="w-full md:w-auto">
 
                 <flux:button
                     href="{{ route('certificates.show', $course->id) }}"
                     wire:navigate
                     variant="ghost"
                     icon="eye"
-                    class="rounded-2xl">
+                    class="w-full md:w-auto rounded-2xl">
 
                     Preview
 
