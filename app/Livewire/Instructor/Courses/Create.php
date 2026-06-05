@@ -3,12 +3,14 @@
 namespace App\Livewire\Instructor\Courses;
 
 use App\Models\Course;
-use Livewire\Component;
-use Livewire\WithFileUploads;
-use Livewire\Attributes\Layout;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Masmerise\Toaster\Toaster;
+use App\Models\User;
+use App\Notifications\NewCourseNotification;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
+use Masmerise\Toaster\Toaster;
 
 #[Layout('components.layouts.instructor')]
 class Create extends Component
@@ -43,6 +45,14 @@ class Create extends Component
         $validated['is_published'] = false;
 
         $course = Course::create($validated);
+        $students = User::where('role', 'student')->get();
+
+        foreach ($students as $student) {
+            $student->notify(
+                new NewCourseNotification($course)
+            );
+        }
+
 
         Toaster::success('Course berhasil dibuat.');
 
