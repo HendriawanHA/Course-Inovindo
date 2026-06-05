@@ -25,7 +25,11 @@ class Edit extends Component
     public $price = 0;
 
     public bool $is_published = false;
+    public bool $showModuleForm = false;
+
     public string $moduleTitle = '';
+
+    public array $showLessonForms = [];
 
     public array $lessonTitles = [];
     public array $lessonVideoUrls = [];
@@ -57,8 +61,21 @@ class Edit extends Component
         ]);
 
         $this->moduleTitle = '';
+        $this->showModuleForm = false;
 
         $this->course->refresh();
+    }
+
+    public function startAddingModule(): void
+    {
+        $this->showModuleForm = true;
+    }
+
+    public function cancelAddingModule(): void
+    {
+        $this->reset('moduleTitle');
+        $this->resetErrorBag('moduleTitle');
+        $this->showModuleForm = false;
     }
 
     public function deleteModule(int $moduleId): void
@@ -97,9 +114,24 @@ class Edit extends Component
 
         $this->lessonTitles[$moduleId] = '';
         $this->lessonVideoUrls[$moduleId] = '';
+        $this->showLessonForms[$moduleId] = false;
 
         $this->course->refresh();
     }
+
+    public function startAddingLesson(int $moduleId): void
+    {
+        $this->showLessonForms[$moduleId] = true;
+    }
+
+    public function cancelAddingLesson(int $moduleId): void
+    {
+        $this->lessonTitles[$moduleId] = '';
+        $this->lessonVideoUrls[$moduleId] = '';
+        $this->resetErrorBag("lessonTitles.$moduleId");
+        $this->showLessonForms[$moduleId] = false;
+    }
+
 
     public function deleteLesson(int $lessonId): void
     {
@@ -120,16 +152,33 @@ class Edit extends Component
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
-            'thumbnail' => ['nullable', 'image', 'max:2048'],
+            'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        if ($this->thumbnail) {
-            $validated['thumbnail'] = $this->thumbnail->store('courses', 'public');
+        if ($this->is_published && ! $this->thumbnail && ! $this->course->thumbnail) {
+            $this->addError('thumbnail', 'Thumbnail wajib diisi sebelum course dipublish.');
+            return;
         }
 
-        $validated['is_published'] = $this->is_published;
+        if ($this->is_published && ! $this->course->lessons()->exists()) {
+            $this->addError('is_published', 'Tambahkan minimal 1 lesson sebelum course dipublish.');
+            return;
+        }
 
-        $this->course->update($validated);
+        $data = [
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'price' => $validated['price'],
+            'is_published' => $this->is_published,
+        ];
+
+        if ($this->thumbnail) {
+            $data['thumbnail'] = $this->thumbnail->store('courses', 'public');
+        }
+
+        $this->course->update($data);
+        $this->thumbnail = null;
+        $this->course->refresh();
 
         Toaster::success('Course berhasil diperbarui.');
     }

@@ -97,11 +97,13 @@ Route::middleware(['auth', 'instructor'])->prefix('instructor')->name('instructo
         Route::get('/create', InstructorCoursesCreate::class)->name('create');
         Route::get('/{course}/edit', InstructorCoursesEdit::class)->name('edit');
         Route::get('/{course}/preview', InstructorCoursesPreview::class)->name('preview');
+        Route::get('/{course}/discussions', [InstructorDiscussionController::class, 'byCourse'])->name('discussions');
     });
 
     // Discussions
     Route::prefix('discussions')->name('discussions.')->group(function () {
         Route::get('/', [InstructorDiscussionController::class, 'index'])->name('index');
+        Route::post('/reply', [InstructorDiscussionController::class, 'replyFromComposer'])->name('reply.store');
         Route::post('/{discussion}/reply', [InstructorDiscussionController::class, 'reply'])->name('reply');
     });
 

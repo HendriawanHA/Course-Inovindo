@@ -2,9 +2,12 @@
 
 namespace App\Livewire\Discussions;
 
+use App\Models\Course;
 use App\Models\Discussion;
 use App\Models\DiscussionReply;
 use App\Models\Lesson;
+use App\Notifications\NewDiscussionNotification;
+use App\Notifications\NewDiscussionReplyNotification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Masmerise\Toaster\Toaster;
@@ -44,19 +47,29 @@ class LessonDiscussion extends Component
             'content' => ['required', 'string', 'max:2000'],
         ]);
 
+        $course = Course::find($this->lesson->module->course_id);
+
         if ($this->replyingTo) {
-            DiscussionReply::create([
+            $reply = DiscussionReply::create([
                 'discussion_id' => $this->replyingTo,
                 'user_id' => Auth::id(),
                 'content' => $this->content,
             ]);
+
+            if ($course && $course->instructor) {
+                $course->instructor->notify(new NewDiscussionReplyNotification($reply));
+            }
         } else {
-            Discussion::create([
+            $discussion = Discussion::create([
                 'course_id' => $this->lesson->module->course_id,
                 'lesson_id' => $this->lesson->id,
                 'user_id' => Auth::id(),
                 'content' => $this->content,
             ]);
+
+            if ($course && $course->instructor) {
+                $course->instructor->notify(new NewDiscussionNotification($discussion));
+            }
         }
 
         $this->reset('content', 'replyingTo', 'replyingName');
