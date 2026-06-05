@@ -11,6 +11,7 @@ class CreateStudent extends CreateRecord
         protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['role'] = 'student';
+        $data['email_verified_at'] = now();
 
         return $data;
     }

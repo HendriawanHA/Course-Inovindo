@@ -7,8 +7,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use pxlrbt\FilamentExcel\Actions\ExportAction;
 use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
+use pxlrbt\FilamentExcel\Columns\Column;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class StudentsTable
 {
@@ -21,13 +22,19 @@ class StudentsTable
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
+                TextColumn::make('points')
+                    ->numeric()
                     ->sortable(),
+
+                TextColumn::make('level')
+                    ->numeric()
+                    ->sortable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Joined'),
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -42,7 +49,25 @@ class StudentsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    ExportBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->exports([
+                            ExcelExport::make('selected-students')
+                                ->modifyQueryUsing(fn ($query) => $query->where('role', 'student'))
+                                ->withColumns([
+                                    Column::make('name')
+                                        ->heading('Name'),
+                                    Column::make('email')
+                                        ->heading('Email address'),
+                                    Column::make('points')
+                                        ->heading('Points'),
+                                    Column::make('level')
+                                        ->heading('Level'),
+                                    Column::make('created_at')
+                                        ->heading('Joined')
+                                        ->formatStateUsing(fn ($state) => $state?->format('Y-m-d H:i:s')),
+                                ])
+                                ->withFilename('selected-students-' . now()->format('Y-m-d')),
+                        ]),
                 ])->label('Actions'),
             ]);
     }

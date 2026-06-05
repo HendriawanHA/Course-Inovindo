@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->brandName('Course Inovindo')
             ->sidebarCollapsibleOnDesktop()
+            ->globalSearch()
             ->login()
             ->databaseNotifications()
             ->colors([
