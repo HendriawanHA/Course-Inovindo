@@ -12,6 +12,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class ModuleResource extends Resource
 {
@@ -19,7 +20,20 @@ class ModuleResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Learning Management';
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static ?string $recordTitleAttribute = 'Module';
+    protected static ?string $recordTitleAttribute = 'title';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'description', 'course.title'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Course' => $record->course?->title ?? '-',
+            'Order' => (string) $record->order,
+        ];
+    }
 
     public static function form(Schema $schema): Schema
     {

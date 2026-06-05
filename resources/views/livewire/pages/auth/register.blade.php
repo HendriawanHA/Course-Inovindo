@@ -1,6 +1,10 @@
 <?php
 
 use App\Models\User;
+use App\Filament\Resources\Students\StudentResource;
+use App\Support\AdminNotification;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -29,6 +33,19 @@ new #[Layout('layouts.guest')] class extends Component
         $validated['role'] = 'student';
 
         event(new Registered($user = User::create($validated)));
+
+        AdminNotification::send(
+            Notification::make()
+                ->title('Student baru terdaftar')
+                ->body("{$user->name} mendaftar sebagai student.")
+                ->icon('heroicon-o-academic-cap')
+                ->iconColor('success')
+                ->actions([
+                    Action::make('view')
+                        ->label('Lihat student')
+                        ->url(StudentResource::getUrl('edit', ['record' => $user])),
+                ])
+        );
 
         session()->flash('success', 'Account created successfully. Please login.');
 

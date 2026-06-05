@@ -18,6 +18,7 @@ use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionResource extends Resource
@@ -38,6 +39,22 @@ class TransactionResource extends Resource
     protected static ?string $modelLabel = 'Transaction';
 
     protected static ?string $pluralModelLabel = 'Transactions';
+
+    protected static ?string $recordTitleAttribute = 'invoice_number';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['invoice_number', 'status', 'user.name', 'user.email', 'course.title'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Student' => $record->user?->name ?? '-',
+            'Course' => $record->course?->title ?? '-',
+            'Status' => ucfirst($record->status),
+        ];
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -82,6 +99,7 @@ class TransactionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('invoice_number')
                     ->searchable()
@@ -113,7 +131,8 @@ class TransactionResource extends Resource
                     ->dateTime(),
 
                 TextColumn::make('created_at')
-                    ->since(),
+                    ->since()
+                    ->sortable(),
             ])
             ->recordActions([
                 Action::make('markAsPaid')

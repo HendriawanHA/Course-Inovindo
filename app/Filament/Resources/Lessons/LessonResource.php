@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class LessonResource extends Resource
 {
@@ -21,6 +22,19 @@ class LessonResource extends Resource
     protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'description', 'video_url', 'module.title', 'module.course.title'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Module' => $record->module?->title ?? '-',
+            'Course' => $record->module?->course?->title ?? '-',
+        ];
+    }
 
     public static function form(Schema $schema): Schema
     {
