@@ -9,8 +9,9 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-use pxlrbt\FilamentExcel\Actions\ExportAction;
 use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
+use pxlrbt\FilamentExcel\Columns\Column;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class InstructorsTable
 {
@@ -25,14 +26,15 @@ class InstructorsTable
                     ->label('Email address')
                     ->searchable(),
 
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
+                TextColumn::make('headline')
+                    ->placeholder('-')
+                    ->limit(40)
+                    ->searchable(),
 
                 TextColumn::make('created_at')
+                    ->label('Joined')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
 
                 TextColumn::make('updated_at')
                     ->dateTime()
@@ -43,11 +45,6 @@ class InstructorsTable
             ->filters([
                 //
             ])
-
-            ->headerActions([
-                ExportAction::make(),
-            ])
-
             ->recordActions([
                 EditAction::make(),
             ])
@@ -55,7 +52,23 @@ class InstructorsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    ExportBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->exports([
+                            ExcelExport::make('selected-instructors')
+                                ->modifyQueryUsing(fn ($query) => $query->where('role', 'instructor'))
+                                ->withColumns([
+                                    Column::make('name')
+                                        ->heading('Name'),
+                                    Column::make('email')
+                                        ->heading('Email address'),
+                                    Column::make('headline')
+                                        ->heading('Headline'),
+                                    Column::make('created_at')
+                                        ->heading('Joined')
+                                        ->formatStateUsing(fn ($state) => $state?->format('Y-m-d H:i:s')),
+                                ])
+                                ->withFilename('selected-instructors-' . now()->format('Y-m-d')),
+                        ]),
                 ]),
             ]);
     }

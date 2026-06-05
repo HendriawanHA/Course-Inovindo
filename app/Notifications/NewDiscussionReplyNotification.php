@@ -14,45 +14,26 @@ class NewDiscussionReplyNotification extends Notification
         public DiscussionReply $reply
     ) {}
 
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
 
-    public function toDatabase($notifiable)
+    public function toDatabase($notifiable): array
     {
-        dd(
-            $this->reply,
-            $this->reply->discussion,
-            $this->reply->discussion?->course,
-            $this->reply->discussion?->lesson
-        );
-        
-        $course = $this->reply->discussion->course;
-        $lesson = $this->reply->discussion->lesson;
+        $discussion = $this->reply->discussion;
+        $course = $discussion->course;
+        $lesson = $discussion->lesson;
 
         return [
-
             'type' => 'discussion_reply',
-
-            'title' => 'Instructor replied',
-
-            'message' =>
-            $this->reply->user->name .
-                ' replied to your discussion in "' .
-                $lesson->title .
-                '"',
-
+            'title' => 'Jawaban baru',
+            'message' => $this->reply->user->name . ' membalas diskusi di "' . ($lesson?->title ?? $course?->title) . '"',
             'thumbnail' => $course?->thumbnail,
-
-            'url' => route(
-                'courses.video',
-                [
-                    'course' => $course->id,
-                    'lesson' => $lesson->id,
-                ]
-            ),
-
+            'url' => route('courses.video', [
+                'course' => $course->id,
+                'lesson' => $lesson->id,
+            ]),
         ];
     }
 }

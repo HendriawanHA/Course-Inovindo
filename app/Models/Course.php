@@ -67,6 +67,12 @@ class Course extends Model
     {
         return $this->hasMany(\App\Models\Discussion::class);
     }
+
+    public function discussionReplies()
+    {
+        return $this->hasManyThrough(DiscussionReply::class, Discussion::class);
+    }
+
     public function firstLesson()
     {
         return Lesson::whereHas('module', function ($q) {
