@@ -11,7 +11,8 @@
                 :course="$course"
                 :target-lesson="$targetLesson"
                 :has-started="$hasStarted"
-                :is-completed="$isCompleted" />
+                :is-completed="$isCompleted"
+                :back-url="request('back', route('courses.index'))" />
 
             <x-courses.progress-detail
                 :completedLessons="$completedLessons"
