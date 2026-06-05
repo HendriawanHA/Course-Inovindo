@@ -94,13 +94,14 @@ class EventForm
                 ->numeric(),
 
             Select::make('status')
+                ->label('Repeat')
                 ->options([
-                    'Draft' => 'Draft',
-                    'Upcoming' => 'Upcoming',
-                    'Live' => 'Live',
-                    'Ended' => 'Ended',
+                    'once' => 'Once',
+                    'daily' => 'Daily',
+                    'weekly' => 'Weekly',
+                    'monthly' => 'Monthly',
                 ])
-                ->default('draft'),
+                ->default('once'),
 
             Toggle::make('is_active')
                 ->default(true),

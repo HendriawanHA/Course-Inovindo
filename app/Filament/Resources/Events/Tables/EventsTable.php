@@ -31,7 +31,9 @@ class EventsTable
                 TextColumn::make('start_time')
                     ->dateTime(),
 
-                TextColumn::make('status'),
+                TextColumn::make('status')
+                    ->label('Repeat')
+                    ->formatStateUsing(fn (?string $state): string => ucfirst($state ?? 'once')),
 
                 IconColumn::make('is_active')
                     ->boolean(),

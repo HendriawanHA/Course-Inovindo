@@ -37,7 +37,7 @@ class EventResource extends Resource
         return [
             'Type' => $record->event_type,
             'Delivery' => $record->delivery_type,
-            'Status' => $record->status,
+            'Repeat' => ucfirst($record->status ?? 'once'),
         ];
     }
 
