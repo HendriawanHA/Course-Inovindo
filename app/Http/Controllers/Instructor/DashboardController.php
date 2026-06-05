@@ -27,6 +27,7 @@ class DashboardController extends Controller
 
         $totalCourses = $courses->count();
         $totalStudents = Enrollment::whereIn('course_id', $courseIds)
+ ->where('status', 'paid')
             ->distinct('user_id')
             ->count('user_id');
 
