@@ -126,29 +126,20 @@ class Event extends Model
 
     public function getRepeatInfoAttribute()
     {
-        $title = strtolower($this->title);
-
-        if (str_contains($title, 'daily')) {
-            return [
+        return match ($this->status) {
+            'daily' => [
                 'title' => 'Repeats every weekday',
                 'subtitle' => '(Monday to Friday)',
-            ];
-        }
-
-        if (str_contains($title, 'weekly')) {
-            return [
+            ],
+            'weekly' => [
                 'title' => 'Repeats every week',
                 'subtitle' => '(Every week)',
-            ];
-        }
-
-        if (str_contains($title, 'monthly')) {
-            return [
+            ],
+            'monthly' => [
                 'title' => 'Repeats every month',
                 'subtitle' => '(Once every month)',
-            ];
-        }
-
-        return null;
+            ],
+            default => null,
+        };
     }
 }
