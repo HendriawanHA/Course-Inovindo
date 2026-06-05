@@ -40,10 +40,10 @@
 
                     <a
                         href="{{ route('certificates.download', $course->id) }}"
-                        class="w-full sm:w-auto hidden md:block">
+                        class="hidden md:inline-block">
                         <flux:button
                             icon="arrow-down-tray"
-                            class="w-full sm:w-auto hidden md:block !text-white !bg-blue-700 hover:!bg-blue-600 font-medium shadow-lg shadow-blue-600/20 rounded-xl transition-all duration-200">
+                            class="!text-white !bg-blue-700 hover:!bg-blue-600 font-medium shadow-lg shadow-blue-600/20 rounded-2xl transition-all duration-200">
                             Download PDF
                         </flux:button>
                     </a>

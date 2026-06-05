@@ -14,7 +14,8 @@
                 :user="$user" />
 
             <div class="flex items-center justify-between mt-10 mb-6">
-                <x-courses.leaderboard.leaderboard-filter />
+                <x-courses.leaderboard.leaderboard-filter
+                    :filter="$filter" />
                 <flux:text
                     @click="openPointsModal = true"
                     class="text-zinc-500 dark:text-zinc-400 text-sm cursor-pointer hover:text-zinc-700 dark:hover:text-zinc-300">
@@ -26,7 +27,8 @@
             </div>
 
             <x-courses.leaderboard.list
-                :leaders="$leaders" />
+                :leaders="$leaders"
+                :filter="$filter" />
         </div>
     </flux:main>
 </x-app-layout>

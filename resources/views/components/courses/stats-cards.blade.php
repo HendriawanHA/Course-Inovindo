@@ -5,7 +5,7 @@
 
         <div class="flex items-center gap-4">
 
-            <div class="w-16 h-12 md:w-14 md:h-14 rounded-2xl
+            <div class="w-16 h-12 md:w-20 md:h-14 rounded-2xl
                 bg-indigo-500/10
                 flex items-center justify-center">
 
@@ -15,7 +15,7 @@
 
             </div>
 
-            <div class="flex md:flex-col flex-row items-center justify-between w-full">
+            <div class="flex md:flex-col flex-row items-center md:items-start justify-between w-full">
 
                 <p class="text-sm text-zinc-900 dark:text-zinc-400">
                     {{ $user->rank['name'] }}
@@ -36,7 +36,7 @@
 
         <div class="flex items-center gap-4">
 
-            <div class="w-16 h-12 md:w-14 md:h-14 rounded-2xl
+            <div class="w-16 h-12 md:w-20 md:h-14 rounded-2xl
                 bg-blue-500/10
                 flex items-center justify-center">
 
@@ -46,7 +46,7 @@
 
             </div>
 
-            <div class="flex md:flex-col flex-row items-center justify-between w-full">
+            <div class="flex md:flex-col flex-row items-center md:items-start justify-between w-full">
 
                 <p class="text-sm text-zinc-900 dark:text-zinc-400">
                     My Courses
@@ -67,7 +67,7 @@
 
         <div class="flex items-center gap-4">
 
-            <div class="w-16 h-12 md:w-14 md:h-14 rounded-2xl
+            <div class="w-16 h-12 md:w-20 md:h-14 rounded-2xl
                 bg-emerald-500/10
                 flex items-center justify-center">
 
@@ -77,7 +77,7 @@
 
             </div>
 
-            <div class="flex md:flex-col flex-row items-center justify-between w-full">
+            <div class="flex md:flex-col flex-row items-center md:items-start justify-between w-full">
 
                 <p class="text-sm text-zinc-900 dark:text-zinc-400">
                     Certificates

@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\LessonCompletion;
+use App\Models\PointHistory;
 
 class CourseController extends Controller
 {
@@ -229,6 +230,12 @@ class CourseController extends Controller
                 'completed_at' => now(),
             ]);
             $user->increment('points', $lessonReward);
+
+            PointHistory::create([
+                'user_id' => $user->id,
+                'points' => $lessonReward,
+                'source' => 'lesson',
+            ]);
         }
 
         $module = $lesson->module;
@@ -250,6 +257,12 @@ class CourseController extends Controller
             && !$moduleAlreadyCompleted
         ) {
             $user->increment('points', $moduleReward);
+
+            PointHistory::create([
+                'user_id' => $user->id,
+                'points' => $moduleReward,
+                'source' => 'module',
+            ]);
             session()->put(
                 'module_reward_' . $module->id . '_' . $user->id,
                 true
@@ -301,6 +314,12 @@ class CourseController extends Controller
 
         if ($courseCompletedNow) {
             $user->increment('points', $courseReward);
+
+            PointHistory::create([
+                'user_id' => $user->id,
+                'points' => $courseReward,
+                'source' => 'course',
+            ]);
         }
         $user->level = floor($user->points / 100) + 1;
         $user->save();

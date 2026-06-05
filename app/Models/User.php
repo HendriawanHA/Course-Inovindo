@@ -166,4 +166,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             ? asset('storage/' . $this->avatar)
             : 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
     }
+
+    public function pointHistories()
+    {
+        return $this->hasMany(PointHistory::class);
+    }
 }

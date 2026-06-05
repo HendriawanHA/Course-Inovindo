@@ -1,3 +1,7 @@
+@props([
+'leaders',
+'filter' => 'all'
+])
 <flux:card class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden divide-y divide-zinc-200 dark:divide-zinc-800 shadow-xl">
     @foreach ($leaders as $index => $leader)
 
@@ -54,7 +58,11 @@
     <div class="text-right shrink-0">
 
         <div class="text-emerald-600 dark:text-emerald-400 font-bold text-lg md:text-xl">
+            @if($filter === 'all')
             +{{ $leader->points }}
+            @else
+            +{{ $leader->period_points ?? 0 }}
+            @endif
         </div>
 
         <flux:text class="hidden sm:block text-xs text-zinc-400">
