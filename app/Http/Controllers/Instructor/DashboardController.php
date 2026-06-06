@@ -18,6 +18,7 @@ class DashboardController extends Controller
         $courses = Course::where('user_id', auth()->id())
             ->withCount('enrollments')
             ->withCount('discussions')
+            ->withCount('lessons')
             ->withCount([
                 'discussions as unanswered_discussions_count' => fn($query) => $query
                     ->whereDoesntHave('replies', fn($replyQuery) => $replyQuery->whereRelation('user', 'role', 'instructor')),
@@ -26,8 +27,10 @@ class DashboardController extends Controller
             ->get();
 
         $totalCourses = $courses->count();
+        $dashboardCourses = $courses->take(5);
+
         $totalStudents = Enrollment::whereIn('course_id', $courseIds)
- ->where('status', 'paid')
+            ->whereIn('status', ['active', 'completed'])
             ->distinct('user_id')
             ->count('user_id');
 
@@ -70,6 +73,7 @@ class DashboardController extends Controller
             'completionRate',
             'recentEnrollments',
             'totalLessons',
+            'dashboardCourses',
         ));
     }
 }

@@ -1,121 +1,155 @@
 <x-layouts.instructor>
     <div class="space-y-6 sm:space-y-8">
 
-        {{-- HERO --}}
-        <section class="overflow-hidden rounded-3xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-            <div class="h-28 sm:h-40"></div>
-            <div class="relative px-5 pb-6 sm:px-8 sm:pb-8">
-                <div class="-mt-16 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                    <div class="flex flex-col gap-5 sm:flex-row sm:items-end">
-                        <img src="{{ auth()->user()?->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" class="h-24 w-24 rounded-full object-cover shadow-2xl shadow-black/40 sm:h-32 sm:w-32">
-                        <div class="pb-2">
-                            <div class="flex flex-wrap items-center gap-3">
-                                <h1 class="text-2xl font-bold text-zinc-900 dark:text-white sm:text-3xl">{{ auth()->user()->name }}</h1>
-                                <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300">Instructor</span>
-                            </div>
-                            <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ auth()->user()->headline ?? 'Instructor di Inovindo Academy' }}</p>
+        <section class="rounded-3xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <div class="flex items-center gap-4">
+                    <img src="{{ auth()->user()?->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" class="h-16 w-16 rounded-2xl object-cover sm:h-20 sm:w-20">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ auth()->user()->name }}</h1>
+                            <span class="rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-300">Instructor</span>
                         </div>
+                        <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ auth()->user()->headline ?? 'Kelola course, student, dan diskusi dari satu tempat.' }}</p>
                     </div>
-                    <a href="{{ route('instructor.profile') }}" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 sm:w-auto">
+                </div>
+
+                <div class="flex flex-col gap-2 sm:flex-row">
+                    <a href="{{ route('instructor.courses.create') }}" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500">
+                        <flux:icon.plus class="size-4" /> New Course
+                    </a>
+                    <a href="{{ route('instructor.profile') }}" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 px-5 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-800">
                         <flux:icon.pencil-square class="size-4" /> Edit Profile
                     </a>
                 </div>
             </div>
         </section>
 
-        @if ($totalUnansweredDiscussions > 0)
-            <section class="flex flex-col gap-4 rounded-3xl border border-amber-500/30 bg-amber-500/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-                <div class="flex items-start gap-3">
-                    <div class="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-amber-500/20 text-amber-300">
-                        <flux:icon.chat-bubble-left-right class="size-5" />
-                    </div>
-                    <div>
-                        <h2 class="font-semibold text-zinc-900 dark:text-white">{{ $totalUnansweredDiscussions }} diskusi belum dibalas</h2>
-                        <p class="mt-1 text-sm text-amber-100/80">Balas pertanyaan student agar notifikasi diskusi dashboard tetap bersih.</p>
-                    </div>
-                </div>
-                <a href="{{ route('instructor.discussions.index') }}" class="inline-flex items-center justify-center rounded-2xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400">
-                    Lihat Diskusi
-                </a>
-            </section>
-        @endif
-
-        {{-- STATS CARDS --}}
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div class="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">Courses</p>
-                <p class="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">{{ $totalCourses }}</p>
-            </div>
-            <div class="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-                <p class="text-sm text-zinc-500 dark:text-zinc-400">Lessons</p>
-                <p class="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">{{ $totalLessons }}</p>
+                <div class="mt-2 flex items-end justify-between gap-3">
+                    <p class="text-3xl font-bold text-zinc-900 dark:text-white">{{ $totalCourses }}</p>
+                    <p class="text-right text-xs text-zinc-500 dark:text-zinc-400">{{ $publishedCourses }} published<br>{{ $draftCourses }} draft</p>
+                </div>
             </div>
             <div class="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">Students</p>
-                <p class="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">{{ $totalStudents }}</p>
+                <p class="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">{{ $totalStudents }}</p>
+                <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Active atau completed enrollments</p>
             </div>
             <div class="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-                <p class="text-sm text-zinc-500 dark:text-zinc-400">Discussions</p>
-                <p class="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">{{ $totalDiscussions }}</p>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">Unanswered Discussions</p>
+                <p class="mt-2 text-3xl font-bold {{ $totalUnansweredDiscussions > 0 ? 'text-amber-500' : 'text-zinc-900 dark:text-white' }}">{{ $totalUnansweredDiscussions }}</p>
+                <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Dari {{ $totalDiscussions }} total diskusi</p>
             </div>
             <div class="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-                <p class="text-sm text-zinc-500 dark:text-zinc-400">Completion</p>
-                <p class="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">{{ $completionRate }}%</p>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">Completion Rate</p>
+                <p class="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">{{ $completionRate }}%</p>
+                <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Berdasarkan enrollment selesai</p>
             </div>
         </div>
 
-        {{-- MAIN GRID --}}
-        <div class="grid gap-6 xl:grid-cols-[1fr_380px]">
+        <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-zinc-900 dark:text-white">Perlu Tindakan</h2>
+                    <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">Prioritas yang paling berdampak untuk course kamu.</p>
+                </div>
+                @if ($readyToPublishCourses->isNotEmpty())
+                    <span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-300">{{ $readyToPublishCourses->count() }} course siap publish</span>
+                @endif
+            </div>
 
-            {{-- LEFT: COURSES --}}
-            <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-lg font-bold text-zinc-900 dark:text-white">My Courses</h2>
-                        <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{{ $totalCourses }} course{{ $totalCourses !== 1 ? 's' : '' }}</p>
+            <div class="mt-5 grid gap-3 lg:grid-cols-3">
+                <a href="{{ $topUnansweredCourse ? route('instructor.courses.discussions', $topUnansweredCourse) : route('instructor.discussions.index') }}" class="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4 transition hover:border-amber-500/40">
+                    <div class="flex items-center justify-between gap-3">
+                        <p class="font-semibold text-zinc-900 dark:text-white">{{ $totalUnansweredDiscussions }} diskusi belum dibalas</p>
+                        <flux:icon.chat-bubble-left-right class="size-5 text-amber-500" />
                     </div>
-                    <a href="{{ route('instructor.courses.create') }}" class="shrink-0 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500">+ New Course</a>
+                    <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">{{ $topUnansweredCourse ? 'Terbanyak di ' . $topUnansweredCourse->title : 'Belum ada diskusi yang perlu dibalas.' }}</p>
+                </a>
+
+                <a href="{{ $coursesNeedingThumbnail->first() ? route('instructor.courses.edit', $coursesNeedingThumbnail->first()) : route('instructor.courses.index') }}" class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 transition hover:border-indigo-500/30 hover:bg-indigo-500/5 dark:border-zinc-800 dark:bg-zinc-950/40">
+                    <div class="flex items-center justify-between gap-3">
+                        <p class="font-semibold text-zinc-900 dark:text-white">{{ $coursesNeedingThumbnail->count() }} course perlu thumbnail</p>
+                        <flux:icon.photo class="size-5 text-zinc-500" />
+                    </div>
+                    <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Thumbnail wajib sebelum course dipublish.</p>
+                </a>
+
+                <a href="{{ $coursesNeedingLesson->first() ? route('instructor.courses.edit', $coursesNeedingLesson->first()) : route('instructor.courses.index') }}" class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 transition hover:border-indigo-500/30 hover:bg-indigo-500/5 dark:border-zinc-800 dark:bg-zinc-950/40">
+                    <div class="flex items-center justify-between gap-3">
+                        <p class="font-semibold text-zinc-900 dark:text-white">{{ $coursesNeedingLesson->count() }} course perlu lesson</p>
+                        <flux:icon.play-circle class="size-5 text-zinc-500" />
+                    </div>
+                    <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Minimal 1 lesson agar course siap dipublish.</p>
+                </a>
+            </div>
+        </section>
+
+        <div class="grid gap-6 xl:grid-cols-[1fr_380px]">
+            <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-zinc-900 dark:text-white">Course Terbaru</h2>
+                        <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">Menampilkan maksimal 5 course terbaru dari {{ $totalCourses }} course.</p>
+                    </div>
+                    <a href="{{ route('instructor.courses.index') }}" class="text-sm font-semibold text-indigo-600 transition hover:text-indigo-500 dark:text-indigo-400">Lihat Semua</a>
                 </div>
 
-                @if ($courses->isEmpty())
-                    <div class="mt-8 text-center">
-                        <p class="text-zinc-500 dark:text-zinc-400">Belum ada course. Buat course pertamamu!</p>
-                        <a href="{{ route('instructor.courses.create') }}" class="mt-4 inline-block rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Buat Course</a>
+                @if ($dashboardCourses->isEmpty())
+                    <div class="mt-8 rounded-2xl border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-700">
+                        <p class="font-semibold text-zinc-900 dark:text-white">Belum ada course</p>
+                        <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Buat course pertama untuk mulai mengajar.</p>
+                        <a href="{{ route('instructor.courses.create') }}" class="mt-4 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Buat Course</a>
                     </div>
                 @else
                     <div class="mt-6 divide-y divide-zinc-200 dark:divide-zinc-800">
-                        @foreach ($courses as $course)
+                        @foreach ($dashboardCourses as $course)
+                            @php
+                                $statusLabel = $course->is_published ? 'Published' : 'Draft';
+                                $statusClass = $course->is_published ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300' : 'bg-amber-500/10 text-amber-600 dark:text-amber-300';
+
+                                if (! $course->is_published && ! $course->thumbnail) {
+                                    $statusLabel = 'Needs Thumbnail';
+                                    $statusClass = 'bg-rose-500/10 text-rose-600 dark:text-rose-300';
+                                } elseif (! $course->is_published && $course->lessons_count === 0) {
+                                    $statusLabel = 'Needs Lesson';
+                                    $statusClass = 'bg-rose-500/10 text-rose-600 dark:text-rose-300';
+                                } elseif (! $course->is_published && $course->thumbnail && $course->lessons_count > 0) {
+                                    $statusLabel = 'Ready to Publish';
+                                    $statusClass = 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-300';
+                                }
+                            @endphp
+
                             <div class="flex flex-col gap-4 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center">
-                                <div class="h-14 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
+                                <div class="h-16 w-24 flex-shrink-0 overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800">
                                     @if ($course->thumbnail)
                                         <img src="{{ asset('storage/' . $course->thumbnail) }}" class="h-full w-full object-cover">
+                                    @else
+                                        <div class="flex h-full w-full items-center justify-center text-zinc-400">
+                                            <flux:icon.photo class="size-5" />
+                                        </div>
                                     @endif
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <a href="{{ route('instructor.courses.edit', $course) }}" class="font-semibold text-zinc-900 transition hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">{{ $course->title }}</a>
-                                    <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <a href="{{ route('instructor.courses.edit', $course) }}" class="font-semibold text-zinc-900 transition hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">{{ $course->title }}</a>
+                                        <span class="rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $statusClass }}">{{ $statusLabel }}</span>
+                                    </div>
+                                    <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
                                         <span>{{ $course->enrollments_count }} student{{ $course->enrollments_count !== 1 ? 's' : '' }}</span>
-                                        <span>&middot;</span>
-                                        <a href="{{ route('instructor.courses.discussions', $course) }}" class="transition hover:text-indigo-400">{{ $course->discussions_count }} discussion{{ $course->discussions_count !== 1 ? 's' : '' }}</a>
+                                        <span>{{ $course->lessons_count }} lesson{{ $course->lessons_count !== 1 ? 's' : '' }}</span>
+                                        <a href="{{ route('instructor.courses.discussions', $course) }}" class="transition hover:text-indigo-500">{{ $course->discussions_count }} discussion{{ $course->discussions_count !== 1 ? 's' : '' }}</a>
                                         @if ($course->unanswered_discussions_count > 0)
-                                            <span class="rounded-full bg-amber-500/15 px-2 py-0.5 font-semibold text-amber-300">{{ $course->unanswered_discussions_count }} belum dibalas</span>
+                                            <span class="rounded-full bg-amber-500/15 px-2 py-0.5 font-semibold text-amber-600 dark:text-amber-300">{{ $course->unanswered_discussions_count }} belum dibalas</span>
                                         @endif
-                                        <span>&middot;</span>
-                                        <span class="{{ $course->is_published ? 'text-emerald-400' : 'text-amber-400' }}">{{ $course->is_published ? 'Published' : 'Draft' }}</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center justify-between gap-2 sm:justify-end">
-                                    @if ($course->price > 0)
-                                        <span class="text-sm font-semibold text-zinc-900 dark:text-white">Rp{{ number_format($course->price, 0, ',', '.') }}</span>
-                                    @else
-                                        <span class="text-sm font-semibold text-emerald-400">Free</span>
-                                    @endif
-                                    <a href="{{ route('instructor.courses.discussions', $course) }}" class="rounded-lg border border-zinc-300 p-2 text-zinc-500 transition hover:border-indigo-500 hover:text-indigo-600 dark:border-zinc-700 dark:text-zinc-400 dark:hover:text-indigo-400" title="Discussions">
-                                        <flux:icon.chat-bubble-left-right class="size-4" />
-                                    </a>
-                                    <a href="{{ route('instructor.courses.edit', $course) }}" class="rounded-lg border border-zinc-300 p-2 text-zinc-500 transition hover:border-indigo-500 hover:text-indigo-600 dark:border-zinc-700 dark:text-zinc-400 dark:hover:text-indigo-400" title="Edit">
-                                        <flux:icon.pencil-square class="size-4" />
-                                    </a>
+                                    <span class="text-sm font-semibold text-zinc-900 dark:text-white">{{ $course->price > 0 ? 'Rp' . number_format($course->price, 0, ',', '.') : 'Free' }}</span>
+                                    <a href="{{ route('instructor.courses.edit', $course) }}" class="rounded-xl border border-zinc-300 px-3 py-2 text-xs font-semibold text-zinc-600 transition hover:border-indigo-500 hover:text-indigo-600 dark:border-zinc-700 dark:text-zinc-300 dark:hover:text-indigo-400">Manage</a>
                                 </div>
                             </div>
                         @endforeach
@@ -130,7 +164,6 @@
                 @endif
             </section>
 
-            {{-- RIGHT: RECENT ACTIVITY --}}
             <div class="space-y-6">
                 <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                     <h2 class="text-lg font-bold text-zinc-900 dark:text-white">Recent Activity</h2>
@@ -146,7 +179,7 @@
                                     <div class="min-w-0 flex-1">
                                         <p class="text-sm font-medium text-zinc-900 dark:text-white">{{ $enrollment->user->name }}</p>
                                         <p class="text-xs text-zinc-500 dark:text-zinc-400">enrolled in <span class="text-zinc-700 dark:text-zinc-300">{{ $enrollment->course->title }}</span></p>
-                                        <p class="mt-0.5 text-xs text-zinc-600">{{ $enrollment->created_at->diffForHumans() }}</p>
+                                        <p class="mt-0.5 text-xs text-zinc-600 dark:text-zinc-500">{{ $enrollment->created_at->diffForHumans() }}</p>
                                     </div>
                                 </div>
                             @endforeach
@@ -177,7 +210,6 @@
                     </div>
                 </section>
             </div>
-
         </div>
 
     </div>

@@ -64,7 +64,7 @@ class CourseForm
                                         )
                                         ->searchable()
                                         ->preload()
-                                        ->nullable(),
+                                        ->required(),
 
                                 ])
                                 ->columnSpan(2),
