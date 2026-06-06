@@ -2,6 +2,7 @@
     @php
         $activeCourse = $course ?? null;
         $latestCourseId = $courses->first()?->id;
+        $search = $search ?? '';
     @endphp
 
     <div class="py-4 pb-36 sm:py-8 sm:pb-40">
@@ -55,6 +56,23 @@
                             </a>
                         @endforeach
                     </div>
+                </div>
+            @endif
+
+            @if ($activeCourse)
+                <div class="space-y-2">
+                    <x-instructor.search-input
+                        :livewire="false"
+                        :action="route('instructor.courses.discussions', $activeCourse)"
+                        :clear-url="route('instructor.courses.discussions', $activeCourse)"
+                        :value="$search"
+                        placeholder="Cari diskusi, student, atau lesson..." />
+
+                    @if ($search !== '')
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                            Menampilkan {{ $discussions->total() }} hasil untuk "{{ $search }}".
+                        </p>
+                    @endif
                 </div>
             @endif
 

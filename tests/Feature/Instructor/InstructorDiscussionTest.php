@@ -49,6 +49,38 @@ it('allows instructors to open discussions for their own course', function () {
         ->assertSee('Pertanyaan dari student.');
 });
 
+it('searches discussions by content, student, or lesson for the selected course', function () {
+    $instructor = User::factory()->create(['role' => 'instructor']);
+    $student = User::factory()->create([
+        'role' => 'student',
+        'name' => 'Budi Searchable',
+    ]);
+    $discussion = createDiscussionForInstructor($instructor, $student);
+    $discussion->update(['content' => 'Pertanyaan tentang middleware Laravel.']);
+
+    $this->actingAs($instructor)
+        ->get(route('instructor.courses.discussions', $discussion->course) . '?search=middleware')
+        ->assertOk()
+        ->assertSee('Pertanyaan tentang middleware Laravel.');
+
+    $this->actingAs($instructor)
+        ->get(route('instructor.courses.discussions', $discussion->course) . '?search=Budi')
+        ->assertOk()
+        ->assertSee('Budi Searchable');
+});
+
+it('does not show unmatched discussions when searching', function () {
+    $instructor = User::factory()->create(['role' => 'instructor']);
+    $student = User::factory()->create(['role' => 'student']);
+    $discussion = createDiscussionForInstructor($instructor, $student);
+    $discussion->update(['content' => 'Pertanyaan tentang queue worker.']);
+
+    $this->actingAs($instructor)
+        ->get(route('instructor.courses.discussions', $discussion->course) . '?search=tidak-ada')
+        ->assertOk()
+        ->assertDontSee('Pertanyaan tentang queue worker.');
+});
+
 it('forbids instructors from opening discussions for another instructors course', function () {
     $instructor = User::factory()->create(['role' => 'instructor']);
     $otherInstructor = User::factory()->create(['role' => 'instructor']);

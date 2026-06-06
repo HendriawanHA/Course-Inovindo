@@ -6,6 +6,16 @@
         </p>
     </div>
 
+    <div class="space-y-2">
+        <x-instructor.search-input placeholder="Cari student, email, atau course..." />
+
+        @if ($search !== '')
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                Menampilkan {{ $enrollments->count() }} hasil untuk "{{ $search }}".
+            </p>
+        @endif
+    </div>
+
     <div class="overflow-hidden rounded-3xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div class="hidden grid-cols-12 border-b border-zinc-200 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400 md:grid">
             <div class="col-span-4">Student</div>
@@ -73,9 +83,9 @@
             </div>
         @empty
             <div class="p-6 text-center sm:p-10">
-                <h3 class="font-semibold text-zinc-900 dark:text-white">Belum ada student</h3>
+                <h3 class="font-semibold text-zinc-900 dark:text-white">{{ $search === '' ? 'Belum ada student' : 'Student tidak ditemukan' }}</h3>
                 <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-                    Student yang enroll di course kamu akan muncul di sini.
+                    {{ $search === '' ? 'Student yang enroll di course kamu akan muncul di sini.' : 'Coba gunakan nama, email, atau judul course lain.' }}
                 </p>
             </div>
         @endforelse

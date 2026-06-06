@@ -18,6 +18,7 @@ class Profile extends Component
 
     public string $name = '';
     public string $email = '';
+    public string $headline = '';
     public string $bio = '';
 
     public ?TemporaryUploadedFile $avatar = null;
@@ -32,6 +33,7 @@ class Profile extends Component
 
         $this->name = $user->name;
         $this->email = $user->email;
+        $this->headline = $user->headline ?? '';
         $this->bio = $user->bio ?? '';
     }
 
@@ -40,6 +42,7 @@ class Profile extends Component
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
+            'headline' => ['nullable', 'string', 'max:255'],
             'bio' => ['nullable', 'string', 'max:1000'],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ]);
@@ -47,6 +50,7 @@ class Profile extends Component
         $data = [
             'name' => $validated['name'],
             'email' => $validated['email'],
+            'headline' => $validated['headline'] ?? null,
             'bio' => $validated['bio'] ?? null,
         ];
 

@@ -26,20 +26,32 @@ class DiscussionController extends Controller
         return redirect()->route('instructor.courses.discussions', $courses->first());
     }
 
-    public function byCourse(Course $course)
+    public function byCourse(Request $request, Course $course)
     {
         abort_unless($course->user_id === auth()->id(), 403);
 
         $courses = $this->discussionCourses();
+        $search = trim((string) $request->query('search', ''));
 
         $discussions = Discussion::query()
             ->where('course_id', $course->id)
+            ->when($search !== '', fn($query) => $query->where(function ($query) use ($search) {
+                $query->where('content', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('lesson', function ($query) use ($search) {
+                        $query->where('title', 'like', "%{$search}%");
+                    });
+            }))
             ->with(['user', 'course', 'lesson', 'replies.user'])
             ->select('discussions.*')
             ->selectRaw('COALESCE((select MAX(dr.created_at) from discussion_replies dr where dr.discussion_id = discussions.id), discussions.created_at) as last_activity_at')
             ->orderByDesc('last_activity_at')
             ->latest('discussions.created_at')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         $totalDiscussions = Discussion::where('course_id', $course->id)->count();
 
@@ -47,7 +59,7 @@ class DiscussionController extends Controller
             ->whereDoesntHave('replies', fn($query) => $query->whereRelation('user', 'role', 'instructor'))
             ->count();
 
-        return view('instructor.discussions.index', compact('courses', 'discussions', 'course', 'totalDiscussions', 'unansweredDiscussions'));
+        return view('instructor.discussions.index', compact('courses', 'discussions', 'course', 'totalDiscussions', 'unansweredDiscussions', 'search'));
     }
 
     private function discussionCourses()
