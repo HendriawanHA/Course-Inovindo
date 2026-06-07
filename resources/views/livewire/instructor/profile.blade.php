@@ -1,19 +1,14 @@
 <div class="space-y-8">
-
     <div>
         <h1 class="text-3xl font-bold text-zinc-900 dark:text-white">Profile</h1>
         <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             Kelola informasi akun instruktur.
         </p>
     </div>
-
     <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <div class="flex flex-col gap-6 md:flex-row md:items-center">
             <div>
-
-
                 <div class="mt-6 flex items-center gap-6">
-
                     <div class="relative">
 
                         {{-- AVATAR --}}
@@ -35,11 +30,9 @@
                                 fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                     stroke-width="4"></circle>
-
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                             </svg>
                         </div>
-
                         {{-- EDIT BUTTON --}}
                         <label for="avatar-upload"
                             class="absolute bottom-1 right-1 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-4 border-white bg-indigo-600 text-white shadow-lg transition hover:scale-110 hover:bg-indigo-500 dark:border-zinc-900">
@@ -49,14 +42,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M15.232 5.232l3.536 3.536M9 13l6.768-6.768a2.5 2.5 0 113.536 3.536L12.536 16.536a4 4 0 01-1.414.95L7 19l1.514-4.122A4 4 0 019 13z" />
                             </svg>
-
                             <input id="avatar-upload" type="file" wire:model="avatar" class="hidden">
                         </label>
-
                     </div>
-
-
-
                 </div>
             </div>
 
@@ -64,12 +52,15 @@
                 <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">
                     {{ auth()->user()->name }}
                 </h2>
+                <p class="mt-1 text-sm font-medium text-indigo-600 dark:text-indigo-300">
+                    {{ auth()->user()->headline ?: 'Tambahkan headline singkat.' }}
+                </p>
 
                 <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
                     {{ auth()->user()->email }}
                 </p>
 
-                <p class="mt-4 max-w-2xl whitespace-pre-line text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                <p class="mt-1 max-w-2xl whitespace-pre-line text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
                     {{ auth()->user()->bio ?: 'Tambahkan bio singkat agar student lebih mengenal Anda.' }}
                 </p>
 
@@ -103,9 +94,22 @@
             </div>
 
             <div>
+                <label class="text-sm font-semibold text-zinc-900 dark:text-white">Headline</label>
+                <input type="text" wire:model="headline" maxlength="120"
+                    placeholder="Contoh: Laravel Instructor, Fullstack Developer, UI/UX Mentor"
+                    class="mt-2 w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500">
+                <div class="mt-2 flex items-center justify-between gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+                    <span>Headline singkat akan tampil di dashboard dan profil instruktur.</span>
+                    <span>{{ strlen($headline) }}/120</span>
+                </div>
+                @error('headline')
+                    <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
                 <label class="text-sm font-semibold text-zinc-900 dark:text-white">Bio</label>
-                <textarea wire:model="bio" rows="5"
-                    placeholder="Ceritakan pengalaman, keahlian, atau fokus mengajar Anda..."
+                <textarea wire:model="bio" rows="5" placeholder="Ceritakan pengalaman, keahlian, atau fokus mengajar Anda..."
                     class="mt-2 w-full resize-y rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm leading-relaxed text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"></textarea>
                 <div class="mt-2 flex items-center justify-between gap-3 text-xs text-zinc-500 dark:text-zinc-400">
                     <span>Bio akan tampil di profil instruktur.</span>

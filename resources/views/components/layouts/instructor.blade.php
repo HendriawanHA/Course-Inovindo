@@ -257,6 +257,23 @@
         </div>
     </div>
     <x-toaster-hub />
+    <script>
+        document.addEventListener('keydown', (event) => {
+            if (! (event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'k') {
+                return;
+            }
+
+            const searchInput = document.querySelector('[data-instructor-search]');
+
+            if (! searchInput) {
+                return;
+            }
+
+            event.preventDefault();
+            searchInput.focus();
+            searchInput.select();
+        });
+    </script>
     @fluxScripts
 </body>
 

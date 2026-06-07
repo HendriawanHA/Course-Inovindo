@@ -13,6 +13,16 @@
         </a>
     </div>
 
+    <div class="space-y-2">
+        <x-instructor.search-input placeholder="Cari course berdasarkan judul atau deskripsi..." />
+
+        @if ($search !== '')
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                Menampilkan {{ $courses->count() }} hasil untuk "{{ $search }}".
+            </p>
+        @endif
+    </div>
+
     <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         @forelse ($courses as $course)
             <div
@@ -115,9 +125,9 @@
         @empty
             <div
                 class="rounded-3xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-700 dark:bg-zinc-900 md:col-span-2 xl:col-span-3">
-                <h3 class="font-semibold text-zinc-900 dark:text-white">Belum ada course</h3>
+                <h3 class="font-semibold text-zinc-900 dark:text-white">{{ $search === '' ? 'Belum ada course' : 'Course tidak ditemukan' }}</h3>
                 <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-                    Buat course pertama kamu sebagai instruktur.
+                    {{ $search === '' ? 'Buat course pertama kamu sebagai instruktur.' : 'Coba gunakan kata kunci lain.' }}
                 </p>
             </div>
         @endforelse

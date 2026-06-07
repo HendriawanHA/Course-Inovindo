@@ -25,7 +25,7 @@ new #[Layout('layouts.guest')] class extends Component
         }
 
         session(['auth.password_confirmed_at' => time()]);
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        $this->redirectIntended(default: route('redirect.after.login', absolute: false), navigate: true);
     }
 }; ?>
 

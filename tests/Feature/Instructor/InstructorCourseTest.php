@@ -36,6 +36,34 @@ it('only shows courses owned by the authenticated instructor', function () {
         ->assertDontSee('Course Milik Orang Lain');
 });
 
+it('searches only courses owned by the authenticated instructor', function () {
+    $instructor = User::factory()->create(['role' => 'instructor']);
+    $otherInstructor = User::factory()->create(['role' => 'instructor']);
+
+    Course::create([
+        'title' => 'Laravel Search Course',
+        'description' => 'Course milik instructor aktif.',
+        'price' => 100000,
+        'is_published' => false,
+        'user_id' => $instructor->id,
+    ]);
+
+    Course::create([
+        'title' => 'Laravel Search Course Other',
+        'description' => 'Course milik instructor lain.',
+        'price' => 100000,
+        'is_published' => false,
+        'user_id' => $otherInstructor->id,
+    ]);
+
+    $this->actingAs($instructor);
+
+    Livewire::test(CourseIndex::class)
+        ->set('search', 'Laravel Search')
+        ->assertSee('Laravel Search Course')
+        ->assertDontSee('Laravel Search Course Other');
+});
+
 it('allows instructors to create a draft course', function () {
     $instructor = User::factory()->create(['role' => 'instructor']);
 
