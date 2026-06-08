@@ -87,12 +87,6 @@
                 </div>
             </div>
 
-            @if (session('success'))
-                <div class="rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm text-green-700 dark:border-green-500/20 dark:bg-green-500/10 dark:text-green-300">
-                    {{ session('success') }}
-                </div>
-            @endif
-
             <section class="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
                 <div class="border-b border-zinc-200 px-5 py-4 dark:border-zinc-800 sm:px-6">
                     <h2 class="font-semibold text-zinc-900 dark:text-white">Thread Diskusi</h2>
@@ -318,8 +312,22 @@
 
             cancelButton.addEventListener('click', closeComposer);
 
-            document.addEventListener('keydown', (event) => {
+            textarea.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
+                    closeComposer();
+                    return;
+                }
+
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    if (!submitButton.disabled) {
+                        submitButton.click();
+                    }
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !composer.classList.contains('hidden')) {
                     closeComposer();
                 }
             });

@@ -1,14 +1,14 @@
 <x-app-layout>
     <div x-data="{ sidebarOpen: window.innerWidth >= 1024 }"
         class="flex flex-1 overflow-hidden">
-        <div class="flex-1 flex flex-col min-w-0 pt-5 bg-zinc-50 dark:bg-zinc-900 min-h-screen">
+        <div data-content-area class="flex-1 flex flex-col min-w-0 pt-5 bg-zinc-50 dark:bg-zinc-900 min-h-screen">
             <x-courses.video-header
                 :course="$course"
                 :discussions="$discussions" />
 
             <flux:separator />
 
-            <div class="max-w-4xl mx-auto w-full px-4 md:px-6 mt-6 md:mt-8">
+            <div data-video-width class="max-w-4xl mx-auto w-full px-4 md:px-6 mt-6 md:mt-8">
                 <x-courses.lesson-header
                     :lesson="$lesson"
                     :current-index="$currentIndex"

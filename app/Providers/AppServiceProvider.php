@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
             'topCourses',
             Schema::hasTable('courses')
                 ? Course::withCount('enrollments')
+                    ->with('modules', 'lessons', 'instructor')
                     ->orderByDesc('enrollments_count')
                     ->take(5)
                     ->get()
@@ -37,10 +38,9 @@ class AppServiceProvider extends ServiceProvider
 
             if (!Schema::hasTable('courses')) {
                 $unreadDiscussions = 0;
-                $unreadNotifications = 0;
                 $sidebarCourses = collect();
 
-                $view->with(compact('unreadDiscussions', 'unreadNotifications', 'sidebarCourses'));
+                $view->with(compact('unreadDiscussions', 'sidebarCourses'));
 
                 return;
             }
@@ -53,17 +53,13 @@ class AppServiceProvider extends ServiceProvider
                     ->count()
                 : 0;
 
-            $unreadNotifications = Schema::hasTable('notifications')
-                ? Auth::user()->unreadNotifications->count()
-                : 0;
-
             $sidebarCourses = Course::where('user_id', Auth::id())
                 ->withCount('discussions')
                 ->latest()
                 ->take(10)
                 ->get();
 
-            $view->with(compact('unreadDiscussions', 'unreadNotifications', 'sidebarCourses'));
+            $view->with(compact('unreadDiscussions', 'sidebarCourses'));
         });
     }
 }

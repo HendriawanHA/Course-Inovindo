@@ -1,15 +1,20 @@
 <?php
 
 namespace App\Livewire\Instructor\Courses;
+
 use App\Livewire\Concerns\WithSearch;
 use App\Models\Course;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('components.layouts.instructor')]
 class Index extends Component
 {
     use WithSearch;
+
+    #[Url(as: 'view', except: 'grid')]
+    public string $view = 'grid';
 
     public function render()
     {
@@ -21,7 +26,7 @@ class Index extends Component
                     $query->where('title', 'like', "%{$search}%")
                         ->orWhere('description', 'like', "%{$search}%");
                 }))
-                ->withCount(['modules', 'lessons', 'discussions'])
+                ->withCount(['modules', 'lessons', 'discussions', 'enrollments'])
                 ->latest()
                 ->get(),
             'search' => $search,

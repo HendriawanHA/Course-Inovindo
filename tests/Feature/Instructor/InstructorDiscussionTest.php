@@ -75,10 +75,16 @@ it('does not show unmatched discussions when searching', function () {
     $discussion = createDiscussionForInstructor($instructor, $student);
     $discussion->update(['content' => 'Pertanyaan tentang queue worker.']);
 
-    $this->actingAs($instructor)
+    $response = $this->actingAs($instructor)
         ->get(route('instructor.courses.discussions', $discussion->course) . '?search=tidak-ada')
-        ->assertOk()
-        ->assertDontSee('Pertanyaan tentang queue worker.');
+        ->assertOk();
+
+    // The command palette renders all instructor discussions regardless of page search.
+    // Extract only the Thread Diskusi <section> and assert unmatched content is absent.
+    $html = $response->getContent();
+    preg_match('/Thread Diskusi.*?<\/section>/s', $html, $matches);
+    $threadSection = $matches[0] ?? '';
+    expect($threadSection)->not->toContain('Pertanyaan tentang queue worker.');
 });
 
 it('forbids instructors from opening discussions for another instructors course', function () {

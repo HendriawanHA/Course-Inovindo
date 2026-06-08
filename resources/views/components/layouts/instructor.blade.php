@@ -256,6 +256,8 @@
             </main>
         </div>
     </div>
+    <livewire:instructor.command-palette />
+
     <x-toaster-hub />
     <script>
         document.addEventListener('keydown', (event) => {
@@ -263,15 +265,8 @@
                 return;
             }
 
-            const searchInput = document.querySelector('[data-instructor-search]');
-
-            if (! searchInput) {
-                return;
-            }
-
             event.preventDefault();
-            searchInput.focus();
-            searchInput.select();
+            window.dispatchEvent(new CustomEvent('open-command-palette'));
         });
     </script>
     @fluxScripts

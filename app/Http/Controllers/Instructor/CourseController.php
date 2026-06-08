@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Instructor;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Masmerise\Toaster\Toaster;
 
 class CourseController extends Controller
 {
@@ -36,12 +37,12 @@ class CourseController extends Controller
         }
 
         $validated['user_id'] = auth()->id();
-$validated['is_published'] = $request->boolean('is_published');
+        $validated['is_published'] = $request->boolean('is_published');
         Course::create($validated);
 
-        return redirect()
-            ->route('instructor.courses.index')
-            ->with('success', 'Course berhasil dibuat.');
+        Toaster::success('Course berhasil dibuat.');
+
+        return redirect()->route('instructor.courses.index');
     }
 
     public function show(Course $course)
@@ -76,9 +77,9 @@ $validated['is_published'] = $request->boolean('is_published');
 
         $course->update($validated);
 
-        return redirect()
-            ->route('instructor.courses.index')
-            ->with('success', 'Course berhasil diperbarui.');
+        Toaster::success('Course berhasil diperbarui.');
+
+        return redirect()->route('instructor.courses.index');
     }
 
     public function destroy(Course $course)
@@ -87,9 +88,9 @@ $validated['is_published'] = $request->boolean('is_published');
 
         $course->delete();
 
-        return redirect()
-            ->route('instructor.courses.index')
-            ->with('success', 'Course berhasil dihapus.');
+        Toaster::success('Course berhasil dihapus.');
+
+        return redirect()->route('instructor.courses.index');
     }
 
     private function authorizeCourse(Course $course): void

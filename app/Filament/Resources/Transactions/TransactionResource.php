@@ -6,6 +6,7 @@ use BackedEnum;
 use UnitEnum;
 use App\Models\Transaction;
 use App\Models\Enrollment;
+use App\Notifications\CoursePurchasedNotification;
 use App\Filament\Resources\Transactions\Pages;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -158,6 +159,13 @@ class TransactionResource extends Resource
                                 'enrolled_at' => now(),
                             ]
                         );
+
+                        $course = $record->course()->with('instructor')->first();
+                        if ($course && $course->instructor) {
+                            $course->instructor->notify(
+                                new CoursePurchasedNotification($record)
+                            );
+                        }
 
                         Notification::make()
                             ->title('Payment Approved')

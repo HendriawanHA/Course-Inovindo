@@ -8,6 +8,7 @@ use App\Models\Discussion;
 use App\Models\DiscussionReply;
 use App\Notifications\StudentDiscussionReplyNotification;
 use Illuminate\Http\Request;
+use Masmerise\Toaster\Toaster;
 
 class DiscussionController extends Controller
 {
@@ -92,6 +93,7 @@ class DiscussionController extends Controller
     {
         $request->validate([
             'content' => ['required', 'string', 'max:2000'],
+            'parent_id' => ['nullable', 'integer', 'exists:discussion_replies,id'],
         ]);
 
         $isOwner = Course::where('id', $discussion->course_id)
@@ -103,6 +105,7 @@ class DiscussionController extends Controller
         $reply = DiscussionReply::create([
             'discussion_id' => $discussion->id,
             'user_id' => auth()->id(),
+            'parent_id' => $request->integer('parent_id') ?: null,
             'content' => $request->content,
         ]);
 
@@ -110,7 +113,9 @@ class DiscussionController extends Controller
             new StudentDiscussionReplyNotification($reply)
         );
 
-        return back()->with('success', 'Balasan berhasil dikirim.');
+        Toaster::success('Balasan berhasil dikirim.');
+
+        return back();
     }
 
     public function replyFromComposer(Request $request)
@@ -118,6 +123,7 @@ class DiscussionController extends Controller
         $request->validate([
             'discussion_id' => ['required', 'integer', 'exists:discussions,id'],
             'content' => ['required', 'string', 'max:2000'],
+            'parent_id' => ['nullable', 'integer', 'exists:discussion_replies,id'],
         ]);
 
         return $this->reply($request, Discussion::findOrFail($request->integer('discussion_id')));

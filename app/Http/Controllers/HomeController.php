@@ -27,6 +27,7 @@ class HomeController extends Controller
             ->get();
 
         $topCourses = Course::popular()
+            ->with('modules', 'lessons', 'instructor')
             ->take(4)
             ->get();
 
