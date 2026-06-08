@@ -45,19 +45,25 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            $courseIds = Course::where('user_id', Auth::id())->pluck('id');
-
-            $unreadDiscussions = Schema::hasTable('discussions')
-                ? Discussion::whereIn('course_id', $courseIds)
-                    ->whereDoesntHave('replies', fn($q) => $q->whereRelation('user', 'role', 'instructor'))
-                    ->count()
-                : 0;
-
             $sidebarCourses = Course::where('user_id', Auth::id())
                 ->withCount('discussions')
+                ->withMax('discussions', 'created_at')
                 ->latest()
                 ->take(10)
-                ->get();
+                ->get()
+                ->map(function (Course $course) {
+                    $viewedAt = session("instructor.discussions.viewed_at.{$course->id}");
+                    $latestDiscussionAt = $course->discussions_max_created_at;
+
+                    $course->setAttribute(
+                        'has_unread_discussions',
+                        $latestDiscussionAt && (! $viewedAt || $latestDiscussionAt > $viewedAt)
+                    );
+
+                    return $course;
+                });
+
+            $unreadDiscussions = $sidebarCourses->where('has_unread_discussions', true)->count();
 
             $view->with(compact('unreadDiscussions', 'sidebarCourses'));
         });

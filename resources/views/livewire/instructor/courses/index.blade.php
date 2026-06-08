@@ -37,22 +37,12 @@
         </div>
     </div>
 
-    <div class="space-y-2">
-        <x-instructor.search-input placeholder="Cari course berdasarkan judul atau deskripsi..." />
-
-        @if ($search !== '')
-            <p class="text-sm text-zinc-500 dark:text-zinc-400">
-                Menampilkan {{ $courses->count() }} hasil untuk "{{ $search }}".
-            </p>
-        @endif
-    </div>
-
     {{-- GRID VIEW --}}
     @if ($view === 'grid')
         <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             @forelse ($courses as $course)
                 <div
-                    class="group overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-xl shadow-black/5 transition duration-300 hover:-translate-y-1 hover:border-indigo-500/50 hover:shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/80 dark:shadow-black/10">
+                    class="group overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl shadow-black/5 transition duration-300 hover:-translate-y-1 hover:border-indigo-500/50 hover:shadow-indigo-500/10 dark:border-zinc-800 dark:bg-zinc-900/80 dark:shadow-black/10">
 
                     <!-- Thumbnail -->
                     <div class="relative h-52 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
@@ -64,7 +54,7 @@
                                 class="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900">
                                 <div class="text-center">
                                     <div
-                                        class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-400">
+                                        class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -119,7 +109,7 @@
                         </div>
 
                         <!-- Meta -->
-                        <div class="mt-5 grid grid-cols-3 gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/50">
+                        <div class="mt-5 grid grid-cols-3 gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/50">
                             <div>
                                 <p class="text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Modules</p>
                                 <p class="mt-1 text-sm font-semibold text-zinc-900 dark:text-white">
@@ -145,12 +135,12 @@
                         <!-- Actions -->
                         <div class="mt-5 flex items-center gap-2">
                             <a href="{{ route('instructor.courses.preview', $course) }}"
-                                class="flex-1 rounded-2xl border border-zinc-300 px-4 py-3 text-center text-sm font-semibold text-zinc-700 transition hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:text-indigo-600 dark:border-zinc-700 dark:text-zinc-200 dark:hover:text-white">
+                                class="flex-1 rounded-lg border border-zinc-300 px-4 py-3 text-center text-sm font-semibold text-zinc-700 transition hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:text-indigo-600 dark:border-zinc-700 dark:text-zinc-200 dark:hover:text-white">
                                 Preview
                             </a>
 
                             <a href="{{ route('instructor.courses.edit', $course) }}"
-                                class="flex-1 rounded-2xl bg-indigo-600 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-indigo-500">
+                                class="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-indigo-500">
                                 Edit
                             </a>
                         </div>
@@ -158,7 +148,7 @@
                 </div>
             @empty
                 <div
-                    class="rounded-3xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-700 dark:bg-zinc-900 md:col-span-2 xl:col-span-3">
+                    class="rounded-xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-700 dark:bg-zinc-900 md:col-span-2 xl:col-span-3">
                     <h3 class="font-semibold text-zinc-900 dark:text-white">{{ $search === '' ? 'Belum ada course' : 'Course tidak ditemukan' }}</h3>
                     <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
                         {{ $search === '' ? 'Buat course pertama kamu sebagai instruktur.' : 'Coba gunakan kata kunci lain.' }}
@@ -173,7 +163,7 @@
         <div class="space-y-3">
             @forelse ($courses as $course)
                 <div
-                    class="group flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:border-indigo-500/50 hover:shadow-md sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900/80">
+                    class="group flex flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:border-indigo-500/50 hover:shadow-md sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900/80">
 
                     {{-- Thumbnail --}}
                     <div class="h-32 w-full shrink-0 overflow-hidden rounded-xl bg-zinc-100 sm:h-20 sm:w-32 dark:bg-zinc-800">
@@ -233,13 +223,19 @@
                     </div>
                 </div>
             @empty
-                <div class="rounded-3xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-700 dark:bg-zinc-900">
+                <div class="rounded-xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-700 dark:bg-zinc-900">
                     <h3 class="font-semibold text-zinc-900 dark:text-white">{{ $search === '' ? 'Belum ada course' : 'Course tidak ditemukan' }}</h3>
                     <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
                         {{ $search === '' ? 'Buat course pertama kamu sebagai instruktur.' : 'Coba gunakan kata kunci lain.' }}
                     </p>
                 </div>
             @endforelse
+        </div>
+    @endif
+
+    @if ($courses->hasPages())
+        <div>
+            {{ $courses->links() }}
         </div>
     @endif
 

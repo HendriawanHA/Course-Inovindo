@@ -31,6 +31,8 @@ class DiscussionController extends Controller
     {
         abort_unless($course->user_id === auth()->id(), 403);
 
+        session(["instructor.discussions.viewed_at.{$course->id}" => now()->toDateTimeString()]);
+
         $courses = $this->discussionCourses();
         $search = trim((string) $request->query('search', ''));
 

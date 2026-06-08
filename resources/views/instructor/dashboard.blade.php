@@ -1,7 +1,7 @@
 <x-layouts.instructor>
     <div class="space-y-6 sm:space-y-8">
 
-        <section class="rounded-3xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
+        <section class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
             <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div class="flex items-center gap-4">
                     <img src="{{ auth()->user()?->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" class="h-16 w-16 rounded-full object-cover sm:h-20 sm:w-20">
@@ -11,41 +11,41 @@
                     </div>
                 </div>
 
-                <a href="{{ route('instructor.courses.create') }}" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500">
+                <a href="{{ route('instructor.courses.create') }}" class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500">
                     <flux:icon.plus class="size-4" /> New Course
                 </a>
             </div>
         </section>
 
         <div class="grid gap-4 sm:grid-cols-3">
-            <div class="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">Courses</p>
                 <p class="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">{{ $totalCourses }}</p>
             </div>
-            <div class="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">Students</p>
                 <p class="mt-2 text-3xl font-bold text-zinc-900 dark:text-white">{{ $totalStudents }}</p>
             </div>
-            <div class="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">Unanswered Discussions</p>
-                <p class="mt-2 text-3xl font-bold {{ $totalUnansweredDiscussions > 0 ? 'text-amber-500' : 'text-zinc-900 dark:text-white' }}">{{ $totalUnansweredDiscussions }}</p>
+                <p class="mt-2 text-3xl font-bold text-amber-600 dark:text-amber-300">{{ $totalUnansweredDiscussions }}</p>
             </div>
         </div>
 
         @if ($totalUnansweredDiscussions > 0)
-            <section class="flex flex-col gap-4 rounded-3xl border border-amber-500/30 bg-amber-500/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <section class="flex flex-col gap-4 rounded-xl border border-amber-400/30 bg-amber-400/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
                 <div>
                     <h2 class="font-semibold text-zinc-900 dark:text-white">{{ $totalUnansweredDiscussions }} diskusi belum dibalas</h2>
                     <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">Balas pertanyaan student agar proses belajar tetap aktif.</p>
                 </div>
-                <a href="{{ route('instructor.discussions.index') }}" class="inline-flex items-center justify-center rounded-2xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400">
+                <a href="{{ route('instructor.discussions.index') }}" class="inline-flex items-center justify-center rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-amber-300">
                     Lihat Diskusi
                 </a>
             </section>
         @endif
 
         <div class="grid gap-6 xl:grid-cols-[1fr_380px]">
-            <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h2 class="text-lg font-bold text-zinc-900 dark:text-white">Course Terbaru</h2>
@@ -55,7 +55,7 @@
                 </div>
 
                 @if ($dashboardCourses->isEmpty())
-                    <div class="mt-8 rounded-2xl border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-700">
+                    <div class="mt-8 rounded-xl border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-700">
                         <p class="font-semibold text-zinc-900 dark:text-white">Belum ada course</p>
                         <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Buat course pertama untuk mulai mengajar.</p>
                         <a href="{{ route('instructor.courses.create') }}" class="mt-4 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Buat Course</a>
@@ -74,7 +74,7 @@
                             @endphp
 
                             <div class="flex flex-col gap-4 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center">
-                                <div class="h-16 w-24 flex-shrink-0 overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800">
+                                <div class="h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
                                     @if ($course->thumbnail)
                                         <img src="{{ asset('storage/' . $course->thumbnail) }}" class="h-full w-full object-cover">
                                     @else
@@ -101,7 +101,7 @@
                 @endif
             </section>
 
-            <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                 <h2 class="text-lg font-bold text-zinc-900 dark:text-white">Recent Activity</h2>
                 <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">Student enrollments terbaru</p>
 

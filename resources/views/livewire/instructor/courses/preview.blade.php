@@ -1,7 +1,7 @@
 <div class="space-y-8">
 
     {{-- HEADER --}}
-    <div class="overflow-hidden rounded-3xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+    <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
 
         <div class="relative h-72 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
             @if ($course->thumbnail)
@@ -40,7 +40,7 @@
     </div>
 
     {{-- CURRICULUM --}}
-    <section class="rounded-3xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+    <section class="rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div class="border-b border-zinc-200 px-6 py-5 dark:border-zinc-800">
             <h2 class="text-xl font-bold text-zinc-900 dark:text-white">
                 Curriculum
@@ -53,7 +53,7 @@
 
         <div class="space-y-4 p-6">
             @forelse ($course->modules as $module)
-                <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/40">
+                <div class="overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/40">
 
                     <div class="border-b border-zinc-200 px-5 py-4 dark:border-zinc-800">
                         <h3 class="font-semibold text-zinc-900 dark:text-white">
@@ -108,7 +108,7 @@
 
                 </div>
             @empty
-                <div class="rounded-2xl border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
+                <div class="rounded-lg border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
                     <p class="text-zinc-500 dark:text-zinc-400">
                         No modules yet.
                     </p>

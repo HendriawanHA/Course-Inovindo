@@ -145,27 +145,10 @@ class TransactionResource extends Resource
                     ->action(function (Transaction $record): void {
                         $record->update([
                             'status' => 'paid',
-                            'paid_at' => now(),
+                            'paid_at' => $record->paid_at ?? now(),
                         ]);
 
-                        Enrollment::firstOrCreate(
-                            [
-                                'user_id' => $record->user_id,
-                                'course_id' => $record->course_id,
-                            ],
-                            [
-                                'status' => 'active',
-                                'progress' => 0,
-                                'enrolled_at' => now(),
-                            ]
-                        );
-
-                        $course = $record->course()->with('instructor')->first();
-                        if ($course && $course->instructor) {
-                            $course->instructor->notify(
-                                new CoursePurchasedNotification($record)
-                            );
-                        }
+                        self::approvePaidTransaction($record);
 
                         Notification::make()
                             ->title('Payment Approved')
@@ -179,6 +162,40 @@ class TransactionResource extends Resource
             ->bulkActions([
                 DeleteBulkAction::make(),
             ]);
+    }
+
+    public static function approvePaidTransaction(Transaction $record, bool $notifyInstructor = true): Enrollment
+    {
+        if ($record->status !== 'paid') {
+            return Enrollment::where('user_id', $record->user_id)
+                ->where('course_id', $record->course_id)
+                ->firstOrFail();
+        }
+
+        if ($record->paid_at === null) {
+            $record->forceFill(['paid_at' => now()])->save();
+        }
+
+        $enrollment = Enrollment::firstOrCreate(
+            [
+                'user_id' => $record->user_id,
+                'course_id' => $record->course_id,
+            ],
+            [
+                'status' => 'active',
+                'progress' => 0,
+                'enrolled_at' => now(),
+            ]
+        );
+
+        $course = $record->course()->with('instructor')->first();
+        if ($notifyInstructor && $course?->instructor) {
+            $course->instructor->notify(
+                new CoursePurchasedNotification($record)
+            );
+        }
+
+        return $enrollment;
     }
 
     public static function getPages(): array
