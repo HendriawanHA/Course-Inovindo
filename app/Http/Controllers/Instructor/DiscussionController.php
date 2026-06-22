@@ -130,4 +130,33 @@ class DiscussionController extends Controller
 
         return $this->reply($request, Discussion::findOrFail($request->integer('discussion_id')));
     }
+
+    public function destroy(Discussion $discussion)
+    {
+        abort_unless(
+            Course::where('id', $discussion->course_id)->where('user_id', auth()->id())->exists(),
+            403
+        );
+
+        $discussion->delete();
+
+        Toaster::success('Diskusi berhasil dihapus.');
+
+        return back();
+    }
+
+    public function destroyReply(DiscussionReply $reply)
+    {
+        abort_unless(
+            Course::where('id', $reply->discussion->course_id)
+                ->where('user_id', auth()->id())->exists(),
+            403
+        );
+
+        $reply->delete();
+
+        Toaster::success('Balasan berhasil dihapus.');
+
+        return back();
+    }
 }

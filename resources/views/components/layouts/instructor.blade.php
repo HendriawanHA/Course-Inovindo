@@ -8,6 +8,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @fluxAppearance
+    <style>[x-cloak]{display:none!important}</style>
 </head>
 
 <body class="bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-white">

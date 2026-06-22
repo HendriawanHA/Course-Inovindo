@@ -4,7 +4,7 @@
         $search = $search ?? '';
     @endphp
 
-    <div class="py-4 pb-36 sm:py-8 sm:pb-40">
+    <div x-data="{ deleteOpen: false, deleteUrl: '', deleteLabel: '', deleteKind: '', videoOpen: false, videoUrl: '', videoTitle: '' }" class="py-4 pb-36 sm:py-8 sm:pb-40">
         <div class="mx-auto max-w-6xl space-y-6">
 
             <div class="space-y-3">
@@ -61,6 +61,14 @@
                                         @else
                                             <span class="rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">Sudah dibalas</span>
                                         @endif
+                                        @if ($discussion->lesson?->youtube_embed_url)
+                                            <button type="button"
+                                                @click="videoUrl = '{{ $discussion->lesson->youtube_embed_url }}'; videoTitle = {{ Js::from($discussion->lesson->title) }}; videoOpen = true"
+                                                class="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-500/10">
+                                                <flux:icon.play class="size-3.5" />
+                                                Preview
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -76,6 +84,12 @@
                                             <p class="text-sm font-semibold text-zinc-900 dark:text-white">{{ $discussion->user->name }}</p>
                                             <span class="rounded-md bg-zinc-200 px-2 py-0.5 text-[11px] font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Student</span>
                                             <span class="text-xs text-zinc-400">{{ $discussion->created_at->diffForHumans() }}</span>
+                                            <button type="button"
+                                                @click="deleteUrl = '{{ route('instructor.discussions.destroy', $discussion) }}'; deleteLabel = {{ Js::from(Str::limit($discussion->content, 60)) }}; deleteKind = 'pertanyaan'; deleteOpen = true"
+                                                class="ml-auto shrink-0 rounded-lg p-1 text-zinc-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                                                title="Hapus pertanyaan">
+                                                <flux:icon.trash class="size-3.5" />
+                                            </button>
                                         </div>
                                         <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{{ $discussion->content }}</p>
                                         <button type="button"
@@ -103,6 +117,12 @@
                                                     <span class="rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Student</span>
                                                 @endif
                                                 <span class="text-xs text-zinc-400">{{ $reply->created_at->diffForHumans() }}</span>
+                                                <button type="button"
+                                                    @click="deleteUrl = '{{ route('instructor.discussions.replies.destroy', $reply) }}'; deleteLabel = {{ Js::from(Str::limit($reply->content, 60)) }}; deleteKind = 'balasan'; deleteOpen = true"
+                                                    class="ml-auto shrink-0 rounded-lg p-1 text-zinc-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                                                    title="Hapus balasan">
+                                                    <flux:icon.trash class="size-3.5" />
+                                                </button>
                                             </div>
                                             <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{{ $reply->content }}</p>
                                             <button type="button"
@@ -172,6 +192,50 @@
                     </button>
                 </div>
             </form>
+        </div>
+
+        <div x-show="deleteOpen" x-cloak
+             @keydown.escape.window="deleteOpen = false"
+             class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/60 backdrop-blur-sm">
+            <div @click.outside="deleteOpen = false"
+                 class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900">
+                <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Hapus <span x-text="deleteKind"></span>?</h3>
+                <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                    "<span x-text="deleteLabel"></span>" akan dihapus permanen dan tidak bisa dibatalkan.
+                </p>
+                <div class="mt-6 flex justify-end gap-2">
+                    <button type="button" @click="deleteOpen = false"
+                        class="rounded-lg px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800">
+                        Batal
+                    </button>
+                    <form :action="deleteUrl" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500">
+                            Hapus
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div x-show="videoOpen" x-cloak
+             @keydown.escape.window="videoOpen = false"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/70 backdrop-blur-sm">
+            <div @click.outside="videoOpen = false"
+                 class="w-full max-w-3xl rounded-2xl bg-white p-4 shadow-xl dark:bg-zinc-900">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-zinc-900 dark:text-white" x-text="videoTitle"></h3>
+                    <button @click="videoOpen = false"
+                        class="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                        <flux:icon.x-mark class="size-4" />
+                    </button>
+                </div>
+                <div class="aspect-video rounded-xl overflow-hidden bg-black">
+                    <iframe class="w-full h-full" :src="videoUrl" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                </div>
+            </div>
         </div>
     </div>
 

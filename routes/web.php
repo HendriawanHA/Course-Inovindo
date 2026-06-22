@@ -105,6 +105,8 @@ Route::middleware(['auth', 'instructor'])->prefix('instructor')->name('instructo
         Route::get('/', [InstructorDiscussionController::class, 'index'])->name('index');
         Route::post('/reply', [InstructorDiscussionController::class, 'replyFromComposer'])->name('reply.store');
         Route::post('/{discussion}/reply', [InstructorDiscussionController::class, 'reply'])->name('reply');
+        Route::delete('/replies/{reply}', [InstructorDiscussionController::class, 'destroyReply'])->name('replies.destroy');
+        Route::delete('/{discussion}', [InstructorDiscussionController::class, 'destroy'])->name('destroy');
     });
 
     // Students
