@@ -50,6 +50,15 @@ class CourseController extends Controller
         $course = Course::with('modules.lessons')->findOrFail($id);
         $user = auth()->user();
 
+        if (
+            $course->price > 0 &&
+            ! $user->hasPurchasedCourse($course->id)
+        ) {
+            return redirect()
+                ->route('courses.index')
+                ->with('error', 'You need to purchase this course first.');
+        }
+
         $enrollment = $this->getEnrollment($user, $course);
         $completedLessonIds = $this->getCompletedLessonIds($user, $course);
 

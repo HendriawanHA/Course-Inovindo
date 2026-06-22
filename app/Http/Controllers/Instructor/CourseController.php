@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Instructor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\User;
+use App\Notifications\NewCourseNotification;
 use Illuminate\Http\Request;
 use Masmerise\Toaster\Toaster;
 
@@ -33,12 +35,23 @@ class CourseController extends Controller
         ]);
 
         if ($request->hasFile('thumbnail')) {
-            $validated['thumbnail'] = $request->file('thumbnail')->store('courses', 'public');
+            $validated['thumbnail'] = $request->file('thumbnail')
+                ->store('courses', 'public');
         }
 
         $validated['user_id'] = auth()->id();
         $validated['is_published'] = $request->boolean('is_published');
         Course::create($validated);
+
+        $course = Course::create($validated);
+
+        $students = User::where('role', 'student')->get();
+
+        foreach ($students as $student) {
+            $student->notify(
+                new NewCourseNotification($course)
+            );
+        }
 
         Toaster::success('Course berhasil dibuat.');
 
@@ -63,13 +76,13 @@ class CourseController extends Controller
     {
         $this->authorizeCourse($course);
 
-      $validated = $request->validate([
-    'title' => ['required', 'string', 'max:255'],
-    'description' => ['nullable', 'string'],
-    'price' => ['required', 'numeric', 'min:0'],
-    'is_published' => ['nullable', 'boolean'],
-    'thumbnail' => ['nullable', 'image', 'max:2048'],
-]);
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'is_published' => ['nullable', 'boolean'],
+            'thumbnail' => ['nullable', 'image', 'max:2048'],
+        ]);
 
         if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = $request->file('thumbnail')->store('courses', 'public');
