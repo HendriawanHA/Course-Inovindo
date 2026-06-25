@@ -13,15 +13,19 @@
             <flux:heading size="xl" class="hidden md:block mb-4 text-zinc-900 dark:text-white !font-bold">
                 New Event
             </flux:heading>
+            <div
+                x-data="{ openEventModal:false, selectedEvent:null}"
+                @open-event-modal.window=" selectedEvent = $event.detail; openEventModal = true;">
 
-            <x-courses.events.featured-card
-                :featuredEvent="$featuredEvent" />
+                <x-courses.events.featured-card
+                    :featuredEvent="$featuredEvent" />
 
-            <x-courses.events.monthly-section
-                :events="$events" />
+                <x-courses.events.event-list
+                    :events="$events" />
 
-            <x-courses.events.event-list
-                :events="$events" />
+                <x-courses.events.buy-event-modal />
+
+            </div>
         </div>
     </flux:main>
 </x-app-layout>

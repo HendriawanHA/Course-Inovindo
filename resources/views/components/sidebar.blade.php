@@ -50,9 +50,7 @@
         }
         @endphp
 
-
-
-        <flux:sidebar.nav class="px-3 py-6">
+        <flux:sidebar.nav class="px-3">
             @if($showSearch)
             <div class="lg:hidden px-3 mb-4">
                 <form action="{{ $searchRoute }}" method="GET">
@@ -64,8 +62,8 @@
                 </form>
             </div>
             @endif
-            <flux:sidebar.item icon="pencil-square" href="#">Feed</flux:sidebar.item>
-            <flux:sidebar.group heading="MENU" class="mt-8 lg:hidden">
+
+            <flux:sidebar.group heading="MENU" class="mt-2 lg:hidden">
                 <div class="space-y-2">
                     <flux:sidebar.item icon="home" href="{{ route('home') }}" @click="sidebarOpen = false" wire:navigate>Home</flux:sidebar.item>
                     <flux:sidebar.item icon="academic-cap" href="{{ route('courses.index') }}" @click="sidebarOpen = false" wire:navigate>Courses</flux:sidebar.item>
@@ -73,41 +71,36 @@
                     <flux:sidebar.item icon="trophy" href="{{ route('leaderboard.index') }}" @click="sidebarOpen = false" wire:navigate>Leaderboard</flux:sidebar.item>
                 </div>
             </flux:sidebar.group>
-            <flux:sidebar.group heading="WELCOME" class="mt-8">
-                <flux:sidebar.item icon="map-pin" href="#">Start Here</flux:sidebar.item>
-                <flux:sidebar.item icon="list-bullet" href="#">Welcome Checklist</flux:sidebar.item>
-                <flux:sidebar.item icon="megaphone" href="#">Announcements</flux:sidebar.item>
-            </flux:sidebar.group>
 
-            <flux:sidebar.group heading="NEWS & UPDATES" class="mt-8">
-                <flux:sidebar.item icon="newspaper" href="#">AI News</flux:sidebar.item>
-                <flux:sidebar.item icon="document-text" href="#" badge="1">Prompt Updates</flux:sidebar.item>
-            </flux:sidebar.group>
-
-            <flux:sidebar.group heading="COURSES" class="mt-8">
-                @foreach($topCourses as $index => $course)
+            <flux:sidebar.group heading="MY COURSES" class="mt-6 lg:mt-0">
+                @forelse($myCourses as $enrollment)
                 <flux:sidebar.item
-                    href="{{ route('courses.show', $course->id) }}"
-                    icon="book-open">
-                    {{ $course->title }}
+                    href="{{ route('courses.show', $enrollment->course->id) }}"
+                    icon="book-open"
+                    tooltip="{{ $enrollment->course->title }}"
+                    class="my-3">
+                    <div class="flex flex-col py-3 gap-1">
+                        <span class="font-medium leading-tight">
+                            {{ Str::limit($enrollment->course->title, 22) }}
+                        </span>
+
+                        @if($enrollment->status === 'completed')
+                        <span class="text-xs text-green-600">
+                            Completed
+                        </span>
+                        @else
+                        <span class="text-xs text-zinc-500">
+                            {{ ucfirst($enrollment->progress) }} %
+                        </span>
+                        @endif
+                    </div>
                 </flux:sidebar.item>
-                @endforeach
+                @empty
+                <div class="text-sm text-zinc-500 px-2">
+                    No enrolled course
+                </div>
+                @endforelse
             </flux:sidebar.group>
-
-            <flux:sidebar.group heading="COMMUNITY" class="mt-8">
-                <!-- Isi community nanti -->
-            </flux:sidebar.group>
-
-            <flux:sidebar.group heading="PREMIUM AREA" class="mt-8">
-                <!-- Isi premium nanti -->
-            </flux:sidebar.group>
-
-            <flux:sidebar.group heading="LINK" class="mt-8">
-                <flux:sidebar.item icon="link" href="#">Download the Android app</flux:sidebar.item>
-                <flux:sidebar.item icon="link" href="#">Download the iOS app</flux:sidebar.item>
-            </flux:sidebar.group>
-
         </flux:sidebar.nav>
-
     </flux:sidebar>
 </div>

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Course;
 use App\Models\Discussion;
+use App\Models\Enrollment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -20,18 +21,20 @@ class AppServiceProvider extends ServiceProvider
     {
         \Carbon\Carbon::setLocale('id');
 
-        $this->configureMidtrans();
+        View::composer('components.sidebar', function ($view) {
 
-        View::share(
-            'topCourses',
-            Schema::hasTable('courses')
-                ? Course::withCount('enrollments')
-                    ->with('modules', 'lessons', 'instructor')
-                    ->orderByDesc('enrollments_count')
+            $myCourses = collect();
+
+            if (auth()->check()) {
+                $myCourses = Enrollment::with('course')
+                    ->where('user_id', auth()->id())
+                    ->orderByDesc('progress')
                     ->take(5)
-                    ->get()
-                : collect()
-        );
+                    ->get();
+            }
+
+            $view->with('myCourses', $myCourses);
+        });
 
         View::composer('components.layouts.instructor', function ($view) {
             if (!Auth::check()) {
@@ -46,6 +49,18 @@ class AppServiceProvider extends ServiceProvider
 
                 return;
             }
+
+            $courseIds = Course::where('user_id', Auth::id())->pluck('id');
+
+            $unreadDiscussions = Schema::hasTable('discussions')
+                ? Discussion::whereIn('course_id', $courseIds)
+                ->whereDoesntHave('replies', fn($q) => $q->whereRelation('user', 'role', 'instructor'))
+                ->count()
+                : 0;
+
+            $unreadNotifications = Schema::hasTable('notifications')
+                ? Auth::user()->unreadNotifications->count()
+                : 0;
 
             $sidebarCourses = Course::where('user_id', Auth::id())
                 ->withCount('discussions')

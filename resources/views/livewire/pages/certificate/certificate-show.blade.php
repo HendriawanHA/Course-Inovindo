@@ -81,7 +81,7 @@
         leading-none
         break-words
     ">
-                        {{ strtoupper($user->name) }}
+                        {{ strtoupper($enrollment->certificate_name) }}
                     </h1>
 
                 </div>

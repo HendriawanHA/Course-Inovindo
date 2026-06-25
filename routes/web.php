@@ -20,6 +20,8 @@ use App\Livewire\Instructor\Students\Index as InstructorStudentsIndex;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LandingPageController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,9 +29,10 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'verified', 'student'])->group(function () {
+Route::get('/', [LandingPageController::class, 'index'])
+    ->name('landing');Route::middleware(['auth', 'verified', 'student'])->group(function () {
 
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::view('/profile', 'profile')->name('profile');
 
     // Courses

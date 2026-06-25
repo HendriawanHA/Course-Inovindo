@@ -18,6 +18,7 @@ class CourseController extends Controller
     {
         $search = request('search');
         $courses = Course::query()
+            ->where('is_published', true)
             ->with([
                 'enrollments' => function ($query) {
                     $query->where('user_id', auth()->id());
@@ -314,6 +315,7 @@ class CourseController extends Controller
                 'status' => 'completed',
                 'progress' => 100,
                 'completed_at' => now(),
+                'certificate_name' => $user->name,
             ]);
         } else {
             $enrollment->update([

@@ -14,6 +14,7 @@ class Enrollment extends Model
         'progress',
         'enrolled_at',
         'completed_at',
+        'certificate_name',
     ];
 
     protected $casts = [
