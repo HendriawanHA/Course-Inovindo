@@ -13,7 +13,7 @@
 @endphp
 
 @if ($livewire)
-    <div class="rounded-3xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900 sm:p-4">
+    <div class="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900 sm:p-4">
         <div class="flex items-center gap-3">
             <flux:icon.magnifying-glass class="size-5 shrink-0 text-zinc-400" />
             <input
@@ -35,7 +35,7 @@
         </div>
     </div>
 @else
-    <form method="GET" action="{{ $action }}" class="rounded-3xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900 sm:p-4">
+    <form method="GET" action="{{ $action }}" class="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900 sm:p-4">
         <div class="flex items-center gap-3">
             <flux:icon.magnifying-glass class="size-5 shrink-0 text-zinc-400" />
             <input

@@ -9,8 +9,10 @@ class DiscussionReply extends Model
     protected $fillable = [
         'discussion_id',
         'user_id',
+        'parent_id',
         'content',
     ];
+
     public function discussion()
     {
         return $this->belongsTo(Discussion::class);
@@ -19,5 +21,15 @@ class DiscussionReply extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent_id');
     }
 }

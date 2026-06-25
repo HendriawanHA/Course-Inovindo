@@ -32,7 +32,7 @@
             <flux:heading size="lg" class="mb-6">
                 Top Students
             </flux:heading>
-            <x-.courses.leaderboard.list
+            <x-courses.leaderboard.list
                 :leaders="$topStudents" />
         </div>
     </div>

@@ -10,6 +10,20 @@ class EditTransaction extends EditRecord
 {
     protected static string $resource = TransactionResource::class;
 
+    protected bool $wasPaid = false;
+
+    protected function beforeSave(): void
+    {
+        $this->wasPaid = $this->record->status === 'paid';
+    }
+
+    protected function afterSave(): void
+    {
+        if (! $this->wasPaid && $this->record->status === 'paid') {
+            TransactionResource::approvePaidTransaction($this->record);
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Discussions;
 
-use App\Models\Course;
 use App\Models\Discussion;
 use App\Models\DiscussionReply;
 use App\Models\Lesson;
@@ -31,7 +30,9 @@ class LessonDiscussion extends Component
     {
         $this->replyingTo = $discussionId;
         $this->replyingName = $name;
-        $this->content = '';
+        $this->content = "@{$name} ";
+
+        $this->dispatch('focus-reply-input');
     }
 
     public function cancelReply(): void
@@ -47,7 +48,7 @@ class LessonDiscussion extends Component
             'content' => ['required', 'string', 'max:2000'],
         ]);
 
-        $course = Course::find($this->lesson->module->course_id);
+        $course = $this->lesson->module->course;
 
         if ($this->replyingTo) {
             $reply = DiscussionReply::create([
@@ -61,7 +62,7 @@ class LessonDiscussion extends Component
             }
         } else {
             $discussion = Discussion::create([
-                'course_id' => $this->lesson->module->course_id,
+                'course_id' => $course->id,
                 'lesson_id' => $this->lesson->id,
                 'user_id' => Auth::id(),
                 'content' => $this->content,
@@ -83,7 +84,10 @@ class LessonDiscussion extends Component
             'discussions' => Discussion::query()
                 ->where('lesson_id', $this->lesson->id)
                 ->with(['user', 'replies.user'])
-                ->latest()
+                ->select('discussions.*')
+                ->selectRaw('COALESCE((select MAX(dr.created_at) from discussion_replies dr where dr.discussion_id = discussions.id), discussions.created_at) as last_activity_at')
+                ->orderByDesc('last_activity_at')
+                ->latest('discussions.created_at')
                 ->get(),
         ]);
     }

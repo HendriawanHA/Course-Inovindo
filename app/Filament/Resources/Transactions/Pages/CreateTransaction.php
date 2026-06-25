@@ -8,4 +8,11 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTransaction extends CreateRecord
 {
     protected static string $resource = TransactionResource::class;
+
+    protected function afterCreate(): void
+    {
+        if ($this->record->status === 'paid') {
+            TransactionResource::approvePaidTransaction($this->record);
+        }
+    }
 }

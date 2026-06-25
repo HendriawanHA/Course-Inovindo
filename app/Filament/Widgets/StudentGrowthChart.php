@@ -8,22 +8,30 @@ use Filament\Widgets\ChartWidget;
 class StudentGrowthChart extends ChartWidget
 {
     protected ?string $heading = 'Student Growth';
-    protected  ?string $maxHeight = '300px';
+    protected ?string $maxHeight = '300px';
     protected int|string|array $columnSpan = 3;
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 3;
 
+    public ?string $filter = '12';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            '3' => '3 bulan',
+            '6' => '6 bulan',
+            '12' => '12 bulan',
+        ];
+    }
 
     protected function getData(): array
     {
-        $months = [];
+        $total = (int) ($this->filter ?: 12);
+        $labels = [];
         $students = [];
 
-        // 12 bulan terakhir
-        for ($i = 11; $i >= 0; $i--) {
-
+        for ($i = $total - 1; $i >= 0; $i--) {
             $date = now()->subMonths($i);
-
-            $months[] = $date->format('M');
+            $labels[] = $date->format('M Y');
 
             $students[] = User::where('role', 'student')
                 ->whereYear('created_at', $date->year)
@@ -38,8 +46,7 @@ class StudentGrowthChart extends ChartWidget
                     'data' => $students,
                 ],
             ],
-
-            'labels' => $months,
+            'labels' => $labels,
         ];
     }
 

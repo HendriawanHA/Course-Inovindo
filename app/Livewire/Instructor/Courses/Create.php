@@ -2,14 +2,18 @@
 
 namespace App\Livewire\Instructor\Courses;
 
+use App\Filament\Resources\Courses\CourseResource;
 use App\Models\Course;
 use App\Models\User;
 use App\Notifications\NewCourseNotification;
+use App\Support\AdminNotification;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Livewire\WithFileUploads;
 use Masmerise\Toaster\Toaster;
 
 #[Layout('components.layouts.instructor')]
@@ -53,6 +57,24 @@ class Create extends Component
             );
         }
 
+
+        $students = User::where('role', 'student')->get();
+        foreach ($students as $student) {
+            $student->notify(new NewCourseNotification($course));
+        }
+
+        AdminNotification::send(
+            Notification::make()
+                ->title('Course baru dibuat oleh instructor')
+                ->body(Auth::user()->name . ' membuat course "' . $course->title . '".')
+                ->icon('heroicon-o-book-open')
+                ->iconColor('info')
+                ->actions([
+                    Action::make('view')
+                        ->label('Lihat course')
+                        ->url(CourseResource::getUrl('index')),
+                ])
+        );
 
         Toaster::success('Course berhasil dibuat.');
 

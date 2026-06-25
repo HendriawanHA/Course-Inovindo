@@ -15,7 +15,6 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 
 class CourseResource extends Resource
@@ -61,19 +60,7 @@ class CourseResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
-
-        $user = Auth::user();
-
-        if ($user && $user->role === 'instructor') {
-
-            return $query->where(
-                'user_id',
-                $user->id
-            );
-        }
-
-        return $query;
+        return parent::getEloquentQuery();
     }
 
     public static function getPages(): array

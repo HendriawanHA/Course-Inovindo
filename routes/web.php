@@ -9,6 +9,7 @@ use App\Http\Controllers\Instructor\DashboardController as InstructorDashboardCo
 use App\Http\Controllers\Instructor\DiscussionController as InstructorDiscussionController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TransactionController;
 use App\Livewire\Instructor\Courses\Create as InstructorCoursesCreate;
 use App\Livewire\Instructor\Courses\Edit as InstructorCoursesEdit;
@@ -64,6 +65,11 @@ Route::get('/', [LandingPageController::class, 'index'])
         Route::post('/{discussion}/reply', [DiscussionController::class, 'reply'])->name('reply');
     });
 
+    Route::get(
+        '/transactions',
+        [TransactionController::class, 'index']
+    )->name('transactions.index');
+
     Route::post(
         '/courses/{course}/buy',
         [TransactionController::class, 'buy']
@@ -108,6 +114,8 @@ Route::middleware(['auth', 'instructor'])->prefix('instructor')->name('instructo
         Route::get('/', [InstructorDiscussionController::class, 'index'])->name('index');
         Route::post('/reply', [InstructorDiscussionController::class, 'replyFromComposer'])->name('reply.store');
         Route::post('/{discussion}/reply', [InstructorDiscussionController::class, 'reply'])->name('reply');
+        Route::delete('/replies/{reply}', [InstructorDiscussionController::class, 'destroyReply'])->name('replies.destroy');
+        Route::delete('/{discussion}', [InstructorDiscussionController::class, 'destroy'])->name('destroy');
     });
 
     // Students
@@ -140,5 +148,21 @@ Route::post('/logout', function (Request $request) {
 
     return redirect('/login');
 })->name('logout');
+
+Route::post(
+    '/api/midtrans/notification',
+    [\App\Http\Controllers\Api\MidtransController::class, 'notification']
+)->name('midtrans.notification');
+
+/*
+|--------------------------------------------------------------------------
+| PAYMENT RESULT
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
+    Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
+    Route::post('/payment/{transaction}/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+});
 
 require __DIR__ . '/auth.php';

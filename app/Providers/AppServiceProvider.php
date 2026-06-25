@@ -43,10 +43,9 @@ class AppServiceProvider extends ServiceProvider
 
             if (!Schema::hasTable('courses')) {
                 $unreadDiscussions = 0;
-                $unreadNotifications = 0;
                 $sidebarCourses = collect();
 
-                $view->with(compact('unreadDiscussions', 'unreadNotifications', 'sidebarCourses'));
+                $view->with(compact('unreadDiscussions', 'sidebarCourses'));
 
                 return;
             }
@@ -65,11 +64,41 @@ class AppServiceProvider extends ServiceProvider
 
             $sidebarCourses = Course::where('user_id', Auth::id())
                 ->withCount('discussions')
+                ->withMax('discussions', 'created_at')
                 ->latest()
                 ->take(10)
-                ->get();
+                ->get()
+                ->map(function (Course $course) {
+                    $viewedAt = session("instructor.discussions.viewed_at.{$course->id}");
+                    $latestDiscussionAt = $course->discussions_max_created_at;
 
-            $view->with(compact('unreadDiscussions', 'unreadNotifications', 'sidebarCourses'));
+                    $course->setAttribute(
+                        'has_unread_discussions',
+                        $latestDiscussionAt && (! $viewedAt || $latestDiscussionAt > $viewedAt)
+                    );
+
+                    return $course;
+                });
+
+            $unreadDiscussions = $sidebarCourses->where('has_unread_discussions', true)->count();
+
+            $view->with(compact('unreadDiscussions', 'sidebarCourses'));
         });
+    }
+
+    private function configureMidtrans(): void
+    {
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('midtrans.is_production');
+        \Midtrans\Config::$isSanitized = config('midtrans.is_sanitized');
+        \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
+
+        if (app()->environment('local')) {
+        \Midtrans\Config::$curlOptions = [
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_HTTPHEADER => [],
+        ];
+        }
     }
 }

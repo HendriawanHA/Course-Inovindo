@@ -5,7 +5,7 @@
             Kelola informasi akun instruktur.
         </p>
     </div>
-    <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+    <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <div class="flex flex-col gap-6 md:flex-row md:items-center">
             <div>
                 <div class="mt-6 flex items-center gap-6">
@@ -72,13 +72,13 @@
         </div>
     </section>
 
-    <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+    <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Account Information</h2>
         <div class="mt-6 space-y-5">
             <div>
                 <label class="text-sm font-semibold text-zinc-900 dark:text-white">Name</label>
                 <input type="text" wire:model="name"
-                    class="mt-2 w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
+                    class="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
                 @error('name')
                     <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                 @enderror
@@ -87,7 +87,7 @@
             <div>
                 <label class="text-sm font-semibold text-zinc-900 dark:text-white">Email</label>
                 <input type="email" wire:model="email"
-                    class="mt-2 w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
+                    class="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
                 @error('email')
                     <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                 @enderror
@@ -97,7 +97,7 @@
                 <label class="text-sm font-semibold text-zinc-900 dark:text-white">Headline</label>
                 <input type="text" wire:model="headline" maxlength="120"
                     placeholder="Contoh: Laravel Instructor, Fullstack Developer, UI/UX Mentor"
-                    class="mt-2 w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500">
+                    class="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500">
                 <div class="mt-2 flex items-center justify-between gap-3 text-xs text-zinc-500 dark:text-zinc-400">
                     <span>Headline singkat akan tampil di dashboard dan profil instruktur.</span>
                     <span>{{ strlen($headline) }}/120</span>
@@ -110,7 +110,7 @@
             <div>
                 <label class="text-sm font-semibold text-zinc-900 dark:text-white">Bio</label>
                 <textarea wire:model="bio" rows="5" placeholder="Ceritakan pengalaman, keahlian, atau fokus mengajar Anda..."
-                    class="mt-2 w-full resize-y rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm leading-relaxed text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"></textarea>
+                    class="mt-2 w-full resize-y rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm leading-relaxed text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"></textarea>
                 <div class="mt-2 flex items-center justify-between gap-3 text-xs text-zinc-500 dark:text-zinc-400">
                     <span>Bio akan tampil di profil instruktur.</span>
                     <span>{{ strlen($bio) }}/1000</span>
@@ -121,33 +121,33 @@
             </div>
 
             <button wire:click="updateProfile"
-                class="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-500">
+                class="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-500">
                 Save Profile
             </button>
         </div>
     </section>
 
-    <section class="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+    <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Change Password</h2>
 
         <div class="mt-6 space-y-5">
             <input type="password" wire:model="current_password" placeholder="Current password"
-                class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
+                class="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
             @error('current_password')
                 <p class="text-sm text-red-400">{{ $message }}</p>
             @enderror
 
             <input type="password" wire:model="password" placeholder="New password"
-                class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
+                class="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
             @error('password')
                 <p class="text-sm text-red-400">{{ $message }}</p>
             @enderror
 
             <input type="password" wire:model="password_confirmation" placeholder="Confirm new password"
-                class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
+                class="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
 
             <button wire:click="updatePassword"
-                class="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-500">
+                class="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-500">
                 Update Password
             </button>
         </div>

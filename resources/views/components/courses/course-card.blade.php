@@ -23,6 +23,7 @@ $buyModalData = [
 'modules' => $course->modules->count(),
 'lessons' => $course->lessons->count(),
 'buyUrl' => route('courses.buy', $course->id),
+'url' => route('courses.show', $course->id),
 ];
 @endphp
 

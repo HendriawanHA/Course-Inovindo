@@ -69,3 +69,76 @@ it('does not show students from another instructors courses when searching', fun
         ->set('search', 'Student Milik')
         ->assertDontSee('Student Milik Instructor Lain');
 });
+
+it('filters students by the selected course', function () {
+    $instructor = User::factory()->create(['role' => 'instructor']);
+    $course = Course::create([
+        'title' => 'Course Dipilih',
+        'description' => 'Course filter aktif.',
+        'price' => 100000,
+        'is_published' => true,
+        'user_id' => $instructor->id,
+    ]);
+    $otherCourse = Course::create([
+        'title' => 'Course Lain',
+        'description' => 'Course filter lain.',
+        'price' => 100000,
+        'is_published' => true,
+        'user_id' => $instructor->id,
+    ]);
+    $student = User::factory()->create(['role' => 'student', 'name' => 'Student Course Dipilih']);
+    $otherStudent = User::factory()->create(['role' => 'student', 'name' => 'Student Course Lain']);
+
+    Enrollment::create([
+        'user_id' => $student->id,
+        'course_id' => $course->id,
+        'status' => 'active',
+        'progress' => 10,
+        'enrolled_at' => now(),
+    ]);
+    Enrollment::create([
+        'user_id' => $otherStudent->id,
+        'course_id' => $otherCourse->id,
+        'status' => 'active',
+        'progress' => 10,
+        'enrolled_at' => now(),
+    ]);
+
+    $this->actingAs($instructor);
+
+    Livewire::test(StudentIndex::class)
+        ->set('courseId', (string) $course->id)
+        ->assertSee('Student Course Dipilih')
+        ->assertDontSee('Student Course Lain');
+});
+
+it('paginates students ten per page', function () {
+    $instructor = User::factory()->create(['role' => 'instructor']);
+    $course = Course::create([
+        'title' => 'Course Banyak Student',
+        'description' => 'Course untuk pagination.',
+        'price' => 100000,
+        'is_published' => true,
+        'user_id' => $instructor->id,
+    ]);
+
+    foreach (range(1, 11) as $number) {
+        $student = User::factory()->create([
+            'role' => 'student',
+            'name' => sprintf('Student Page %02d', $number),
+        ]);
+
+        Enrollment::create([
+            'user_id' => $student->id,
+            'course_id' => $course->id,
+            'status' => 'active',
+            'progress' => 10,
+            'enrolled_at' => now(),
+        ]);
+    }
+
+    $this->actingAs($instructor);
+
+    Livewire::test(StudentIndex::class)
+        ->assertViewHas('enrollments', fn($enrollments) => $enrollments->perPage() === 10 && $enrollments->total() === 11);
+});

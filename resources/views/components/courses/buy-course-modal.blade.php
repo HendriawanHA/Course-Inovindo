@@ -1,6 +1,51 @@
 <div
     x-cloak
     x-show="openBuyModal"
+    x-data="{
+        isProcessing: false,
+        pay() {
+            this.isProcessing = true;
+            fetch(this.selectedCourse.buyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                    'Accept': 'application/json',
+                },
+                credentials: 'same-origin',
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.snap_token) {
+                    window.snap.pay(data.snap_token, {
+                        onSuccess: (result) => {
+                            this.isProcessing = false;
+                            this.openBuyModal = false;
+                            window.location.href = '/payment/verify?order_id=' + result.order_id;
+                        },
+                        onPending: (result) => {
+                            this.isProcessing = false;
+                            this.openBuyModal = false;
+                            window.location.href = '/payment/pending?order_id=' + result.order_id;
+                        },
+                        onError: (result) => {
+                            this.isProcessing = false;
+                            this.openBuyModal = false;
+                            window.location.href = this.selectedCourse.url;
+                        },
+                        onClose: () => {
+                            this.isProcessing = false;
+                            this.openBuyModal = false;
+                            window.location.href = this.selectedCourse.url;
+                        },
+                    });
+                }
+            })
+            .catch(() => {
+                this.isProcessing = false;
+            });
+        }
+    }"
     class="fixed inset-0 z-50 flex items-center justify-center p-4">
 
     <div
@@ -70,11 +115,17 @@
                         Price
                     </p>
                     <p
-                        class="text-3xl font-bold text-blue-700"
+                        class="text-3xl font-bold text-indigo-600"
                         x-text="'Rp' + selectedCourse.price">
                     </p>
                 </div>
 
+                <button
+                    @click="pay()"
+                    :disabled="isProcessing"
+                    class="mt-6 w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold transition hover:bg-indigo-500 disabled:opacity-50"
+                    x-text="isProcessing ? 'Memproses...' : 'Bayar Sekarang'">
+                </button>
                 <form
                     class="mt-6"
                     method="POST"

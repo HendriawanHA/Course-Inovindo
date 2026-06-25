@@ -18,7 +18,7 @@
         </div>
 
         <a href="{{ route('instructor.courses.index') }}"
-            class="rounded-2xl border border-zinc-300 px-5 py-3 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">
+            class="rounded-lg border border-zinc-300 px-5 py-3 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">
             Back to Courses
         </a>
     </div>
@@ -26,7 +26,7 @@
 
     <div class="grid gap-6 xl:grid-cols-[1fr_360px]">
 
-        <div class="space-y-6 rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <div class="space-y-6 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
 
             <div class="flex items-center justify-between border-b border-zinc-200 pb-5 dark:border-zinc-800">
                 <div>
@@ -52,7 +52,7 @@
                     type="text"
                     wire:model.live="title"
                     placeholder="Contoh: Laravel Dasar untuk Pemula"
-                    class="mt-2 w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"
+                    class="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"
                 >
 
                 @error('title')
@@ -69,7 +69,7 @@
                     rows="8"
                     wire:model.live="description"
                     placeholder="Jelaskan isi course, target peserta, dan hasil belajar yang akan didapat."
-                    class="mt-2 w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"
+                    class="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"
                 ></textarea>
 
                 @error('description')
@@ -91,7 +91,7 @@
                         <span class="text-zinc-900 dark:text-white">Price</span> <span class="text-red-400">*</span>
                     </label>
 
-                    <div class="mt-2 flex overflow-hidden rounded-2xl border border-zinc-300 bg-white focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800">
+                    <div class="mt-2 flex overflow-hidden rounded-lg border border-zinc-300 bg-white focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800">
                         <span class="flex items-center border-r border-zinc-300 px-4 text-sm font-semibold text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
                             Rp
                         </span>
@@ -112,7 +112,7 @@
                 </div>
 
                 <div class="flex items-end">
-                    <div class="flex w-full items-start gap-3 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 py-4 dark:border-zinc-700 dark:bg-zinc-800">
+                    <div class="flex w-full items-start gap-3 rounded-lg border border-zinc-300 bg-zinc-50 px-5 py-4 dark:border-zinc-700 dark:bg-zinc-800">
                         <div class="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-300">
                             <flux:icon.lock-closed class="size-4" />
                         </div>
@@ -133,7 +133,7 @@
 
         <div class="space-y-6">
 
-            <div class="rounded-3xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                 <h2 class="text-lg font-bold text-zinc-900 dark:text-white">
                     Thumbnail
                 </h2>
@@ -143,7 +143,7 @@
                 </p>
 
                 <label for="course-thumbnail-create"
-                    class="group relative mt-4 block cursor-pointer overflow-hidden rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 transition hover:border-indigo-500/70 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-800/80">
+                    class="group relative mt-4 block cursor-pointer overflow-hidden rounded-lg border border-dashed border-zinc-300 bg-zinc-50 transition hover:border-indigo-500/70 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-800/80">
                     <div class="aspect-video w-full">
                         @if ($thumbnail)
                             <img src="{{ $thumbnail->temporaryUrl() }}" class="h-full w-full object-cover">
@@ -155,7 +155,7 @@
                         @else
                             <div class="flex h-full items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 p-6 text-center dark:from-zinc-800 dark:to-zinc-950">
                                 <div>
-                                    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-400 transition group-hover:scale-105 group-hover:bg-indigo-500/20">
+                                    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400 transition group-hover:scale-105 group-hover:bg-indigo-500/20">
                                         <flux:icon.arrow-up-tray class="size-7" />
                                     </div>
                                     <p class="text-sm font-semibold text-zinc-900 dark:text-white">Drop thumbnail here or click to upload</p>
@@ -179,27 +179,27 @@
 
             </div>
 
-            <div class="rounded-3xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                 <h2 class="text-lg font-bold text-zinc-900 dark:text-white">
                     Course Summary
                 </h2>
 
                 <div class="mt-4 space-y-3">
-                    <div class="rounded-2xl bg-zinc-50 p-4 dark:bg-zinc-800">
+                    <div class="rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800">
                         <p class="text-xs text-zinc-500 dark:text-zinc-400">Title</p>
                         <p class="mt-1 text-sm font-semibold text-zinc-900 dark:text-white">
                             {{ $title ?: 'Belum diisi' }}
                         </p>
                     </div>
 
-                    <div class="rounded-2xl bg-zinc-50 p-4 dark:bg-zinc-800">
+                    <div class="rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800">
                         <p class="text-xs text-zinc-500 dark:text-zinc-400">Price</p>
                         <p class="mt-1 text-sm font-semibold text-zinc-900 dark:text-white">
                             Rp {{ number_format((float) $price, 0, ',', '.') }}
                         </p>
                     </div>
 
-                    <div class="rounded-2xl bg-zinc-50 p-4 dark:bg-zinc-800">
+                    <div class="rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800">
                         <p class="text-xs text-zinc-500 dark:text-zinc-400">Status</p>
                         <p class="mt-1 text-sm font-semibold text-yellow-300">
                             Draft
@@ -208,11 +208,11 @@
                 </div>
             </div>
 
-            <div class="rounded-3xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                 <button
                     wire:click="save"
                     wire:loading.attr="disabled"
-                    class="w-full rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+                    class="w-full rounded-lg bg-indigo-600 px-5 py-4 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                     <span wire:loading.remove wire:target="save">
                         Create Course
@@ -225,7 +225,7 @@
 
                 <a
                     href="{{ route('instructor.courses.index') }}"
-                    class="mt-3 flex w-full items-center justify-center rounded-2xl border border-zinc-300 px-5 py-4 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                    class="mt-3 flex w-full items-center justify-center rounded-lg border border-zinc-300 px-5 py-4 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
                 >
                     Cancel
                 </a>

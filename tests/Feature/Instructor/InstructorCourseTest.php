@@ -64,6 +64,42 @@ it('searches only courses owned by the authenticated instructor', function () {
         ->assertDontSee('Laravel Search Course Other');
 });
 
+it('persists the selected course view in the session', function () {
+    $instructor = User::factory()->create(['role' => 'instructor']);
+
+    $this->actingAs($instructor);
+
+    Livewire::test(CourseIndex::class)
+        ->set('view', 'list')
+        ->assertSet('view', 'list');
+
+    expect(session('instructor.courses.view'))->toBe('list');
+
+    Livewire::test(CourseIndex::class)
+        ->assertSet('view', 'list');
+});
+
+it('paginates courses based on the selected view', function () {
+    $instructor = User::factory()->create(['role' => 'instructor']);
+
+    foreach (range(1, 11) as $number) {
+        Course::create([
+            'title' => sprintf('Course Page %02d', $number),
+            'description' => 'Course untuk pagination.',
+            'price' => 100000,
+            'is_published' => false,
+            'user_id' => $instructor->id,
+        ]);
+    }
+
+    $this->actingAs($instructor);
+
+    Livewire::test(CourseIndex::class)
+        ->assertViewHas('courses', fn($courses) => $courses->perPage() === 9 && $courses->total() === 11)
+        ->set('view', 'list')
+        ->assertViewHas('courses', fn($courses) => $courses->perPage() === 10 && $courses->total() === 11);
+});
+
 it('allows instructors to create a draft course', function () {
     $instructor = User::factory()->create(['role' => 'instructor']);
 

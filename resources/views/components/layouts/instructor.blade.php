@@ -8,6 +8,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @fluxAppearance
+    <style>[x-cloak]{display:none!important}</style>
 </head>
 
 <body class="bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-white">
@@ -20,10 +21,20 @@
                 <span class="text-md font-bold text-zinc-900 dark:text-white">Instructor</span>
             </div>
 
+            <div class="border-b border-zinc-200 p-4 dark:border-zinc-800">
+                <button type="button"
+                    x-on:click="window.dispatchEvent(new CustomEvent('open-command-palette'))"
+                    class="flex w-full items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-left text-sm text-zinc-500 transition hover:border-indigo-300 hover:text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400 dark:hover:border-indigo-500/50 dark:hover:text-zinc-200">
+                    <flux:icon.magnifying-glass class="size-5 shrink-0" />
+                    <span class="min-w-0 flex-1 truncate">Search instructor...</span>
+                    <span class="hidden rounded-lg border border-zinc-200 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-400 dark:border-zinc-700 sm:inline">Ctrl K</span>
+                </button>
+            </div>
+
             <nav class="flex-1 space-y-1 overflow-y-auto p-4 scroll-hide">
 
                 <a href="{{ route('instructor.dashboard') }}"
-                    class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition
                         {{ request()->routeIs('instructor.dashboard') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
                     <flux:icon.home class="size-5" />
                     Dashboard
@@ -32,7 +43,7 @@
                 {{-- MY COURSES --}}
                 <div class="pt-2">
                     <a href="{{ route('instructor.courses.index') }}"
-                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition
+                        class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition
                             {{ request()->routeIs('instructor.courses.index') || request()->routeIs('instructor.courses.create') || request()->routeIs('instructor.courses.edit') || request()->routeIs('instructor.courses.preview') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
                         <flux:icon.book-open class="size-5" />
                         My Courses
@@ -40,32 +51,38 @@
                 </div>
 
                 <a href="{{ route('instructor.students.index') }}"
-                    class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition
                         {{ request()->routeIs('instructor.students.*') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
                     <flux:icon.academic-cap class="size-5" />
                     Students
                 </a>
 
-                <div>
-                    <a href="{{ route('instructor.discussions.index') }}"
-                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition
-                            {{ request()->routeIs('instructor.discussions.*') || request()->routeIs('instructor.courses.discussions') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
-                        <flux:icon.chat-bubble-left-right class="size-5" />
-                        <span class="flex-1">Discussions</span>
-                        @if ($unreadDiscussions > 0)
-                            <span class="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-[11px] font-bold text-white tabular-nums">{{ $unreadDiscussions }}</span>
+                <div x-data="{ open: {{ request()->routeIs('instructor.discussions.*') || request()->routeIs('instructor.courses.discussions') ? 'true' : 'false' }} }">
+                    <div class="flex items-center rounded-xl transition
+                        {{ request()->routeIs('instructor.discussions.*') || request()->routeIs('instructor.courses.discussions') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
+                        <a href="{{ route('instructor.discussions.index') }}" class="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-sm font-medium">
+                            <flux:icon.chat-bubble-left-right class="size-5 shrink-0" />
+                            <span class="flex-1 truncate">Discussions</span>
+                            @if ($unreadDiscussions > 0)
+                                <span class="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-bold text-zinc-950 tabular-nums shadow-sm shadow-amber-500/20">{{ $unreadDiscussions }}</span>
+                            @endif
+                        </a>
+                        @if ($sidebarCourses->isNotEmpty())
+                            <button type="button" @click="open = ! open" class="mr-2 rounded-xl p-1.5 transition hover:bg-white/10" aria-label="Toggle discussion courses">
+                                <flux:icon.chevron-down class="size-4 transition" x-bind:class="open ? 'rotate-180' : ''" />
+                            </button>
                         @endif
-                    </a>
+                    </div>
 
-                    @if ((request()->routeIs('instructor.discussions.*') || request()->routeIs('instructor.courses.discussions')) && $sidebarCourses->isNotEmpty())
-                        <div class="ml-3 mt-1 space-y-0.5 border-l border-zinc-200 pl-3 dark:border-zinc-700">
+                    @if ($sidebarCourses->isNotEmpty())
+                        <div x-show="open" x-transition class="ml-3 mt-1 space-y-0.5 border-l border-zinc-200 pl-3 dark:border-zinc-700">
                             @foreach ($sidebarCourses as $sc)
                                 <a href="{{ route('instructor.courses.discussions', $sc) }}"
                                     class="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition
-                                        {{ request()->route('course')?->id === $sc->id ? 'bg-indigo-500/10 text-indigo-400' : 'text-zinc-500 hover:text-zinc-300' }}">
+                                        {{ request()->route('course')?->id === $sc->id ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300' }}">
                                     <span class="truncate">{{ $sc->title }}</span>
                                     @if ($sc->discussions_count > 0)
-                                        <span class="ml-2 flex-shrink-0 rounded-full bg-zinc-800 px-2 py-0.5 text-[11px] tabular-nums text-zinc-400">{{ $sc->discussions_count }}</span>
+                                        <span class="ml-2 flex-shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums {{ $sc->has_unread_discussions ? 'bg-amber-400 text-zinc-950 shadow-sm shadow-amber-500/20' : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400' }}">{{ $sc->discussions_count }}</span>
                                     @endif
                                 </a>
                             @endforeach
@@ -78,7 +95,7 @@
             <div class="border-t border-zinc-200 p-4 dark:border-zinc-800">
                 <div x-data="{ open: false }" @click.outside="open = false" class="relative">
                     <button type="button" @click="open = ! open"
-                        class="group flex w-full items-center gap-3 rounded-2xl p-3 text-left transition hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                        class="group flex w-full items-center gap-3 rounded-xl p-3 text-left transition hover:bg-zinc-100 dark:hover:bg-zinc-800">
                         <img
                             src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
                             alt="{{ auth()->user()->name }}"
@@ -90,7 +107,7 @@
                         <flux:icon.chevron-up class="size-4 shrink-0 text-zinc-400 transition group-hover:text-zinc-600 dark:group-hover:text-zinc-300" ::class="open ? 'rotate-180' : ''" />
                     </button>
 
-                    <div x-show="open" x-transition.origin.bottom class="absolute bottom-full left-0 right-0 mb-2 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
+                    <div x-show="open" x-transition.origin.bottom class="absolute bottom-full left-0 right-0 mb-2 overflow-hidden rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
                         <a href="{{ route('instructor.profile') }}"
                             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white">
                             <flux:icon.user-circle class="size-5" />
@@ -125,7 +142,7 @@
 
         <!-- Main -->
         <div class="flex min-w-0 flex-1 flex-col p-4 sm:p-6">
-            <header class="mb-5 rounded-3xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 lg:hidden">
+            <header class="mb-5 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 lg:hidden">
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
                         <img src="{{ asset('images/logo-transparan.webp') }}" alt="Inovindo" class="h-11 w-11 rounded-xl object-contain">
@@ -133,7 +150,7 @@
                     </div>
                     <button type="button"
                         @click="mobileMenuOpen = true"
-                        class="rounded-2xl border border-zinc-200 p-2.5 text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                        class="rounded-lg border border-zinc-200 p-2.5 text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-800"
                         aria-label="Open instructor menu">
                         <flux:icon.bars-3 class="size-5" />
                     </button>
@@ -159,36 +176,51 @@
                             </button>
                         </div>
 
+                        <div class="border-b border-zinc-200 p-4 dark:border-zinc-800">
+                            <button type="button"
+                                x-on:click="mobileMenuOpen = false; window.dispatchEvent(new CustomEvent('open-command-palette'))"
+                                class="flex w-full items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-left text-sm text-zinc-500 transition hover:border-indigo-300 hover:text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400 dark:hover:border-indigo-500/50 dark:hover:text-zinc-200">
+                                <flux:icon.magnifying-glass class="size-5 shrink-0" />
+                                <span class="min-w-0 flex-1 truncate">Search instructor...</span>
+                            </button>
+                        </div>
+
                         <nav class="flex-1 space-y-1 overflow-y-auto p-4">
                             <a href="{{ route('instructor.dashboard') }}"
-                                class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('instructor.dashboard') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
+                                class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('instructor.dashboard') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
                                 <flux:icon.home class="size-5" />
                                 Dashboard
                             </a>
                             <a href="{{ route('instructor.courses.index') }}"
-                                class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('instructor.courses.index') || request()->routeIs('instructor.courses.create') || request()->routeIs('instructor.courses.edit') || request()->routeIs('instructor.courses.preview') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
+                                class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('instructor.courses.index') || request()->routeIs('instructor.courses.create') || request()->routeIs('instructor.courses.edit') || request()->routeIs('instructor.courses.preview') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
                                 <flux:icon.book-open class="size-5" />
                                 My Courses
                             </a>
-                            <div>
-                                <a href="{{ route('instructor.discussions.index') }}"
-                                    class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('instructor.discussions.*') || request()->routeIs('instructor.courses.discussions') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
-                                    <flux:icon.chat-bubble-left-right class="size-5" />
-                                    <span class="flex-1">Discussions</span>
-                                    @if ($unreadDiscussions > 0)
-                                        <span class="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-[11px] font-bold text-white tabular-nums">{{ $unreadDiscussions }}</span>
+                            <div x-data="{ open: {{ request()->routeIs('instructor.discussions.*') || request()->routeIs('instructor.courses.discussions') ? 'true' : 'false' }} }">
+                                <div class="flex items-center rounded-xl transition {{ request()->routeIs('instructor.discussions.*') || request()->routeIs('instructor.courses.discussions') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
+                                    <a href="{{ route('instructor.discussions.index') }}" class="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-sm font-medium">
+                                        <flux:icon.chat-bubble-left-right class="size-5 shrink-0" />
+                                        <span class="flex-1 truncate">Discussions</span>
+                                        @if ($unreadDiscussions > 0)
+                                            <span class="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-bold text-zinc-950 tabular-nums shadow-sm shadow-amber-500/20">{{ $unreadDiscussions }}</span>
+                                        @endif
+                                    </a>
+                                    @if ($sidebarCourses->isNotEmpty())
+                                        <button type="button" @click="open = ! open" class="mr-2 rounded-xl p-1.5 transition hover:bg-white/10" aria-label="Toggle discussion courses">
+                                            <flux:icon.chevron-down class="size-4 transition" x-bind:class="open ? 'rotate-180' : ''" />
+                                        </button>
                                     @endif
-                                </a>
+                                </div>
 
-                                @if ((request()->routeIs('instructor.discussions.*') || request()->routeIs('instructor.courses.discussions')) && $sidebarCourses->isNotEmpty())
-                                    <div class="ml-3 mt-1 space-y-0.5 border-l border-zinc-200 pl-3 dark:border-zinc-700">
+                                @if ($sidebarCourses->isNotEmpty())
+                                    <div x-show="open" x-transition class="ml-3 mt-1 space-y-0.5 border-l border-zinc-200 pl-3 dark:border-zinc-700">
                                         @foreach ($sidebarCourses as $sc)
                                             <a href="{{ route('instructor.courses.discussions', $sc) }}"
                                                 class="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition
-                                                    {{ request()->route('course')?->id === $sc->id ? 'bg-indigo-500/10 text-indigo-400' : 'text-zinc-500 hover:text-zinc-300' }}">
+                                                    {{ request()->route('course')?->id === $sc->id ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300' }}">
                                                 <span class="truncate">{{ $sc->title }}</span>
                                                 @if ($sc->discussions_count > 0)
-                                                    <span class="ml-2 flex-shrink-0 rounded-full bg-zinc-800 px-2 py-0.5 text-[11px] tabular-nums text-zinc-400">{{ $sc->discussions_count }}</span>
+                                                    <span class="ml-2 flex-shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums {{ $sc->has_unread_discussions ? 'bg-amber-400 text-zinc-950 shadow-sm shadow-amber-500/20' : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400' }}">{{ $sc->discussions_count }}</span>
                                                 @endif
                                             </a>
                                         @endforeach
@@ -196,7 +228,7 @@
                                 @endif
                             </div>
                             <a href="{{ route('instructor.students.index') }}"
-                                class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('instructor.students.*') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
+                                class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('instructor.students.*') ? 'bg-indigo-600 text-white' : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800' }}">
                                 <flux:icon.academic-cap class="size-5" />
                                 Students
                             </a>
@@ -205,7 +237,7 @@
                         <div class="border-t border-zinc-200 p-4 dark:border-zinc-800">
                             <div x-data="{ open: false }" @click.outside="open = false" class="relative">
                                 <button type="button" @click="open = ! open"
-                                    class="group flex w-full items-center gap-3 rounded-2xl p-3 text-left transition hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                                    class="group flex w-full items-center gap-3 rounded-xl p-3 text-left transition hover:bg-zinc-100 dark:hover:bg-zinc-800">
                                     <img
                                         src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
                                         alt="{{ auth()->user()->name }}"
@@ -217,7 +249,7 @@
                                     <flux:icon.chevron-up class="size-4 shrink-0 text-zinc-400 transition group-hover:text-zinc-600 dark:group-hover:text-zinc-300" ::class="open ? 'rotate-180' : ''" />
                                 </button>
 
-                                <div x-show="open" x-transition.origin.bottom class="absolute bottom-full left-0 right-0 mb-2 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
+                                <div x-show="open" x-transition.origin.bottom class="absolute bottom-full left-0 right-0 mb-2 overflow-hidden rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
                                     <a href="{{ route('instructor.profile') }}"
                                         class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white">
                                         <flux:icon.user-circle class="size-5" />
@@ -256,6 +288,8 @@
             </main>
         </div>
     </div>
+    <livewire:instructor.command-palette />
+
     <x-toaster-hub />
     <script>
         document.addEventListener('keydown', (event) => {
@@ -263,15 +297,8 @@
                 return;
             }
 
-            const searchInput = document.querySelector('[data-instructor-search]');
-
-            if (! searchInput) {
-                return;
-            }
-
             event.preventDefault();
-            searchInput.focus();
-            searchInput.select();
+            window.dispatchEvent(new CustomEvent('open-command-palette'));
         });
     </script>
     @fluxScripts

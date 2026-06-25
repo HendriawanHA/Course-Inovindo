@@ -2,26 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Filament\Resources\Transactions\TransactionResource;
 use App\Models\Course;
 use App\Models\Transaction;
-use App\Support\AdminNotification;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
+use App\Services\MidtransService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class TransactionController extends Controller
 {
-    public function buy(Course $course)
+    public function index(Request $request)
+    {
+        $transactions = Transaction::with('course')
+            ->where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('transactions.index', compact('transactions'));
+    }
+
+    public function buy(Course $course): RedirectResponse|JsonResponse
     {
         $user = auth()->user();
 
-        // Course gratis
         if ($course->isFree()) {
             return back()->with('error', 'This course is free.');
         }
 
-        // Sudah beli
         $alreadyPurchased = Transaction::where('user_id', $user->id)
             ->where('course_id', $course->id)
             ->where('status', 'paid')
@@ -31,41 +39,47 @@ class TransactionController extends Controller
             return back()->with('success', 'You already purchased this course.');
         }
 
-        // Cek pending sebelumnya
         $pendingTransaction = Transaction::where('user_id', $user->id)
             ->where('course_id', $course->id)
             ->where('status', 'pending')
             ->first();
 
         if ($pendingTransaction) {
-            return back()->with('warning', 'Purchase already pending approval.');
+            if ($pendingTransaction->snap_token) {
+                return response()->json([
+                    'snap_token' => $pendingTransaction->snap_token,
+                    'client_key' => config('midtrans.client_key'),
+                ]);
+            }
+
+            try {
+                $snapToken = app(MidtransService::class)->generateSnapToken($pendingTransaction);
+                $pendingTransaction->update(['snap_token' => $snapToken]);
+
+                return response()->json([
+                    'snap_token' => $snapToken,
+                    'client_key' => config('midtrans.client_key'),
+                ]);
+            } catch (\Exception $e) {
+                $pendingTransaction->update(['status' => 'cancelled']);
+            }
         }
 
-        // Buat transaksi
         $transaction = Transaction::create([
             'user_id' => $user->id,
             'course_id' => $course->id,
-            'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
+            'invoice_number' => 'INV-' . strtoupper(Str::random(16)),
             'amount' => $course->price,
             'status' => 'pending',
         ]);
 
-        AdminNotification::send(
-            Notification::make()
-                ->title('Transaksi baru menunggu approval')
-                ->body("{$user->name} membeli {$course->title}.")
-                ->icon('heroicon-o-credit-card')
-                ->iconColor('warning')
-                ->actions([
-                    Action::make('view')
-                        ->label('Lihat transaksi')
-                        ->url(TransactionResource::getUrl('edit', ['record' => $transaction])),
-                ])
-        );
+        $snapToken = app(MidtransService::class)->generateSnapToken($transaction);
 
-        return back()->with(
-            'success',
-            'Purchase request created successfully.'
-        );
+        $transaction->update(['snap_token' => $snapToken]);
+
+        return response()->json([
+            'snap_token' => $snapToken,
+            'client_key' => config('midtrans.client_key'),
+        ]);
     }
 }
