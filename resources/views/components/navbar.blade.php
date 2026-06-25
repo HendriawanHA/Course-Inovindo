@@ -229,6 +229,12 @@
 
                 <flux:menu.separator />
 
+                <a href="{{ route('transactions.index') }}">
+                    <flux:menu.item>My Transactions</flux:menu.item>
+                </a>
+
+                <flux:menu.separator />
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle">

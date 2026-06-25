@@ -62,6 +62,11 @@ Route::middleware(['auth', 'verified', 'student'])->group(function () {
         Route::post('/{discussion}/reply', [DiscussionController::class, 'reply'])->name('reply');
     });
 
+    Route::get(
+        '/transactions',
+        [TransactionController::class, 'index']
+    )->name('transactions.index');
+
     Route::post(
         '/courses/{course}/buy',
         [TransactionController::class, 'buy']
@@ -154,6 +159,8 @@ Route::post(
 Route::middleware(['auth'])->group(function () {
     Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
     Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
+    Route::get('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
+    Route::post('/payment/{transaction}/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 });
 
 require __DIR__ . '/auth.php';

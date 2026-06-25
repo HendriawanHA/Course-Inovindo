@@ -79,10 +79,11 @@ class AppServiceProvider extends ServiceProvider
         \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
 
         if (app()->environment('local')) {
-            \Midtrans\Config::$curlOptions = [
-                CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_SSL_VERIFYHOST => false,
-            ];
+        \Midtrans\Config::$curlOptions = [
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_HTTPHEADER => [],
+        ];
         }
     }
 }

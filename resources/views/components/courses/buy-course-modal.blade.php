@@ -21,7 +21,7 @@
                         onSuccess: (result) => {
                             this.isProcessing = false;
                             this.openBuyModal = false;
-                            window.location.href = '/payment/finish?order_id=' + result.order_id + '&transaction_status=settlement';
+                            window.location.href = '/payment/verify?order_id=' + result.order_id;
                         },
                         onPending: (result) => {
                             this.isProcessing = false;
@@ -31,11 +31,12 @@
                         onError: (result) => {
                             this.isProcessing = false;
                             this.openBuyModal = false;
-                            window.location.href = '/payment/finish?order_id=' + result.order_id + '&transaction_status=error';
+                            window.location.href = this.selectedCourse.url;
                         },
                         onClose: () => {
                             this.isProcessing = false;
                             this.openBuyModal = false;
+                            window.location.href = this.selectedCourse.url;
                         },
                     });
                 }

@@ -31,7 +31,8 @@
             <x-sidebar />
             <flux:main
                 class="flex-1 !p-0 bg-zinc-100 dark:bg-zinc-900 overflow-y-auto scroll-smooth scroll-hide">
-                {{ $slot }}
+                {{ $slot ?? '' }}
+                @yield('content')
             </flux:main>
         </div>
     </div>
