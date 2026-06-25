@@ -77,18 +77,20 @@
                 <flux:sidebar.item
                     href="{{ route('courses.show', $enrollment->course->id) }}"
                     icon="book-open"
-                    class="mb-3">
-                    <div class="flex flex-col">
-                        <span>
+                    tooltip="{{ $enrollment->course->title }}"
+                    class="my-3">
+                    <div class="flex flex-col py-3 gap-1">
+                        <span class="font-medium leading-tight">
                             {{ Str::limit($enrollment->course->title, 22) }}
                         </span>
+
                         @if($enrollment->status === 'completed')
                         <span class="text-xs text-green-600">
                             Completed
                         </span>
                         @else
                         <span class="text-xs text-zinc-500">
-                            {{ ucfirst($enrollment->status) }}
+                            {{ ucfirst($enrollment->progress) }} %
                         </span>
                         @endif
                     </div>

@@ -46,19 +46,23 @@
                     </span>
                 </div>
                 <div class="grid grid-cols-2 gap-3 mt-4">
-                    <div class="border rounded-xl p-4">
-                        <p>Modules</p>
-                        <p
-                            class="font-bold"
-                            x-text="selectedCourse.modules">
-                        </p>
+                    <div class="rounded-2xl p-[1px] bg-gradient-to-r from-blue-700 to-emerald-500">
+                        <div class="rounded-2xl bg-zinc-50 dark:bg-zinc-800 p-4 h-full">
+                            <p>Modules</p>
+                            <p
+                                class="font-bold"
+                                x-text="selectedCourse.modules">
+                            </p>
+                        </div>
                     </div>
-                    <div class="border rounded-xl p-4">
-                        <p>Lessons</p>
-                        <p
-                            class="font-bold"
-                            x-text="selectedCourse.lessons">
-                        </p>
+                    <div class="rounded-2xl p-[1px] bg-gradient-to-r from-blue-700 to-emerald-500">
+                        <div class="rounded-2xl bg-zinc-50 dark:bg-zinc-800 p-4 h-full">
+                            <p>Lessons</p>
+                            <p
+                                class="font-bold"
+                                x-text="selectedCourse.lessons">
+                            </p>
+                        </div>
                     </div>
                 </div>
                 <div class="mt-5">
@@ -78,7 +82,7 @@
                     @csrf
                     <button
                         type="submit"
-                        class="w-full py-3 rounded-xl bg-blue-700 text-white">
+                        class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-700 to-emerald-500 text-white font-semibold hover:scale-[1.02] transition">
                         Confirm Purchase
                     </button>
                 </form>

@@ -1,8 +1,13 @@
 <x-layouts.landing>
 
+    <x-landing.scroll-progress />
+
     <x-landing.landing-navbar />
 
-    <x-landing.hero />
+    <x-landing.hero
+        :courses-count="$coursesCount"
+        :students-count="$studentsCount"
+        :events-count="$eventsCount" />
 
     <x-landing.features />
 
@@ -19,5 +24,8 @@
     <x-landing.cta />
 
     <x-landing.footer />
+
+    <x-landing.back-to-top />
+
 
 </x-layouts.landing>

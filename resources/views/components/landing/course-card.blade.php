@@ -1,45 +1,148 @@
 @props(['course'])
 
 <x-landing.card-wrapper>
-    <flux:card class="h-full flex flex-col !shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-700/20 hover:border-emerald-500">
 
-        <img
-            src="{{ asset('storage/'.$course->thumbnail) }}"
-            class="w-full h-48 object-cover rounded-xl">
+    <flux:card
+        class="
+        h-full
+        flex
+        flex-col
 
-        <div class="mt-4 flex flex-col flex-1">
+        bg-white
+        dark:bg-zinc-900
 
-            <h3 class="font-semibold text-lg">
+        border
+        border-zinc-200
+        dark:border-zinc-800
+
+        overflow-hidden
+
+        transition-all
+        duration-300
+
+        hover:-translate-y-2
+        hover:shadow-2xl
+        hover:shadow-blue-700/20
+        hover:border-emerald-500
+    ">
+
+        <!-- Thumbnail -->
+        <div class="overflow-hidden rounded-xl">
+
+            <img
+                src="{{ asset('storage/'.$course->thumbnail) }}"
+                class="
+                w-full
+                h-48
+                object-cover
+
+                transition-transform
+                duration-500
+
+                hover:scale-105
+            ">
+
+        </div>
+
+        <div class="mt-5 flex flex-col flex-1">
+
+            <!-- Title -->
+            <h3
+                class="
+                text-lg
+                font-semibold
+
+                text-zinc-900
+                dark:text-white
+
+                line-clamp-2
+            ">
+
                 {{ $course->title }}
+
             </h3>
 
-            <p class="text-sm text-zinc-500 mt-2 min-h-[60px]">
-                {{ Str::limit($course->description, 80) }}
+            <!-- Description -->
+            <p
+                class="
+                text-sm
+                text-zinc-600
+                dark:text-zinc-400
+
+                mt-3
+                min-h-[60px]
+            ">
+
+                {{ Str::limit(strip_tags($course->description), 80) }}
+
             </p>
 
-            <div class="flex flex-wrap gap-4 mt-4 text-sm text-zinc-500">
+            <!-- Stats -->
+            <div
+                class="
+                flex
+                flex-wrap
+                gap-4
+
+                mt-5
+
+                text-sm
+                text-zinc-500
+                dark:text-zinc-400
+            ">
 
                 <div class="flex items-center gap-1">
+
                     <flux:icon.users class="size-4" />
-                    <span>{{ $course->enrollments_count }}</span>
+
+                    <span>
+                        {{ $course->enrollments_count }}
+                    </span>
+
                 </div>
 
                 <div class="flex items-center gap-1">
+
                     <flux:icon.folder class="size-4" />
-                    <span>{{ $course->modules_count }} Modules</span>
+
+                    <span>
+                        {{ $course->modules_count }} Modul
+                    </span>
+
                 </div>
 
                 <div class="flex items-center gap-1">
+
                     <flux:icon.play-circle class="size-4" />
-                    <span>{{ $course->lessons_count }} Lessons</span>
+
+                    <span>
+                        {{ $course->lessons_count }} Lesson
+                    </span>
+
                 </div>
 
             </div>
 
-            <div class="flex justify-end items-center mt-auto pt-5">
+            <!-- Footer -->
+            <div
+                class="
+                mt-auto
+                pt-6
 
-                <span class="font-bold text-emerald-500">
+                flex
+                items-center
+                justify-end
+            ">
+
+                <span
+                    class="
+                    font-bold
+                    text-lg
+                    text-emerald-500
+                ">
+
                     Rp {{ number_format($course->price,0,',','.') }}
+
                 </span>
 
             </div>
@@ -47,4 +150,5 @@
         </div>
 
     </flux:card>
+
 </x-landing.card-wrapper>
