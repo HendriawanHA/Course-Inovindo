@@ -50,7 +50,7 @@ class MidtransService
             'payment_type' => $notification->payment_type,
             'payment_channel' => $notification->payment_channel ?? null,
             'settlement_time' => $notification->settlement_time ?? null,
-            'raw_response' => json_decode($notification->raw_response, true),
+            'raw_response' => $notification->response,
         ]);
 
         if ($transactionStatus === 'capture' && $fraudStatus === 'accept') {

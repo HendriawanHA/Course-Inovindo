@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Filament\Resources\Transactions\TransactionResource;
 use App\Models\Transaction;
-use App\Services\MidtransService;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -31,25 +29,6 @@ class PaymentController extends Controller
             'transaction' => $transaction,
             'orderId' => $orderId,
         ]);
-    }
-
-    public function verify(Request $request, MidtransService $midtrans)
-    {
-        $orderId = $request->input('order_id');
-        $transaction = Transaction::where('invoice_number', $orderId)->firstOrFail();
-
-        if ($transaction->status === 'paid') {
-            return redirect()->route('courses.show', $transaction->course_id);
-        }
-
-        $transaction->update([
-            'status' => 'paid',
-            'paid_at' => now(),
-        ]);
-
-        TransactionResource::approvePaidTransaction($transaction);
-
-        return redirect()->route('courses.show', $transaction->course_id);
     }
 
     public function cancel(Transaction $transaction)

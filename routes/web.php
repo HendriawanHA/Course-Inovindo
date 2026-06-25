@@ -159,7 +159,6 @@ Route::post(
 Route::middleware(['auth'])->group(function () {
     Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
     Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
-    Route::get('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
     Route::post('/payment/{transaction}/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 });
 
