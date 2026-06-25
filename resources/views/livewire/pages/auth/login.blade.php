@@ -57,7 +57,7 @@ new #[Layout('layouts.guest')] class extends Component
                     <div class="mb-4">
                         <div>
                             <h1
-                                class="flex justify-center items-center text-xl font-bold text-green-500 dark:text-greenn-500 tracking-tight">
+                                class="flex items-center text-xl font-bold text-green-500 dark:text-greenn-500 tracking-tight">
                                 <flux:icon name="book-open" class="inline w-6 h-6 mr-2 text-blue-700" />
                                 <div class="flex gap-1">
                                     <span class="text-blue-700">Inovindo</span>

@@ -314,6 +314,7 @@ class CourseController extends Controller
                 'status' => 'completed',
                 'progress' => 100,
                 'completed_at' => now(),
+                'certificate_name' => $user->name,
             ]);
         } else {
             $enrollment->update([

@@ -134,7 +134,7 @@
 
         <!-- USER NAME -->
         <div class="student-name">
-            {{ strtoupper($user->name) }}
+            {{ strtoupper($enrollment->certificate_name) }}
         </div>
 
         <!-- COURSE -->
