@@ -20,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
     {
         \Carbon\Carbon::setLocale('id');
 
+        $this->configureMidtrans();
+
         View::share(
             'topCourses',
             Schema::hasTable('courses')
@@ -67,5 +69,20 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with(compact('unreadDiscussions', 'sidebarCourses'));
         });
+    }
+
+    private function configureMidtrans(): void
+    {
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('midtrans.is_production');
+        \Midtrans\Config::$isSanitized = config('midtrans.is_sanitized');
+        \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
+
+        if (app()->environment('local')) {
+            \Midtrans\Config::$curlOptions = [
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+            ];
+        }
     }
 }

@@ -131,6 +131,15 @@ class TransactionResource extends Resource
                 TextColumn::make('paid_at')
                     ->dateTime(),
 
+                TextColumn::make('payment_type')
+                    ->label('Payment')
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('payment_channel')
+                    ->label('Channel')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
                     ->since()
                     ->sortable(),

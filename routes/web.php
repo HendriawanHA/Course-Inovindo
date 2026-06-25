@@ -9,6 +9,7 @@ use App\Http\Controllers\Instructor\DashboardController as InstructorDashboardCo
 use App\Http\Controllers\Instructor\DiscussionController as InstructorDiscussionController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TransactionController;
 use App\Livewire\Instructor\Courses\Create as InstructorCoursesCreate;
 use App\Livewire\Instructor\Courses\Edit as InstructorCoursesEdit;
@@ -139,5 +140,20 @@ Route::post('/logout', function (Request $request) {
 
     return redirect('/login');
 })->name('logout');
+
+Route::post(
+    '/api/midtrans/notification',
+    [\App\Http\Controllers\Api\MidtransController::class, 'notification']
+)->name('midtrans.notification');
+
+/*
+|--------------------------------------------------------------------------
+| PAYMENT RESULT
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
+    Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
+});
 
 require __DIR__ . '/auth.php';

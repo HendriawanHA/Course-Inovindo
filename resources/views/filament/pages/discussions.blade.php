@@ -1,16 +1,30 @@
 <x-filament-panels::page>
-    <div class="mb-6 flex flex-wrap items-center gap-3">
-        <span class="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-            {{ $courses->count() }} courses
-        </span>
-        <span class="rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
-            {{ $totalDiscussions }} total diskusi
-        </span>
+    <div class="mb-6 space-y-4">
+        <div class="relative max-w-md">
+            <x-filament::input.wrapper>
+                <x-filament::input
+                    type="search"
+                    wire:model.live.debounce.300ms="search"
+                    placeholder="Cari course..."
+                />
+            </x-filament::input.wrapper>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+            <span class="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                {{ $courses->count() }} courses
+            </span>
+            <span class="rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
+                {{ $totalDiscussions }} total diskusi
+            </span>
+        </div>
     </div>
 
     @if ($courses->isEmpty())
         <div class="rounded-xl border border-dashed border-gray-300 p-12 text-center dark:border-gray-600">
-            <p class="text-gray-500 dark:text-gray-400">Belum ada course.</p>
+            <p class="text-gray-500 dark:text-gray-400">
+                {{ $search ? 'Tidak ada course dengan kata kunci "' . $search . '".' : 'Belum ada course.' }}
+            </p>
         </div>
     @else
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

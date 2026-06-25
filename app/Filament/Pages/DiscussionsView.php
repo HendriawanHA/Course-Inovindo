@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Course;
 use App\Models\DiscussionReply;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Collection;
@@ -21,13 +22,14 @@ class DiscussionsView extends Page
 
     public Collection $sidebarCourses;
 
+    public string $search = '';
+
     public function mount(Course $course): void
     {
         abort_unless(Auth::user()?->role === 'admin', 403);
 
         $this->course = $course->load([
             'instructor',
-            'modules.lessons' => fn ($q) => $q->orderBy('order'),
             'discussions' => fn ($q) => $q->orderByDesc('created_at'),
             'discussions.user',
             'discussions.lesson',
@@ -52,15 +54,29 @@ class DiscussionsView extends Page
         return false;
     }
 
+    public function updatedSearch(): void
+    {
+        // triggers re-render
+    }
+
     public function getViewData(): array
     {
-        $replies = $this->course->discussions->flatMap->replies;
+        $discussions = $this->course->discussions;
+
+        if ($this->search) {
+            $discussions = $discussions->filter(function ($d) {
+                $haystack = mb_strtolower($d->content . ' ' . $d->user->name . ' ' . ($d->lesson?->title ?? ''));
+                return str_contains($haystack, mb_strtolower($this->search));
+            });
+        }
 
         return [
+            'filteredDiscussions' => $discussions->values(),
             'totalDiscussions' => $this->course->discussions->count(),
             'unansweredDiscussions' => $this->course->discussions
                 ->filter(fn ($d) => $d->replies->isEmpty())
                 ->count(),
+            'search' => $this->search,
         ];
     }
 
@@ -88,6 +104,42 @@ class DiscussionsView extends Page
             ->send();
 
         $this->reloadDiscussions();
+    }
+
+    public function deleteDiscussionAction(): Action
+    {
+        return Action::make('deleteDiscussion')
+            ->iconButton()
+            ->icon('heroicon-o-trash')
+            ->color('gray')
+            ->tooltip('Hapus diskusi')
+            ->requiresConfirmation()
+            ->modalHeading('Hapus diskusi?')
+            ->modalDescription('Semua balasan juga akan terhapus.')
+            ->modalIcon('heroicon-o-trash')
+            ->modalSubmitActionLabel('Hapus')
+            ->color('danger')
+            ->action(function (array $arguments): void {
+                $this->deleteDiscussion($arguments['id']);
+            });
+    }
+
+    public function deleteReplyAction(): Action
+    {
+        return Action::make('deleteReply')
+            ->iconButton()
+            ->icon('heroicon-o-trash')
+            ->color('gray')
+            ->tooltip('Hapus balasan')
+            ->requiresConfirmation()
+            ->modalHeading('Hapus balasan?')
+            ->modalDescription('Tindakan tidak bisa dibatalkan.')
+            ->modalIcon('heroicon-o-trash')
+            ->modalSubmitActionLabel('Hapus')
+            ->color('danger')
+            ->action(function (array $arguments): void {
+                $this->deleteReply($arguments['id']);
+            });
     }
 
     private function reloadDiscussions(): void

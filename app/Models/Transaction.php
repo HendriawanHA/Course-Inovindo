@@ -14,11 +14,19 @@ class Transaction extends Model
         'amount',
         'status',
         'paid_at',
+        'snap_token',
+        'payment_type',
+        'transaction_id',
+        'payment_channel',
+        'settlement_time',
+        'raw_response',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
         'paid_at' => 'datetime',
+        'settlement_time' => 'datetime',
+        'raw_response' => 'array',
     ];
 
     public function user(): BelongsTo

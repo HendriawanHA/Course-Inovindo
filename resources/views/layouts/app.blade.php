@@ -10,6 +10,9 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @fluxAppearance
+    @if (config('midtrans.client_key'))
+        <script src="{{ config('midtrans.snap_url') }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
+    @endif
 </head>
 
 <body class="min-h-screen bg-zinc-100 dark:bg-zinc-900 antialiased">

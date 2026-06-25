@@ -21,14 +21,27 @@ class Discussions extends Page
 
     protected string $view = 'filament.pages.discussions';
 
+    public string $search = '';
+
     public static function canViewAny(): bool
     {
         return Auth::user()?->role === 'admin';
     }
 
+    public function updatedSearch(): void
+    {
+        // triggers re-render
+    }
+
     public function getViewData(): array
     {
-        $courses = Course::query()
+        $query = Course::query();
+
+        if ($this->search) {
+            $query->where('title', 'like', '%' . $this->search . '%');
+        }
+
+        $courses = $query
             ->withCount([
                 'discussions',
                 'discussions as unanswered_count' => fn ($q) => $q
@@ -55,6 +68,7 @@ class Discussions extends Page
         return [
             'courses' => $courses,
             'totalDiscussions' => Discussion::count(),
+            'search' => $this->search,
         ];
     }
 }
