@@ -18,6 +18,7 @@ class CourseController extends Controller
     {
         $search = request('search');
         $courses = Course::query()
+            ->where('is_published', true)
             ->with([
                 'enrollments' => function ($query) {
                     $query->where('user_id', auth()->id());
