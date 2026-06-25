@@ -30,7 +30,7 @@
         <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center mt-16 ">
             <!-- Illustration -->
             <div>
-                <img src="{{ asset('images/illust-learning.png') }}" alt="Learning Illustration" class="w-full max-w-xl mx-auto transition-all duration-300 hover:scale-105 ">
+                <img src="{{ asset('images/illust-learning.png') }}" alt="Learning Illustration" class="w-full max-w-xl mx-auto transition-all duration-300 hover:scale-105">
             </div>
             <!-- Steps -->
             <div class="space-y-6">

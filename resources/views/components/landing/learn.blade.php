@@ -24,117 +24,44 @@
             <div class="mt-10 space-y-6">
                 <!-- Item -->
                 <div class="flex items-start gap-5">
-                    <div
-                        class="
-                        shrink-0
-                        p-3
-                        rounded-2xl
-                        bg-gradient-to-tr
-                        from-blue-700
-                        to-emerald-500
-                        text-white
-                        shadow-lg
-                        shadow-blue-700/20
-                    ">
+                    <div class="shrink-0 p-3 rounded-2xl bg-gradient-to-tr from-blue-700 to-emerald-500 text-white shadow-lg shadow-blue-700/20">
                         <flux:icon.presentation-chart-bar class="size-7" />
                     </div>
                     <div>
-                        <h3
-                            class="
-                            font-semibold
-                            text-lg
-                            text-zinc-900
-                            dark:text-white
-                        ">
+                        <h3 class="font-semibold text-lg text-zinc-900 dark:text-white">
                             Belajar Lebih Interaktif
                         </h3>
-                        <p
-                            class="
-                            text-zinc-600
-                            dark:text-zinc-400
-                        ">
+                        <p class=" text-zinc-600 dark:text-zinc-400">
                             Materi disusun secara terstruktur
                             sehingga mudah dipahami dan diikuti.
                         </p>
                     </div>
                 </div>
                 <!-- Item -->
-                <div
-                    class="
-                    flex
-                    items-start
-                    gap-5
-                ">
-                    <div
-                        class="
-                        shrink-0
-                        p-3
-                        rounded-2xl
-                        bg-gradient-to-tr
-                        from-blue-700
-                        to-emerald-500
-                        text-white
-                        shadow-lg
-                        shadow-blue-700/20
-                    ">
+                <div class="flex items-start gap-5">
+                    <div class="shrink-0 p-3 rounded-2xl bg-gradient-to-tr from-blue-700 to-emerald-500 text-white shadow-lg shadow-blue-700/20">
                         <flux:icon.arrow-trending-up class="size-7" />
                     </div>
                     <div>
-                        <h3
-                            class="
-                            font-semibold
-                            text-lg
-                            text-zinc-900
-                            dark:text-white
-                        ">
+                        <h3 class="font-semibold text-lg text-zinc-900 dark:text-white">
                             Pantau Progres Belajar
                         </h3>
-                        <p
-                            class="
-                            text-zinc-600
-                            dark:text-zinc-400
-                        ">
+                        <p class="text-zinc-600 dark:text-zinc-400">
                             Ketahui perkembangan belajar
                             dan target yang telah dicapai.
                         </p>
                     </div>
                 </div>
                 <!-- Item -->
-                <div
-                    class="
-                    flex
-                    items-start
-                    gap-5
-                ">
-                    <div
-                        class="
-                        shrink-0
-                        p-3
-                        rounded-2xl
-                        bg-gradient-to-tr
-                        from-blue-700
-                        to-emerald-500
-                        text-white
-                        shadow-lg
-                        shadow-blue-700/20
-                    ">
+                <div class="flex items-start gap-5">
+                    <div class="shrink-0 p-3 rounded-2xl bg-gradient-to-tr from-blue-700 to-emerald-500 text-white shadow-lg shadow-blue-700/20">
                         <flux:icon.check-badge class="size-7" />
                     </div>
                     <div>
-                        <h3
-                            class="
-                            font-semibold
-                            text-lg
-                            text-zinc-900
-                            dark:text-white
-                        ">
+                        <h3 class="font-semibold text-lg text-zinc-900 dark:text-white">
                             Sertifikat Resmi
                         </h3>
-                        <p
-                            class="
-                            text-zinc-600
-                            dark:text-zinc-400
-                        ">
+                        <p class="text-zinc-600 dark:text-zinc-400">
                             Dapatkan sertifikat sebagai bukti
                             pencapaian setelah menyelesaikan kursus.
                         </p>
@@ -144,15 +71,7 @@
         </div>
         <!-- IMAGE -->
         <div class="relative">
-            <img
-                src="{{ asset('images/illust-experience.png') }}"
-                class="
-                w-full
-                max-w-xl
-                mx-auto
-                drop-shadow-2xl
-                hidden md:block
-                ">
+            <img src="{{ asset('images/illust-experience.png') }}" class="w-full max-w-xl mx-auto drop-shadow-2xl hidden md:block transition-all duration-300 hover:scale-105">
         </div>
     </div>
 </section>
