@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Transactions\Pages;
 
+use App\Events\TransactionPaid;
 use App\Filament\Resources\Transactions\TransactionResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
@@ -20,7 +21,7 @@ class EditTransaction extends EditRecord
     protected function afterSave(): void
     {
         if (! $this->wasPaid && $this->record->status === 'paid') {
-            TransactionResource::approvePaidTransaction($this->record);
+            TransactionPaid::dispatch($this->record);
         }
     }
 

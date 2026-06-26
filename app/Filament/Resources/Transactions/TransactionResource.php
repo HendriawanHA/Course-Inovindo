@@ -5,8 +5,6 @@ namespace App\Filament\Resources\Transactions;
 use BackedEnum;
 use UnitEnum;
 use App\Models\Transaction;
-use App\Models\Enrollment;
-use App\Notifications\CoursePurchasedNotification;
 use App\Filament\Resources\Transactions\Pages;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -15,10 +13,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -145,66 +141,11 @@ class TransactionResource extends Resource
                     ->sortable(),
             ])
             ->recordActions([
-                Action::make('markAsPaid')
-                    ->label('Mark as Paid')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->visible(fn (Transaction $record): bool => $record->status === 'pending')
-                    ->requiresConfirmation()
-                    ->action(function (Transaction $record): void {
-                        $record->update([
-                            'status' => 'paid',
-                            'paid_at' => $record->paid_at ?? now(),
-                        ]);
-
-                        self::approvePaidTransaction($record);
-
-                        Notification::make()
-                            ->title('Payment Approved')
-                            ->body('Student has been enrolled successfully.')
-                            ->success()
-                            ->send();
-                    }),
-
                 EditAction::make(),
             ])
             ->bulkActions([
                 DeleteBulkAction::make(),
             ]);
-    }
-
-    public static function approvePaidTransaction(Transaction $record, bool $notifyInstructor = true): Enrollment
-    {
-        if ($record->status !== 'paid') {
-            return Enrollment::where('user_id', $record->user_id)
-                ->where('course_id', $record->course_id)
-                ->firstOrFail();
-        }
-
-        if ($record->paid_at === null) {
-            $record->forceFill(['paid_at' => now()])->save();
-        }
-
-        $enrollment = Enrollment::firstOrCreate(
-            [
-                'user_id' => $record->user_id,
-                'course_id' => $record->course_id,
-            ],
-            [
-                'status' => 'active',
-                'progress' => 0,
-                'enrolled_at' => now(),
-            ]
-        );
-
-        $course = $record->course()->with('instructor')->first();
-        if ($notifyInstructor && $course?->instructor) {
-            $course->instructor->notify(
-                new CoursePurchasedNotification($record)
-            );
-        }
-
-        return $enrollment;
     }
 
     public static function getPages(): array

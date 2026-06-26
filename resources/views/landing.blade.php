@@ -1,5 +1,8 @@
 <x-layouts.landing>
 
+            <div class="text-4xl">jika</div>
+
+
     <x-landing.scroll-progress />
 
     <x-landing.landing-navbar />

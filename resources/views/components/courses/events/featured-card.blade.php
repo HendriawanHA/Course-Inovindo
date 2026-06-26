@@ -1,35 +1,30 @@
-@if($featuredEvent->is_paid)
+@php
+$eventModalData = [
+    'title' => addslashes($featuredEvent->title),
+    'thumbnail' => $featuredEvent->thumbnail_url,
+    'instructor' => $featuredEvent->instructor?->name ?? 'Unknown',
+    'avatar' => $featuredEvent->instructor?->avatar_url ?? '',
+    'date' => $featuredEvent->start_time->format('d M Y'),
+    'time' => $featuredEvent->start_time->format('H:i'),
+    'description' => Str::limit($featuredEvent->description, 200),
+    'delivery' => ucfirst($featuredEvent->delivery_type),
+    'capacity' => $featuredEvent->capacity,
+    'location' => $featuredEvent->location ?? $featuredEvent->city ?? 'Online Meeting',
+    'price' => number_format((float) ($featuredEvent->price ?? 0), 0, ',', '.'),
+    'is_paid' => true,
+    'slug' => $featuredEvent->slug,
+    'buyUrl' => route('events.buy', $featuredEvent->slug),
+];
+$canAccess = $featuredEvent->canAccess(auth()->id());
+$isPurchased = $featuredEvent->isPurchasedBy(auth()->id());
+@endphp
+
+@if($featuredEvent->is_paid && ! $canAccess)
 
 <div
     class="cursor-pointer"
-    @click="
-    $dispatch('open-event-modal', {
-        title: '{{ $featuredEvent->title }}',
-        thumbnail: '{{ $featuredEvent->thumbnail_url }}',
-
-        instructor: '{{ $featuredEvent->instructor?->name }}',
-
-        avatar: @js($featuredEvent->instructor?->avatar_url),
-
-        date: '{{ $featuredEvent->start_time->format('d M Y') }}',
-
-        time: '{{ $featuredEvent->start_time->format('H:i') }}',
-
-        description: @js(Str::limit($featuredEvent->description, 200)),
-
-        delivery: '{{ ucfirst($featuredEvent->delivery_type) }}',
-
-        capacity: '{{ $featuredEvent->capacity }}',
-
-        location: '{{ $featuredEvent->location ?? $featuredEvent->city ?? 'Online Meeting' }}',
-
-        price: '{{ number_format($featuredEvent->price,0,',','.') }}',
-
-        is_paid: true,
-
-        slug: '{{ $featuredEvent->slug }}'
-    })
-">
+    @click.stop="$dispatch('open-event-modal', @js($eventModalData))"
+>
 
     @else
 
@@ -56,7 +51,13 @@
                         <flux:badge rounded color="purple" class="w-fit px-4 py-1 my-2 whitespace-nowrap font-medium">
                             {{ $featuredEvent->delivery_type }}
                         </flux:badge>
-                        @if($featuredEvent->is_paid)
+                        @if($isPurchased)
+
+                        <flux:badge rounded color="emerald" class="w-fit px-4 py-1 my-2 whitespace-nowrap font-medium">
+                            Sudah Dibeli
+                        </flux:badge>
+
+                        @elseif($featuredEvent->is_paid)
 
                         <flux:badge rounded color="amber" class="w-fit px-4 py-1 my-2 whitespace-nowrap font-medium">
                             Paid
@@ -71,6 +72,13 @@
                         @endif
 
                     </div>
+                </div>
+
+                @if(! $featuredEvent->is_paid && $featuredEvent->price > 0)
+                    <p class="mt-3 text-lg text-zinc-400 line-through">Rp{{ number_format((float) $featuredEvent->price, 0, ',', '.') }}</p>
+                @elseif($featuredEvent->is_paid)
+                    <p class="mt-3 text-2xl font-bold text-blue-700">Rp{{ number_format((float) $featuredEvent->price, 0, ',', '.') }}</p>
+                @endif
 
                 </div>
 
@@ -101,7 +109,7 @@
 
             </div>
         </flux:card>
-        @if($featuredEvent->is_paid)
+        @if($featuredEvent->is_paid && ! $canAccess)
 </div>
 @else
 </a>

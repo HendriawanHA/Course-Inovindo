@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TransactionCancelled;
+use App\Events\TransactionPaid;
 use App\Models\Course;
 use App\Models\Transaction;
 use App\Services\MidtransService;
@@ -14,7 +16,7 @@ class TransactionController extends Controller
 {
     public function index(Request $request)
     {
-        $transactions = Transaction::with('course')
+        $transactions = Transaction::with(['course', 'event'])
             ->where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -45,23 +47,26 @@ class TransactionController extends Controller
             ->first();
 
         if ($pendingTransaction) {
-            if ($pendingTransaction->snap_token) {
+            $midtransStatus = app(MidtransService::class)->getTransactionStatus($pendingTransaction->invoice_number);
+            $transactionStatus = $midtransStatus['transaction_status'];
+
+            if (in_array($transactionStatus, ['settlement', 'capture'])) {
+                $pendingTransaction->update(['status' => 'paid', 'paid_at' => now()]);
+                TransactionPaid::dispatch($pendingTransaction);
+
+                return back()->with('success', 'You already purchased this course.');
+            }
+
+            if (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
+                $pendingTransaction->update(['status' => 'cancelled']);
+                TransactionCancelled::dispatch($pendingTransaction);
+
+                $pendingTransaction = null;
+            } elseif ($transactionStatus === 'pending' && $pendingTransaction->snap_token) {
                 return response()->json([
                     'snap_token' => $pendingTransaction->snap_token,
                     'client_key' => config('midtrans.client_key'),
                 ]);
-            }
-
-            try {
-                $snapToken = app(MidtransService::class)->generateSnapToken($pendingTransaction);
-                $pendingTransaction->update(['snap_token' => $snapToken]);
-
-                return response()->json([
-                    'snap_token' => $snapToken,
-                    'client_key' => config('midtrans.client_key'),
-                ]);
-            } catch (\Exception $e) {
-                $pendingTransaction->update(['status' => 'cancelled']);
             }
         }
 

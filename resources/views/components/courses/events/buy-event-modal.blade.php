@@ -1,6 +1,60 @@
 <div
     x-cloak
     x-show="openEventModal"
+    x-data="{
+        openEventModal: false,
+        selectedEvent: null,
+        isProcessing: false,
+        errorMessage: '',
+        pay() {
+            this.isProcessing = true;
+            this.errorMessage = '';
+            fetch(this.selectedEvent.buyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                    'Accept': 'application/json',
+                },
+                credentials: 'same-origin',
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.snap_token) {
+                    window.snap.pay(data.snap_token, {
+                        onSuccess: (result) => {
+                            this.isProcessing = false;
+                            this.openEventModal = false;
+                            window.location.href = '/payment/finish?order_id=' + result.order_id + '&transaction_status=settlement';
+                        },
+                        onPending: (result) => {
+                            this.isProcessing = false;
+                            this.openEventModal = false;
+                            window.location.href = '/payment/pending?order_id=' + result.order_id;
+                        },
+                        onError: (result) => {
+                            this.isProcessing = false;
+                            this.openEventModal = false;
+                            window.location.reload();
+                        },
+                        onClose: () => {
+                            this.isProcessing = false;
+                            this.openEventModal = false;
+                            window.location.reload();
+                        },
+                    });
+                } else {
+                    this.isProcessing = false;
+                    this.errorMessage = data.error || 'Gagal memproses pembayaran. Silakan coba lagi.';
+                }
+            })
+            .catch(() => {
+                this.isProcessing = false;
+                this.errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
+            });
+        }
+    }"
+    @open-event-modal.window="selectedEvent = $event.detail; openEventModal = true;"
     class="fixed inset-0 z-50 flex items-center justify-center p-4">
 
     <!-- Overlay -->
@@ -20,8 +74,6 @@
            bg-white dark:bg-zinc-900
            border border-zinc-200 dark:border-zinc-800
            shadow-2xl scroll-hide">
-
-
 
         <template x-if="selectedEvent">
             <div>
@@ -165,16 +217,20 @@
                     </div>
                 </div>
 
+                <!-- Error -->
+                <div class="px-8" x-show="errorMessage">
+                    <div class="rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-4">
+                        <p class="text-sm text-red-600 dark:text-red-400" x-text="errorMessage"></p>
+                    </div>
+                </div>
+
                 <!-- Button -->
                 <div class="my-8 px-8">
                     <button
-                        class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-700 to-emerald-500 text-white font-semibold hover:scale-[1.02] transition">
-                        <span x-show="selectedEvent.is_paid">
-                            Purchase Ticket
-                        </span>
-                        <span x-show="!selectedEvent.is_paid">
-                            Register Event
-                        </span>
+                        @click="pay()"
+                        :disabled="isProcessing"
+                        class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-700 to-emerald-500 text-white font-semibold hover:scale-[1.02] transition disabled:opacity-50"
+                        x-text="isProcessing ? 'Memproses...' : 'Purchase Ticket'">
                     </button>
                 </div>
             </div>

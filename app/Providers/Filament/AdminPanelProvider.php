@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->brandName('Course Inovindo')
             ->brandLogo(asset('images/logo-transparan.webp'))
             ->brandLogoHeight('2.5rem')
@@ -40,12 +41,12 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Indigo,
             ])
-            ->renderHook(
-                PanelsRenderHook::STYLES_AFTER,
-                fn (): HtmlString => new HtmlString(
-                    app(Vite::class)('resources/css/filament/admin/tailwind.css')
-                ),
-            )
+            // ->renderHook(
+            //     PanelsRenderHook::STYLES_AFTER,
+            //     fn (): HtmlString => new HtmlString(
+            //         app(Vite::class)('resources/css/filament/admin/tailwind.css')
+            //     ),
+            // )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

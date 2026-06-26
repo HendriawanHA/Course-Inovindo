@@ -2,12 +2,42 @@
 
 namespace App\Services;
 
+use App\Events\TransactionCancelled;
+use App\Events\TransactionPaid;
 use App\Models\Transaction;
 
 class MidtransService
 {
+    public function getTransactionStatus(string $orderId): array
+    {
+        $status = \Midtrans\Transaction::status($orderId);
+
+        return [
+            'transaction_status' => $status->transaction_status ?? 'unknown',
+            'fraud_status' => $status->fraud_status ?? null,
+            'status_code' => $status->status_code ?? null,
+            'payment_type' => $status->payment_type ?? null,
+        ];
+    }
+
     public function generateSnapToken(Transaction $transaction): string
     {
+        if ($transaction->course_id) {
+            $item = [
+                'id' => $transaction->course_id,
+                'price' => (int) $transaction->amount,
+                'quantity' => 1,
+                'name' => $transaction->course->title,
+            ];
+        } else {
+            $item = [
+                'id' => $transaction->event_id,
+                'price' => (int) $transaction->amount,
+                'quantity' => 1,
+                'name' => $transaction->event->title,
+            ];
+        }
+
         $params = [
             'transaction_details' => [
                 'order_id' => $transaction->invoice_number,
@@ -18,14 +48,7 @@ class MidtransService
                 'email' => $transaction->user->email,
                 'phone' => $transaction->user->phone ?? '',
             ],
-            'item_details' => [
-                [
-                    'id' => $transaction->course_id,
-                    'price' => (int) $transaction->amount,
-                    'quantity' => 1,
-                    'name' => $transaction->course->title,
-                ],
-            ],
+            'item_details' => [$item],
             'callbacks' => [
                 'finish' => route('payment.finish'),
                 'unfinish' => route('payment.pending'),
@@ -54,11 +77,14 @@ class MidtransService
         ]);
 
         if ($transactionStatus === 'capture' && $fraudStatus === 'accept') {
-            $this->markAsPaid($transaction);
+            $transaction->update(['status' => 'paid', 'paid_at' => now()]);
+            TransactionPaid::dispatch($transaction, (array) $notification->response);
         } elseif ($transactionStatus === 'settlement') {
-            $this->markAsPaid($transaction);
+            $transaction->update(['status' => 'paid', 'paid_at' => now()]);
+            TransactionPaid::dispatch($transaction, (array) $notification->response);
         } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
             $transaction->update(['status' => 'cancelled']);
+            TransactionCancelled::dispatch($transaction);
         } elseif ($transactionStatus === 'pending') {
             // no action
         }
@@ -67,15 +93,5 @@ class MidtransService
             'order_id' => $notification->order_id,
             'status' => $transactionStatus,
         ];
-    }
-
-    private function markAsPaid(Transaction $transaction): void
-    {
-        $transaction->update([
-            'status' => 'paid',
-            'paid_at' => now(),
-        ]);
-
-        \App\Filament\Resources\Transactions\TransactionResource::approvePaidTransaction($transaction);
     }
 }

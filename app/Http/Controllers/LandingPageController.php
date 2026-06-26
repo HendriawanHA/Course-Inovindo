@@ -31,6 +31,7 @@ class LandingPageController extends Controller
             });
 
         $events = Event::query()
+            ->where('is_active', true)
             ->latest()
             ->take(3)
             ->get();

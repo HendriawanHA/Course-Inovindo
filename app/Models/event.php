@@ -82,6 +82,28 @@ class Event extends Model
         ];
     }
 
+    public function isFree(): bool
+    {
+        return ! $this->is_paid || $this->price <= 0;
+    }
+
+    public function isPurchasedBy(?int $userId): bool
+    {
+        if (! $userId) {
+            return false;
+        }
+
+        return Transaction::where('user_id', $userId)
+            ->where('event_id', $this->id)
+            ->where('status', 'paid')
+            ->exists();
+    }
+
+    public function canAccess(?int $userId): bool
+    {
+        return $this->isFree() || $this->isPurchasedBy($userId);
+    }
+
     public function getThumbnailUrlAttribute()
     {
         return asset(

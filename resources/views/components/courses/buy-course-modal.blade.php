@@ -21,7 +21,7 @@
                         onSuccess: (result) => {
                             this.isProcessing = false;
                             this.openBuyModal = false;
-                            window.location.href = '/payment/verify?order_id=' + result.order_id;
+                            window.location.href = '/payment/finish?order_id=' + result.order_id + '&transaction_status=settlement';
                         },
                         onPending: (result) => {
                             this.isProcessing = false;
@@ -126,17 +126,6 @@
                     class="mt-6 w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold transition hover:bg-indigo-500 disabled:opacity-50"
                     x-text="isProcessing ? 'Memproses...' : 'Bayar Sekarang'">
                 </button>
-                <form
-                    class="mt-6"
-                    method="POST"
-                    :action="selectedCourse.buyUrl">
-                    @csrf
-                    <button
-                        type="submit"
-                        class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-700 to-emerald-500 text-white font-semibold hover:scale-[1.02] transition">
-                        Confirm Purchase
-                    </button>
-                </form>
             </div>
         </template>
     </div>

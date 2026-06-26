@@ -16,15 +16,23 @@
     @else
         <div class="space-y-3">
             @foreach ($transactions as $transaction)
+                @php
+                    $isEvent = $transaction->event_id !== null;
+                    $status = $transaction->status;
+                    $title = $isEvent ? $transaction->event?->title : $transaction->course?->title;
+                    $thumbnail = $isEvent ? $transaction->event?->thumbnail_url : $transaction->course?->thumbnail_url;
+                    $showUrl = $isEvent ? route('events.show', $transaction->event?->slug) : route('courses.show', $transaction->course_id);
+                    $ctaText = $isEvent ? ($status === 'paid' ? 'Lihat Event' : 'Bayar') : ($status === 'paid' ? 'Mulai Belajar' : 'Bayar');
+                @endphp
                 <div class="flex items-center gap-4 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
                     <img
-                        src="{{ $transaction->course->thumbnail_url }}"
+                        src="{{ $thumbnail }}"
                         class="h-14 w-20 rounded-lg object-cover flex-shrink-0">
 
                     <div class="flex-1 min-w-0">
                         <p class="font-semibold truncate">
-                            <a href="{{ route('courses.show', $transaction->course_id) }}" wire:navigate class="hover:text-indigo-600">
-                                {{ $transaction->course->title }}
+                            <a href="{{ $showUrl }}" wire:navigate class="hover:text-indigo-600">
+                                {{ $title }}
                             </a>
                         </p>
                         <p class="text-xs text-zinc-400 font-mono mt-0.5">{{ $transaction->invoice_number }}</p>
@@ -36,7 +44,6 @@
                     </div>
 
                     <div class="flex items-center gap-3 flex-shrink-0">
-                        @php $status = $transaction->status @endphp
                         <span class="text-xs font-semibold px-2.5 py-1 rounded-full
                             @if ($status === 'paid') bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400
                             @elseif ($status === 'pending') bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400
@@ -46,14 +53,14 @@
                         </span>
 
                         @if ($status === 'paid')
-                            <a href="{{ route('courses.show', $transaction->course_id) }}"
+                            <a href="{{ $showUrl }}"
                                class="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500">
-                                Mulai Belajar
+                                {{ $ctaText }}
                             </a>
                         @elseif ($status === 'pending')
-                            <a href="{{ route('courses.show', $transaction->course_id) }}"
+                            <a href="{{ $showUrl }}"
                                class="rounded-lg border border-indigo-600 px-3 py-1.5 text-xs font-semibold text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950">
-                                Bayar
+                                {{ $ctaText }}
                             </a>
                         @endif
                     </div>
