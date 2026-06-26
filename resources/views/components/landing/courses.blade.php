@@ -2,8 +2,8 @@
 <section id="courses" class="bg-white dark:bg-zinc-900 px-6 md:px-12 lg:px-24 py-20 relative">
     <x-landing.dark-bg />
     <div class="flex items-center gap-3 mb-4">
-        <div class="h-[3px] w-12 rounded-full bg-gradient-to-r from-blue-700 to-emerald-50"></div>
-        <span class="text-sm font-medium text-blue-700 dark:text-emerald-40">
+        <div class="h-[3px] w-12 rounded-full bg-gradient-to-r from-blue-700 to-emerald-500"></div>
+        <span class="text-sm font-medium text-blue-700 dark:text-emerald-500">
             Kursus Premium
         </span>
     </div>

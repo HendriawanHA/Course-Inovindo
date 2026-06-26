@@ -78,7 +78,7 @@
                     href="{{ route('courses.show', $enrollment->course->id) }}"
                     icon="book-open"
                     tooltip="{{ $enrollment->course->title }}"
-                    class="my-3">
+                    class="my-3 py-6">
                     <div class="flex flex-col py-3 gap-1">
                         <span class="font-medium leading-tight">
                             {{ Str::limit($enrollment->course->title, 22) }}

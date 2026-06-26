@@ -209,7 +209,7 @@
             <flux:profile circle :chevron="false"
                 avatar="{{ auth()->user()->avatar
                         ? asset('storage/' . auth()->user()->avatar)
-                        : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" />
+                        : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" class="cursor-pointer" />
             @endauth
             <flux:menu>
                 <div class="flex justify-between items-center">
@@ -230,7 +230,7 @@
                 <flux:menu.separator />
 
                 <a href="{{ route('transactions.index') }}">
-                    <flux:menu.item>My Transactions</flux:menu.item>
+                    <flux:menu.item icon="credit-card">My Transactions</flux:menu.item>
                 </a>
 
                 <flux:menu.separator />
