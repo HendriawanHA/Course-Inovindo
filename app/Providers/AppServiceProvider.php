@@ -21,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
     {
         \Carbon\Carbon::setLocale('id');
 
+        $this->configureMidtrans();
+
         View::composer('components.sidebar', function ($view) {
 
             $myCourses = collect();

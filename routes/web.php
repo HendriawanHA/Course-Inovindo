@@ -54,6 +54,7 @@ Route::get('/', [LandingPageController::class, 'index'])
     Route::prefix('events')->name('events.')->group(function () {
         Route::get('/', [EventController::class, 'index'])->name('index');
         Route::get('/{slug}', [EventController::class, 'show'])->name('show');
+        Route::post('/{slug}/buy', [EventController::class, 'buy'])->name('buy');
     });
 
     // Leaderboard

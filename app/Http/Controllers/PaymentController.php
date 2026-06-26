@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TransactionCancelled;
+use App\Events\TransactionPaid;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
@@ -11,7 +13,12 @@ class PaymentController extends Controller
     {
         $orderId = $request->get('order_id');
         $status = $request->get('transaction_status');
-        $transaction = Transaction::where('invoice_number', $orderId)->first();
+        $transaction = Transaction::with(['course', 'event'])->where('invoice_number', $orderId)->first();
+
+        if ($transaction && $transaction->status === 'pending' && in_array($status, ['settlement', 'capture'])) {
+            $transaction->update(['status' => 'paid', 'paid_at' => now()]);
+            TransactionPaid::dispatch($transaction);
+        }
 
         return view('payment.finish', [
             'transaction' => $transaction,
@@ -23,7 +30,7 @@ class PaymentController extends Controller
     public function pending(Request $request)
     {
         $orderId = $request->get('order_id');
-        $transaction = Transaction::where('invoice_number', $orderId)->first();
+        $transaction = Transaction::with(['course', 'event'])->where('invoice_number', $orderId)->first();
 
         return view('payment.pending', [
             'transaction' => $transaction,
@@ -37,9 +44,13 @@ class PaymentController extends Controller
 
         if ($transaction->status === 'pending') {
             $transaction->update(['status' => 'cancelled']);
+            TransactionCancelled::dispatch($transaction);
         }
 
-        return redirect()->route('courses.show', $transaction->course_id)
-            ->with('success', 'Pesanan dibatalkan.');
+        $route = $transaction->event_id
+            ? route('events.show', $transaction->event->slug)
+            : route('courses.show', $transaction->course_id);
+
+        return redirect($route)->with('success', 'Pesanan dibatalkan.');
     }
 }

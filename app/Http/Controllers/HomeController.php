@@ -31,7 +31,8 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
-        $latestEvents = Event::latest()
+        $latestEvents = Event::where('is_active', true)
+            ->latest()
             ->take(3)
             ->get();
 

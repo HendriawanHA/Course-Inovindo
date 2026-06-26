@@ -15,8 +15,13 @@
         </p>
 
         @if ($transaction)
+            @php
+                $retryUrl = $transaction->event_id
+                    ? route('events.show', $transaction->event->slug)
+                    : route('courses.show', $transaction->course_id);
+            @endphp
             <div class="mt-6 flex gap-3">
-                <a href="{{ route('courses.show', $transaction->course_id) }}"
+                <a href="{{ $retryUrl }}"
                    class="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">
                     Coba Bayar Lagi
                 </a>

@@ -15,11 +15,17 @@
                 Transaksi <span class="font-mono text-sm">{{ $orderId }}</span> telah berhasil dibayar.
             </p>
             @if ($transaction)
+                @php
+                    $continueUrl = $transaction->event_id
+                        ? route('events.show', $transaction->event->slug)
+                        : route('courses.show', $transaction->course_id);
+                    $continueLabel = $transaction->event_id ? 'Lihat Event' : 'Mulai Belajar';
+                @endphp
                 <a
-                    href="{{ route('courses.show', $transaction->course_id) }}"
+                    href="{{ $continueUrl }}"
                     class="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500"
                 >
-                    Mulai Belajar
+                    {{ $continueLabel }}
                 </a>
             @endif
         @elseif ($status === 'pending')

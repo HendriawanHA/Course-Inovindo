@@ -17,22 +17,22 @@
 
 <body class="min-h-screen bg-zinc-100 dark:bg-zinc-900 antialiased">
     <div
-        x-data="{ sidebarOpen: false }"
+    x-data="{ sidebarOpen: false }"
         x-cloak
         class="flex flex-col h-screen bg-white/50 text-zinc-900 dark:bg-zinc-900/50 dark:text-white">
         <x-navbar />
         <div class="flex flex-1 overflow-hidden relative">
             <div
-                x-show="sidebarOpen && window.innerWidth < 1024"
+            x-show="sidebarOpen && window.innerWidth < 1024"
                 @click="sidebarOpen = false"
                 class="fixed inset-0 bg-black/50 z-40 lg:hidden"
                 x-transition.opacity>
             </div>
             <x-sidebar />
             <flux:main
-                class="flex-1 !p-0 bg-zinc-100 dark:bg-zinc-900 overflow-y-auto scroll-smooth scroll-hide">
-                {{ $slot ?? '' }}
-                @yield('content')
+            class="flex-1 !p-0 bg-zinc-100 dark:bg-zinc-900 overflow-y-auto scroll-smooth scroll-hide">
+            {{ $slot ?? '' }}
+            @yield('content')
             </flux:main>
         </div>
     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Transactions\Pages;
 
+use App\Events\TransactionPaid;
 use App\Filament\Resources\Transactions\TransactionResource;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -12,7 +13,7 @@ class CreateTransaction extends CreateRecord
     protected function afterCreate(): void
     {
         if ($this->record->status === 'paid') {
-            TransactionResource::approvePaidTransaction($this->record);
+            TransactionPaid::dispatch($this->record);
         }
     }
 }

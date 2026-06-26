@@ -10,6 +10,7 @@ class Transaction extends Model
     protected $fillable = [
         'user_id',
         'course_id',
+        'event_id',
         'invoice_number',
         'amount',
         'status',
@@ -37,6 +38,11 @@ class Transaction extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function event(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Event::class);
     }
 
     public function isPending(): bool
